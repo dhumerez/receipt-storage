@@ -1,30 +1,17 @@
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-current_phase: 02
-status: unknown
-last_updated: "2026-03-30T21:00:51.870Z"
-progress:
-  total_phases: 7
-  completed_phases: 1
-  total_plans: 12
-  completed_plans: 5
----
-
 # Project State
 
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** 02
-**Last session stopped at:** Phase 01 complete — all 5 plans executed
+**Current phase:** 02-authentication-user-management
+**Current plan:** 02 of 07 (02-01 complete)
+**Last session stopped at:** Completed 02-01-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
-| Phase 2: Auth & Users | Not started | |
+| Phase 2: Auth & Users | In progress | Plan 02-01 complete |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
@@ -44,6 +31,12 @@ progress:
 - **01-05 (Frontend):** Tailwind v4: no tailwind.config.js, no postcss — CSS entry is @import 'tailwindcss' via @tailwindcss/vite plugin
 - **01-05 (Frontend):** Provider order: QueryClientProvider > BrowserRouter > App — query cache is outermost for availability across all route-aware components
 - **01-05 (Frontend):** apiClient uses credentials:include for httpOnly cookie auth to be established in Phase 2
+
+- **02-01 (Auth):** JWTPayload.companyId is string | null (null for super admin) — changed from string to support super admin role correctly
+- **02-01 (Auth):** JWTPayload.clientId added as optional string for FR-02.5 client portal role
+- **02-01 (Auth):** hashToken uses Node built-in crypto (no 3rd-party SHA-256 library) — zero additional dependencies
+- **02-01 (Auth):** SALT_ROUNDS=12 for bcrypt — 2026 hardware baseline, ~2-3 hashes/sec
+- **02-01 (Auth):** REFRESH_COOKIE_OPTIONS exported constant ensures consistent cookie config (path, sameSite, httpOnly) across all auth route handlers
 
 ## Blockers
 
