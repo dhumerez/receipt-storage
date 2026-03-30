@@ -3,13 +3,13 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 01-foundation-infrastructure-database (in progress)
-**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-02-PLAN.md
+**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-03-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Foundation | In progress | Plan 02/05 complete |
+| Phase 1: Foundation | In progress | Plan 03/05 complete |
 | Phase 2: Auth & Users | Not started | |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
@@ -22,6 +22,10 @@
 - **01-02 (Nginx):** No /uploads/ static location block — all file access via authenticated Express endpoint (FR-06.11, SVG XSS prevention)
 - **01-02 (Nginx):** client_max_body_size 12m on HTTPS vhost level (not inside location blocks) so it applies globally to receipts subdomain
 - **01-02 (Nginx):** Placeholder domain receipts.yourdomain.com used; must be replaced with actual subdomain before deployment
+- **01-03 (Schema):** drizzle-orm pinned to 0.45.2 — 0.46.x and 1.x beta have breaking changes
+- **01-03 (Schema):** All money columns use NUMERIC(12,2) — no FLOAT, no INTEGER cents — immutable after initial migration
+- **01-03 (Schema):** debt_balances view computes balance from confirmed payments only — pending payments don't reduce displayed balance
+- **01-03 (Schema):** audit_logs immutability enforced at DB level with REVOKE UPDATE, DELETE (FR-11.2) — application layer alone is insufficient
 
 ## Blockers
 

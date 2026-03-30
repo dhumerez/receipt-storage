@@ -40,9 +40,9 @@ Foundation   Auth &       Client       Product
 | 1.5 | Frontend project structure | React 19 + Vite + TanStack Query + React Router + Tailwind; base layout with routing scaffolding; API client setup |
 
 Plans:
-- [ ] 01-01-PLAN.md — Docker Compose stack with Dockerfiles (wave 1)
+- [x] 01-01-PLAN.md — Docker Compose stack with Dockerfiles (wave 1)
 - [x] 01-02-PLAN.md — Nginx receipts.conf with HTTPS and proxy routing (wave 1)
-- [ ] 01-03-PLAN.md — Complete Drizzle ORM schema, 12 tables + debt_balances view (wave 2)
+- [x] 01-03-PLAN.md — Complete Drizzle ORM schema, 12 tables + debt_balances view (wave 2)
 - [ ] 01-04-PLAN.md — Express 5 backend skeleton with auth/tenant/RBAC middleware (wave 3)
 - [ ] 01-05-PLAN.md — React 19 + Vite + Tailwind v4 frontend scaffold (wave 3)
 
