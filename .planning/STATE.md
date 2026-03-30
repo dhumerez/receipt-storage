@@ -2,13 +2,14 @@
 
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** Phase 1 — Plan 2 of 5
+**Current phase:** 01-foundation-infrastructure-database (in progress)
+**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-02-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Foundation | In Progress | Plan 01 complete |
+| Phase 1: Foundation | In progress | Plan 02/05 complete |
 | Phase 2: Auth & Users | Not started | |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
@@ -18,11 +19,9 @@
 
 ## Active Decisions
 
-- receipts-db has no host port — accessible only via Docker service name receipts-db:5432
-- PostgreSQL uses named volume (not bind mount) to avoid UID 999 permission failure on Linux
-- Uploads use bind mount to /var/receipts/uploads so Nginx on host can read files at same path
-- docker-entrypoint.sh uses exec node so the process receives OS signals correctly
-- Migrations run in entrypoint before server start — not inside server.ts — for clean separation
+- **01-02 (Nginx):** No /uploads/ static location block — all file access via authenticated Express endpoint (FR-06.11, SVG XSS prevention)
+- **01-02 (Nginx):** client_max_body_size 12m on HTTPS vhost level (not inside location blocks) so it applies globally to receipts subdomain
+- **01-02 (Nginx):** Placeholder domain receipts.yourdomain.com used; must be replaced with actual subdomain before deployment
 
 ## Blockers
 
@@ -33,14 +32,3 @@ None.
 - Hetzner VPS already running Restaurant app; new Docker stack must use ports 4000/4001
 - Resend requires domain verification (SPF/DKIM) before email invitations work — do this in Phase 2
 - libvips with HEIC support must be installed in Docker image (Phase 5) — `apt-get install libvips-dev libheif-dev`
-
-## Performance Metrics
-
-| Phase | Plan | Duration | Tasks | Files |
-|-------|------|----------|-------|-------|
-| 01-foundation-infrastructure-database | 01 | 2min | 2 | 6 |
-
-## Last Session
-
-- **Stopped at:** Completed 01-01-PLAN.md
-- **Timestamp:** 2026-03-30T05:58:00Z
