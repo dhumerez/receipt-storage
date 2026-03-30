@@ -3,15 +3,15 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 02-authentication-user-management
-**Current plan:** 04 of 07 (02-03 complete)
-**Last session stopped at:** Completed 02-03-PLAN.md
+**Current plan:** 06 of 07 (02-05 complete)
+**Last session stopped at:** Completed 02-05-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
-| Phase 2: Auth & Users | In progress | Plans 02-01, 02-03 complete |
+| Phase 2: Auth & Users | In progress | Plans 02-01, 02-03, 02-05 complete |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
@@ -41,6 +41,10 @@
 - **02-03 (Admin):** requireSuperAdmin is standalone middleware (not a factory) — simpler API since there are no variations
 - **02-03 (Admin):** Admin routes mounted without requireTenant — super admins have companyId=null and must never hit tenant middleware
 - **02-03 (Admin):** Duplicate email check normalizes to lowercase before DB lookup to prevent case-collision accounts
+
+- **02-05 (Users):** validateCallerOwner fetches role + isActive + companyId from DB before sensitive ops — prevents stale JWT privilege escalation (NFR-01.5)
+- **02-05 (Users):** PATCH /:id/deactivate wraps user + transactions + payments in single db.transaction — atomicity ensures no orphaned pending records (FR-02.9)
+- **02-05 (Users):** email.service.ts created in this plan (not 02-04) as a blocking dependency; 02-04 may overwrite with extended implementation
 
 ## Blockers
 
