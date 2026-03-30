@@ -370,6 +370,53 @@ export const auditLogs = pgTable(
   ],
 );
 
+// ─── TOKEN TYPE ENUM ──────────────────────────────────────────────────────────
+export const tokenTypeEnum = pgEnum('token_type', ['invite', 'password_reset']);
+
+// ─── TOKENS (invite + password_reset, unified table) ─────────────────────────
+// FR-02.7 invite flow; FR-02.8 password reset flow
+// token_hash = SHA-256(rawToken) — raw token never stored
+export const tokens = pgTable(
+  'tokens',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    tokenHash: varchar('token_hash', { length: 255 }).notNull(),
+    type: tokenTypeEnum('type').notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    companyId: uuid('company_id').references(() => companies.id, { onDelete: 'cascade' }),
+    invitedBy: uuid('invited_by').references(() => users.id),
+    role: userRoleEnum('role'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    usedAt: timestamp('used_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_tokens_token_hash').on(table.tokenHash),
+    index('idx_tokens_email_type').on(table.email, table.type),
+  ],
+);
+
+// ─── REFRESH TOKENS ───────────────────────────────────────────────────────────
+// token_hash = SHA-256(rawToken) — raw token never stored in DB
+// Rotate on each /api/auth/refresh call; revoke on logout and password reset
+export const refreshTokens = pgTable(
+  'refresh_tokens',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: varchar('token_hash', { length: 255 }).notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_refresh_tokens_user_id').on(table.userId),
+    index('idx_refresh_tokens_token_hash').on(table.tokenHash),
+  ],
+);
+
 // ─── DEBT_BALANCES VIEW ───────────────────────────────────────────────────────
 // remaining_balance is NEVER stored as a column — always computed here.
 // Only 'confirmed' payments count toward the balance.
