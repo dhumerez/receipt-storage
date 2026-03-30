@@ -1,0 +1,202 @@
+# Roadmap — Receipts Storage Debt Tracker SaaS
+
+**Milestone:** 1.0 — Core SaaS MVP
+**Target:** Full-featured debt tracking web app deployed on Hetzner
+**Last updated:** 2026-03-29
+
+---
+
+## Phase Map
+
+```
+Phase 1  →  Phase 2  →  Phase 3  →  Phase 4
+Foundation   Auth &       Client       Product
+             Users        Mgmt         Catalog
+
+                 ↓            ↓
+             Phase 5  →  Phase 6  →  Phase 7
+             Transactions  Debt &      Reports
+             & Files       Payments    & PDF
+```
+
+---
+
+## Phase 1: Foundation — Infrastructure & Database
+
+**Goal:** Running Docker stack on Hetzner with complete database schema and working API skeleton.
+
+**Why first:** Every subsequent phase builds on this. Schema decisions (multi-tenancy, money types, audit log) cannot be changed later without migrations. Get them right here.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 1.1 | Docker Compose stack | `docker-compose.yml` with `receipts-api` (4000), `receipts-frontend` (4001), `receipts-db` (no host port), named volumes, `receipts_internal` network |
+| 1.2 | Nginx configuration | `receipts.conf` added to host Nginx; HTTPS via Let's Encrypt; proxy to API and frontend; `client_max_body_size 12m`; does NOT touch restaurant.conf |
+| 1.3 | Complete database schema | All 11 tables with indexes, `debt_balances` view, audit log with INSERT-only DB permission; Drizzle ORM schema + initial migration |
+| 1.4 | Backend project structure | Express + TypeScript + Drizzle; `forCompany(id)` tenant query helper; JWT auth middleware; RBAC middleware; tenant middleware; health check endpoint |
+| 1.5 | Frontend project structure | React 19 + Vite + TanStack Query + React Router + Tailwind; base layout with routing scaffolding; API client setup |
+
+**Verification:** `docker compose up` starts all services; health check returns 200; migration runs clean; `company_id` filter enforced by helper.
+
+**Research focus:** Docker Compose coexistence with Restaurant app; PostgreSQL named volumes; Drizzle migration setup.
+
+---
+
+## Phase 2: Authentication & User Management
+
+**Goal:** Super admin can create companies; owners can invite and manage team members; all roles can log in.
+
+**Why second:** Auth gates everything. No other phase can be tested without working login and role enforcement.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 2.1 | Super admin panel | Protected `/admin` section; create/deactivate companies; create initial owner accounts; company settings (name, currency) |
+| 2.2 | Invitation flow | Email invite via Resend 6.9.4; invite token generation + validation; new user sets password on first login |
+| 2.3 | Login & session | Email/password login; JWT issued with `sub, companyId, role, isSuperAdmin`; refresh token pattern; logout |
+| 2.4 | User management (owner) | Owner can invite collaborators, viewers, clients; change roles; deactivate users; auto-reject orphaned pending items on removal |
+| 2.5 | Password reset | "Forgot password" flow via Resend; token expiry 1 hour |
+
+**Verification:** All 5 roles can log in and receive appropriately scoped data; collaborator cannot access owner-only endpoints; cross-tenant access returns 403/404.
+
+**Research focus:** Resend domain verification (SPF/DKIM); invite token best practices.
+
+---
+
+## Phase 3: Client Management
+
+**Goal:** Owners can manage clients; clients can log into their portal.
+
+**Why third:** Transactions depend on clients existing. Client portal is a key differentiator — establish it before building the data it displays.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 3.1 | Client CRUD API | Create/update/deactivate clients; full profile (name, email, phone, address, references); link to user record for portal login; company-scoped |
+| 3.2 | Client list UI | Searchable/filterable client list; active/inactive toggle; click to detail |
+| 3.3 | Client detail page | Outstanding balance, all debts (open/partial/paid), payment history per debt; "as of [date]" on balance |
+| 3.4 | Client portal | Client logs in → sees own balance (confirmed only), pending payments ("Awaiting confirmation"), transaction breakdowns, proof documents; `internal_notes` never returned |
+
+**Verification:** Client A cannot see Client B's data; `internal_notes` absent from all client-scoped API responses; portal balance matches confirmed payments only.
+
+---
+
+## Phase 4: Product Catalog
+
+**Goal:** Company maintains reusable products with prices; transactions can reference them.
+
+**Why separate phase:** Clean separation from transactions. Catalog must exist before transactions can reference it.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 4.1 | Product CRUD API | Create/update/deactivate products; name, description, unit price, unit of measure; company-scoped |
+| 4.2 | Product list UI | Searchable list; active/inactive toggle; quick-edit inline price |
+
+**Verification:** Product prices can change without affecting existing transaction line items (snapshot confirmed).
+
+---
+
+## Phase 5: Transactions & File Uploads
+
+**Goal:** Owners and collaborators can create receipts with line items and attach proof documents; approval workflow functions correctly.
+
+**Why fifth:** Depends on clients (Phase 3) and products (Phase 4). This is the core value loop.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 5.1 | Transaction creation API | Full transaction model: client, reference_number, description, line items (catalog + free-form), initial payment, `delivered_at`, `internal_notes`, `client_notes`; owner → `active`; collaborator → `pending_approval`; approval with `SELECT FOR UPDATE` |
+| 5.2 | File upload middleware | multer 2.1.1 + sharp 0.34.5 + file-type; HEIC→JPEG conversion; EXIF orientation fix; UUID filenames; per-company directory; authenticated streaming endpoint; SVG blocked; magic byte validation |
+| 5.3 | Transaction UI | Create transaction form with line item builder (add from catalog or free-form); document upload (react-dropzone + two-button camera/gallery); preview attachments |
+| 5.4 | Approval workflow UI | Notification center (owner); unread badge on all pages; approve/reject with reason; collaborator sees submission status |
+| 5.5 | Transaction list & detail | Filterable list (by client, status, date); detail view with line items, documents, debt status |
+
+**Verification:** Collaborator submission does not create debt until owner approves; two concurrent approvals produce one debt (race condition test); HEIC file uploads and converts correctly; `capture` attribute two-button UX works on iOS and Android.
+
+**Research focus:** multer 2.1.1 memoryStorage + sharp pipeline; HEIC libvips Docker setup; Android 14 camera input behavior.
+
+---
+
+## Phase 6: Debt & Payment Tracking
+
+**Goal:** Full debt lifecycle from creation through multiple partial payments to closure.
+
+**Why sixth:** Depends on transactions (Phase 5). This is the financial heart of the product.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 6.1 | Debt lifecycle API | Auto-create debt on transaction approval; `debt_balances` view; debt status transitions; `written_off` with reason; owner-only debt status changes |
+| 6.2 | Payment recording API | Create payment with `paid_at`, method, reference, notes; owner → `confirmed`; collaborator → `pending_approval`; `SELECT FOR UPDATE` on debt row; overpayment prevention; approval flow mirrors transactions |
+| 6.3 | Debt & payment UI | Debt dashboard per client; remaining balance (via view); payment list with confirmed/pending separation; payment form with document upload |
+| 6.4 | Client portal debt view | Client sees own debts, confirmed balance, pending payments ("Awaiting confirmation"), payment proof documents |
+
+**Verification:** 10 × $10 payments on $100 debt reaches exactly $0.00 remaining (no float drift); concurrent payment approval test; client cannot see other clients' debts; pending payments do not affect displayed balance.
+
+---
+
+## Phase 7: Reports & PDF Export
+
+**Goal:** Owners can generate company-wide and per-client reports; PDF export available.
+
+**Why last:** Reporting is a read layer on top of fully working data. All upstream data must be correct before reports are meaningful.
+
+### Plans
+
+| # | Plan | Deliverable |
+|---|------|-------------|
+| 7.1 | Report API | Company report: clients with outstanding balance in date range; per-client report: transactions + payment history; data only (no PDF yet) |
+| 7.2 | Report UI | Date range picker; company report table sortable by outstanding amount; per-client breakdown; print/screen layout |
+| 7.3 | PDF export | PDFKit 0.18.0 server-side; company report PDF; per-client report PDF; receipt PDF for individual transaction; stream directly to HTTP response |
+
+**Verification:** Company report totals match sum of open debts; PDF renders correctly for multi-page report; report respects `company_id` scoping; client-scoped PDF contains only that client's data.
+
+---
+
+## Milestone Completion Criteria
+
+The 1.0 milestone is complete when:
+
+- [ ] All 7 phases verified
+- [ ] End-to-end flow: create client → create transaction → auto-create debt → record payments → close debt → generate report
+- [ ] Client logs in and sees accurate balance with payment history
+- [ ] File uploads work on iOS and Android (camera + gallery)
+- [ ] PDF export produces correct documents
+- [ ] Deployed on Hetzner behind HTTPS alongside Restaurant app without conflicts
+- [ ] Audit log captures all required events
+- [ ] Cross-tenant isolation verified via integration tests
+
+---
+
+## Phase Sequencing Notes
+
+- **Phases 1–2** must be done sequentially; every other phase depends on both
+- **Phases 3 and 4** can be done in parallel after Phase 2
+- **Phase 5** requires Phase 3 (clients) and Phase 4 (products) to be complete
+- **Phase 6** requires Phase 5
+- **Phase 7** requires Phase 6
+
+---
+
+## Key Decisions Carried into Phases
+
+| Decision | Affects |
+|----------|---------|
+| Integer cents for money arithmetic | Phase 1 (schema), Phase 6 (payment logic) |
+| `forCompany()` query helper | Phase 1 (build it), all subsequent phases (use it) |
+| `reference_number` auto-sequence per company | Phase 1 (schema), Phase 5 (transaction creation) |
+| `internal_notes` + `client_notes` as separate columns | Phase 1 (schema), Phase 3 (portal), Phase 5 (UI) |
+| Two-button camera/gallery (not single `capture`) | Phase 5 (upload UI) |
+| HEIC server-side conversion | Phase 5 (upload middleware) |
+| multer 2.1.1 (security release, not ^1.x) | Phase 5 |
+| PDFKit (not Puppeteer) | Phase 7 |
+| Named Docker volume for PostgreSQL | Phase 1 |
+| Bind mount for uploads (Nginx + Express share path) | Phase 1 |
+| Separate Nginx conf file (receipts.conf) | Phase 1 |
