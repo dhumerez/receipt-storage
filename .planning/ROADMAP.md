@@ -198,7 +198,7 @@ The 1.0 milestone is complete when:
 
 | Decision | Affects |
 |----------|---------|
-| Integer cents for money arithmetic | Phase 1 (schema), Phase 6 (payment logic) |
+| NUMERIC(12,2) in DB; integer cents in application arithmetic layer | Phase 1 (schema), Phase 6 (payment logic) |
 | `forCompany()` query helper | Phase 1 (build it), all subsequent phases (use it) |
 | `reference_number` auto-sequence per company | Phase 1 (schema), Phase 5 (transaction creation) |
 | `internal_notes` + `client_notes` as separate columns | Phase 1 (schema), Phase 3 (portal), Phase 5 (UI) |
