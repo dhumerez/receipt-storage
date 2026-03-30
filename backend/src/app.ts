@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import type { Request, Response, NextFunction } from 'express';
 import healthRouter from './routes/health.js';
+import { authRouter } from './routes/auth.js';
 
 export const app = express();
 
@@ -28,6 +29,7 @@ app.set('trust proxy', 1);
 // ── Routes ────────────────────────────────────────────────────────────────────
 
 app.use('/health', healthRouter);
+app.use('/api/auth', authRouter);
 
 // Protected routes added in later phases:
 // app.use('/api/v1', authenticate, requireTenant, apiRouter);
