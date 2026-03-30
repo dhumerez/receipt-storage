@@ -3,9 +3,10 @@ import type { Request, Response, NextFunction } from 'express';
 
 export interface JWTPayload {
   sub: string;
-  companyId: string;
+  companyId: string | null;   // null for super admin
   role: 'owner' | 'collaborator' | 'viewer' | 'client';
   isSuperAdmin: boolean;
+  clientId?: string;           // populated for role='client' per FR-02.5
   iat: number;
   exp: number;
 }
