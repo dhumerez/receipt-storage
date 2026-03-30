@@ -29,13 +29,22 @@ Foundation   Auth &       Client       Product
 
 ### Plans
 
+**Plans:** 5 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
 | 1.1 | Docker Compose stack | `docker-compose.yml` with `receipts-api` (4000), `receipts-frontend` (4001), `receipts-db` (no host port), named volumes, `receipts_internal` network |
 | 1.2 | Nginx configuration | `receipts.conf` added to host Nginx; HTTPS via Let's Encrypt; proxy to API and frontend; `client_max_body_size 12m`; does NOT touch restaurant.conf |
-| 1.3 | Complete database schema | All 11 tables with indexes, `debt_balances` view, audit log with INSERT-only DB permission; Drizzle ORM schema + initial migration |
+| 1.3 | Complete database schema | All 12 tables with indexes, `debt_balances` view, audit log with INSERT-only DB permission; Drizzle ORM schema + initial migration |
 | 1.4 | Backend project structure | Express + TypeScript + Drizzle; `forCompany(id)` tenant query helper; JWT auth middleware; RBAC middleware; tenant middleware; health check endpoint |
 | 1.5 | Frontend project structure | React 19 + Vite + TanStack Query + React Router + Tailwind; base layout with routing scaffolding; API client setup |
+
+Plans:
+- [ ] 01-01-PLAN.md — Docker Compose stack with Dockerfiles (wave 1)
+- [ ] 01-02-PLAN.md — Nginx receipts.conf with HTTPS and proxy routing (wave 1)
+- [ ] 01-03-PLAN.md — Complete Drizzle ORM schema, 12 tables + debt_balances view (wave 2)
+- [ ] 01-04-PLAN.md — Express 5 backend skeleton with auth/tenant/RBAC middleware (wave 3)
+- [ ] 01-05-PLAN.md — React 19 + Vite + Tailwind v4 frontend scaffold (wave 3)
 
 **Verification:** `docker compose up` starts all services; health check returns 200; migration runs clean; `company_id` filter enforced by helper.
 
