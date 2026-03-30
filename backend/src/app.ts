@@ -6,8 +6,10 @@ import type { Request, Response, NextFunction } from 'express';
 import healthRouter from './routes/health.js';
 import { authRouter } from './routes/auth.js';
 import { adminRouter } from './routes/admin.js';
+import { usersRouter } from './routes/users.js';
 import { authenticate } from './middleware/auth.js';
-import { requireSuperAdmin } from './middleware/rbac.js';
+import { requireSuperAdmin, requireRole } from './middleware/rbac.js';
+import { requireTenant } from './middleware/tenant.js';
 
 export const app = express();
 
@@ -34,9 +36,7 @@ app.set('trust proxy', 1);
 app.use('/health', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/admin', authenticate, requireSuperAdmin, adminRouter);
-
-// Protected routes added in later phases:
-// app.use('/api/v1', authenticate, requireTenant, apiRouter);
+app.use('/api/v1/users', authenticate, requireTenant, requireRole('owner'), usersRouter);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 
