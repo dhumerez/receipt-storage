@@ -3,7 +3,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import cookieParser from 'cookie-parser';
 import { db } from '../db/client.js';
-import { users, clients, refreshTokens } from '../db/schema.js';
+import { users, clients, refreshTokens, tokens } from '../db/schema.js';
 import {
   issueAccessToken,
   createRefreshToken,
@@ -11,9 +11,13 @@ import {
   revokeAllUserRefreshTokens,
   verifyPassword,
   hashToken,
+  generateRawToken,
+  hashPassword,
   REFRESH_COOKIE_OPTIONS,
 } from '../services/auth.service.js';
 import { authenticate } from '../middleware/auth.js';
+import type { JWTPayload } from '../middleware/auth.js';
+import { sendPasswordResetEmail } from '../services/email.service.js';
 
 export const authRouter = Router();
 
@@ -163,4 +167,192 @@ authRouter.post('/logout', authenticate, async (req, res) => {
   // Must use identical options object (path must match exactly for browser to clear)
   res.clearCookie('refresh_token', { ...REFRESH_COOKIE_OPTIONS, maxAge: 0 });
   res.status(204).send();
+});
+
+// ── POST /api/auth/forgot-password ────────────────────────────────────────────
+// FR-02.8: Always returns 200 — never reveals if email exists (prevents user enumeration)
+
+const ForgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+authRouter.post('/forgot-password', async (req, res) => {
+  const parsed = ForgotPasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    return;
+  }
+
+  const [user] = await db
+    .select({ id: users.id, email: users.email })
+    .from(users)
+    .where(eq(users.email, parsed.data.email.toLowerCase()))
+    .limit(1);
+
+  // ALWAYS return 200 — never reveal if email exists (prevents user enumeration)
+  if (user) {
+    const rawToken = generateRawToken();
+    const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await db.insert(tokens).values({
+      tokenHash,
+      type: 'password_reset',
+      email: user.email,
+      expiresAt,
+    });
+
+    // Fire-and-forget — do not await (avoids timing leak on email send latency)
+    sendPasswordResetEmail({ to: user.email, rawToken }).catch(console.error);
+  }
+
+  res.json({ message: 'If that email is registered, a reset link has been sent.' });
+});
+
+// ── POST /api/auth/reset-password ─────────────────────────────────────────────
+// FR-02.8: Validate token, update password, revoke all refresh tokens
+
+const ResetPasswordSchema = z.object({
+  token: z.string().min(1),
+  newPassword: z.string().min(8),
+});
+
+authRouter.post('/reset-password', async (req, res) => {
+  const parsed = ResetPasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    return;
+  }
+
+  const tokenHash = hashToken(parsed.data.token);
+  const [tokenRow] = await db
+    .select()
+    .from(tokens)
+    .where(
+      and(
+        eq(tokens.tokenHash, tokenHash),
+        eq(tokens.type, 'password_reset'),
+      ),
+    )
+    .limit(1);
+
+  const now = new Date();
+  if (!tokenRow || tokenRow.usedAt !== null || tokenRow.expiresAt < now) {
+    res.status(400).json({ error: 'Token invalid or expired' });
+    return;
+  }
+
+  // Look up user by email stored in token
+  const [user] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, tokenRow.email))
+    .limit(1);
+
+  if (!user) {
+    res.status(400).json({ error: 'Token invalid or expired' });
+    return;
+  }
+
+  const newPasswordHash = await hashPassword(parsed.data.newPassword);
+
+  // Atomic update: mark token used + update password
+  await db.transaction(async (tx) => {
+    await tx
+      .update(tokens)
+      .set({ usedAt: now })
+      .where(eq(tokens.id, tokenRow.id));
+
+    await tx
+      .update(users)
+      .set({ passwordHash: newPasswordHash, updatedAt: now })
+      .where(eq(users.id, user.id));
+  });
+
+  // Revoke all refresh tokens — account may have been compromised
+  await revokeAllUserRefreshTokens(user.id);
+
+  res.json({ message: 'Password reset successful' });
+});
+
+// ── POST /api/auth/accept-invite ──────────────────────────────────────────────
+// FR-02.7: Validate invite token, create user, mark token used, auto-login
+
+const AcceptInviteSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8),
+  fullName: z.string().min(1).max(255),
+});
+
+authRouter.post('/accept-invite', async (req, res) => {
+  const parsed = AcceptInviteSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    return;
+  }
+
+  const tokenHash = hashToken(parsed.data.token);
+  const [tokenRow] = await db
+    .select()
+    .from(tokens)
+    .where(
+      and(
+        eq(tokens.tokenHash, tokenHash),
+        eq(tokens.type, 'invite'),
+      ),
+    )
+    .limit(1);
+
+  const now = new Date();
+  if (!tokenRow || tokenRow.usedAt !== null || tokenRow.expiresAt < now) {
+    res.status(400).json({ error: 'Token invalid or expired' });
+    return;
+  }
+
+  const passwordHash = await hashPassword(parsed.data.password);
+
+  // Create user + mark token used in one transaction
+  let newUser: { id: string; role: string; companyId: string | null; isSuperAdmin: boolean } | undefined;
+  await db.transaction(async (tx) => {
+    await tx
+      .update(tokens)
+      .set({ usedAt: now })
+      .where(eq(tokens.id, tokenRow.id));
+
+    const [inserted] = await tx
+      .insert(users)
+      .values({
+        companyId: tokenRow.companyId,
+        email: tokenRow.email.toLowerCase(),
+        passwordHash,
+        fullName: parsed.data.fullName,
+        role: tokenRow.role!,
+        isSuperAdmin: false,
+        invitedBy: tokenRow.invitedBy,
+      })
+      .returning({
+        id: users.id,
+        role: users.role,
+        companyId: users.companyId,
+        isSuperAdmin: users.isSuperAdmin,
+      });
+    newUser = inserted;
+  });
+
+  if (!newUser) {
+    res.status(500).json({ error: 'Internal server error' });
+    return;
+  }
+
+  // Log user in immediately (FR-02.7: accept-invite → auto-login)
+  const accessToken = issueAccessToken({
+    sub: newUser.id,
+    companyId: newUser.companyId,
+    role: newUser.role as JWTPayload['role'],
+    isSuperAdmin: newUser.isSuperAdmin,
+  });
+  const rawRefreshToken = await createRefreshToken(newUser.id);
+  res.cookie('refresh_token', rawRefreshToken, REFRESH_COOKIE_OPTIONS);
+
+  res.status(201).json({ accessToken });
 });
