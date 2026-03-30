@@ -8,9 +8,9 @@ RUN npm run build
 FROM node:22-alpine AS production
 WORKDIR /app
 ENV NODE_ENV=production
+RUN npm install -g serve@14
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 4001
 
-CMD ["node", "dist/server.js"]
+CMD ["serve", "-s", "dist", "-l", "4001"]
