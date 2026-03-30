@@ -60,7 +60,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 7 plans
+**Plans:** 1/7 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -73,7 +73,7 @@ Plans:
 | 2.7 | Frontend invite/reset pages | AcceptInvitePage, ResetPasswordPage with token-from-URL + form |
 
 Plans:
-- [ ] 02-01-PLAN.md — Schema tokens/refresh_tokens + auth.service.ts + Wave 0 test stubs (wave 1)
+- [x] 02-01-PLAN.md — Schema tokens/refresh_tokens + auth.service.ts + Wave 0 test stubs (wave 1)
 - [ ] 02-02-PLAN.md — Login/refresh/logout API endpoints (wave 2)
 - [ ] 02-03-PLAN.md — Super admin company management panel (wave 2)
 - [ ] 02-04-PLAN.md — Forgot-password, reset-password, accept-invite endpoints + email service (wave 3)
