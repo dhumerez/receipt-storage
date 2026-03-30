@@ -1,14 +1,15 @@
 # Project State
 
-**Last updated:** 2026-03-29
+**Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** None started — run `/gsd:plan-phase 1` to begin
+**Current phase:** 01-foundation-infrastructure-database (in progress)
+**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-02-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Foundation | Not started | |
+| Phase 1: Foundation | In progress | Plan 02/05 complete |
 | Phase 2: Auth & Users | Not started | |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
@@ -18,7 +19,9 @@
 
 ## Active Decisions
 
-None yet — decisions will be logged here as phases execute.
+- **01-02 (Nginx):** No /uploads/ static location block — all file access via authenticated Express endpoint (FR-06.11, SVG XSS prevention)
+- **01-02 (Nginx):** client_max_body_size 12m on HTTPS vhost level (not inside location blocks) so it applies globally to receipts subdomain
+- **01-02 (Nginx):** Placeholder domain receipts.yourdomain.com used; must be replaced with actual subdomain before deployment
 
 ## Blockers
 
