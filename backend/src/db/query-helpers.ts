@@ -22,7 +22,7 @@ export function forCompany(companyId: string) {
     const baseWhere = eq((table as any).companyId, companyId);
     return db
       .select()
-      .from(table)
+      .from(table as any)
       .where(extraWhere ? and(baseWhere, extraWhere) : baseWhere);
   }
 
