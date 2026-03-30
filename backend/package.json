@@ -1,0 +1,37 @@
+{
+  "name": "receipts-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:push": "drizzle-kit push",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "bcryptjs": "3.0.3",
+    "cors": "2.8.6",
+    "dotenv": "17.3.1",
+    "drizzle-orm": "0.45.2",
+    "express": "5.2.1",
+    "helmet": "8.1.0",
+    "jsonwebtoken": "9.0.3",
+    "pg": "8.20.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "3.0.0",
+    "@types/cors": "^2.8.0",
+    "@types/express": "5.0.6",
+    "@types/jsonwebtoken": "9.0.10",
+    "@types/node": "25.5.0",
+    "@types/pg": "8.20.0",
+    "drizzle-kit": "0.31.10",
+    "tsx": "4.21.0",
+    "typescript": "6.0.2",
+    "vitest": "^3.0.0"
+  }
+}
