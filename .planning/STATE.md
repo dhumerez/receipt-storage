@@ -3,15 +3,15 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 02-authentication-user-management
-**Current plan:** 02 of 07 (02-01 complete)
-**Last session stopped at:** Completed 02-01-PLAN.md
+**Current plan:** 04 of 07 (02-03 complete)
+**Last session stopped at:** Completed 02-03-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
-| Phase 2: Auth & Users | In progress | Plan 02-01 complete |
+| Phase 2: Auth & Users | In progress | Plans 02-01, 02-03 complete |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
@@ -37,6 +37,10 @@
 - **02-01 (Auth):** hashToken uses Node built-in crypto (no 3rd-party SHA-256 library) — zero additional dependencies
 - **02-01 (Auth):** SALT_ROUNDS=12 for bcrypt — 2026 hardware baseline, ~2-3 hashes/sec
 - **02-01 (Auth):** REFRESH_COOKIE_OPTIONS exported constant ensures consistent cookie config (path, sameSite, httpOnly) across all auth route handlers
+
+- **02-03 (Admin):** requireSuperAdmin is standalone middleware (not a factory) — simpler API since there are no variations
+- **02-03 (Admin):** Admin routes mounted without requireTenant — super admins have companyId=null and must never hit tenant middleware
+- **02-03 (Admin):** Duplicate email check normalizes to lowercase before DB lookup to prevent case-collision accounts
 
 ## Blockers
 
