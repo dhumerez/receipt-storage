@@ -25,3 +25,26 @@ export function requireRole(...allowedRoles: Role[]) {
     next();
   };
 }
+
+/**
+ * Guards routes that require super admin access.
+ * Super admins have isSuperAdmin=true and companyId=null.
+ * NEVER apply requireTenant after this — super admins have no companyId.
+ *
+ * Usage: app.use('/admin', authenticate, requireSuperAdmin, adminRouter)
+ */
+export function requireSuperAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
+  if (!req.user) {
+    res.status(401).json({ error: 'Unauthenticated' });
+    return;
+  }
+  if (!req.user.isSuperAdmin) {
+    res.status(403).json({ error: 'Super admin access required' });
+    return;
+  }
+  next();
+}
