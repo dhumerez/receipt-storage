@@ -3,8 +3,8 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 02-authentication-user-management
-**Current plan:** 04 of 07 (02-03 complete)
-**Last session stopped at:** Completed 02-03-PLAN.md
+**Current plan:** 05 of 07 (02-04 complete)
+**Last session stopped at:** Completed 02-04-PLAN.md
 
 ## Status
 
@@ -41,6 +41,11 @@
 - **02-03 (Admin):** requireSuperAdmin is standalone middleware (not a factory) — simpler API since there are no variations
 - **02-03 (Admin):** Admin routes mounted without requireTenant — super admins have companyId=null and must never hit tenant middleware
 - **02-03 (Admin):** Duplicate email check normalizes to lowercase before DB lookup to prevent case-collision accounts
+
+- **02-04 (Password Reset/Invite):** email.service.ts uses lazy Resend client init (getResend()) so tests run without RESEND_API_KEY set
+- **02-04 (Password Reset/Invite):** forgot-password fires email fire-and-forget (.catch) to avoid timing oracle on email send latency
+- **02-04 (Password Reset/Invite):** accept-invite auto-logs user in immediately (201 + accessToken + refresh cookie) per FR-02.7
+- **02-04 (Password Reset/Invite):** reset-password uses DB transaction for atomic usedAt + passwordHash update
 
 ## Blockers
 
