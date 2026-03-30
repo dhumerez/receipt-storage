@@ -3,13 +3,13 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 01-foundation-infrastructure-database (in progress)
-**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-03-PLAN.md
+**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-05-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Foundation | In progress | Plan 03/05 complete |
+| Phase 1: Foundation | In progress | Plan 05/05 complete |
 | Phase 2: Auth & Users | Not started | |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
@@ -26,6 +26,10 @@
 - **01-03 (Schema):** All money columns use NUMERIC(12,2) — no FLOAT, no INTEGER cents — immutable after initial migration
 - **01-03 (Schema):** debt_balances view computes balance from confirmed payments only — pending payments don't reduce displayed balance
 - **01-03 (Schema):** audit_logs immutability enforced at DB level with REVOKE UPDATE, DELETE (FR-11.2) — application layer alone is insufficient
+- **01-05 (Frontend):** React Router v7 imports from 'react-router' (not 'react-router-dom') — v7 unified the package; standardized across all files
+- **01-05 (Frontend):** Tailwind v4: no tailwind.config.js, no postcss — CSS entry is @import 'tailwindcss' via @tailwindcss/vite plugin
+- **01-05 (Frontend):** Provider order: QueryClientProvider > BrowserRouter > App — query cache is outermost for availability across all route-aware components
+- **01-05 (Frontend):** apiClient uses credentials:include for httpOnly cookie auth to be established in Phase 2
 
 ## Blockers
 
