@@ -1,17 +1,17 @@
 # Project State
 
-**Last updated:** 2026-03-30
+**Last updated:** 2026-03-30T21:16:00Z
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 02-authentication-user-management
-**Current plan:** 02 of 07 (02-01 complete)
-**Last session stopped at:** Completed 02-01-PLAN.md
+**Current plan:** 03 of 07 (02-02 complete)
+**Last session stopped at:** Completed 02-02-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
-| Phase 2: Auth & Users | In progress | Plan 02-01 complete |
+| Phase 2: Auth & Users | In progress | Plans 02-01 and 02-02 complete |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
@@ -37,6 +37,9 @@
 - **02-01 (Auth):** hashToken uses Node built-in crypto (no 3rd-party SHA-256 library) — zero additional dependencies
 - **02-01 (Auth):** SALT_ROUNDS=12 for bcrypt — 2026 hardware baseline, ~2-3 hashes/sec
 - **02-01 (Auth):** REFRESH_COOKIE_OPTIONS exported constant ensures consistent cookie config (path, sameSite, httpOnly) across all auth route handlers
+- **02-02 (Auth):** Timing-safe login path uses DUMMY_HASH so bcrypt.compare always runs — prevents user-enumeration via timing oracle
+- **02-02 (Auth):** clearCookie spreads REFRESH_COOKIE_OPTIONS with maxAge:0 — path must match exactly or browser ignores the clear
+- **02-02 (Auth):** vi.hoisted() required in Vitest for mock function definitions used in vi.mock() factories (factory hoisting order)
 
 ## Blockers
 

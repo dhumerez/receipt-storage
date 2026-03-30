@@ -60,7 +60,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 1/7 plans executed
+**Plans:** 2/7 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -74,7 +74,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Schema tokens/refresh_tokens + auth.service.ts + Wave 0 test stubs (wave 1)
-- [ ] 02-02-PLAN.md — Login/refresh/logout API endpoints (wave 2)
+- [x] 02-02-PLAN.md — Login/refresh/logout API endpoints (wave 2)
 - [ ] 02-03-PLAN.md — Super admin company management panel (wave 2)
 - [ ] 02-04-PLAN.md — Forgot-password, reset-password, accept-invite endpoints + email service (wave 3)
 - [ ] 02-05-PLAN.md — Owner user management: invite, role change, deactivate + auto-reject (wave 3)
