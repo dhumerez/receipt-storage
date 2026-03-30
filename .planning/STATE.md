@@ -3,14 +3,13 @@
 **Last updated:** 2026-03-30
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 01-foundation-infrastructure-database (in progress)
-**Current Plan:** 4/5
-**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-04-PLAN.md
+**Last session stopped at:** Completed 01-foundation-infrastructure-database/01-05-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Foundation | In progress | Plan 04/05 complete |
+| Phase 1: Foundation | In progress | Plan 05/05 complete |
 | Phase 2: Auth & Users | Not started | |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
@@ -20,12 +19,6 @@
 
 ## Active Decisions
 
-- **01-04 (Middleware):** No asyncHandler anywhere — Express 5 async errors propagate natively to 4-param global error handler
-- **01-04 (Middleware):** algorithms: ['HS256'] whitelist in jwt.verify prevents alg:none substitution attack
-- **01-04 (Middleware):** server.ts does NOT call migrations — delegated to docker-entrypoint.sh (established Plan 01-01)
-- **01-04 (Middleware):** companyId on req set from verified JWT only, never from req.body or req.params (NFR-01.1)
-
-
 - **01-02 (Nginx):** No /uploads/ static location block — all file access via authenticated Express endpoint (FR-06.11, SVG XSS prevention)
 - **01-02 (Nginx):** client_max_body_size 12m on HTTPS vhost level (not inside location blocks) so it applies globally to receipts subdomain
 - **01-02 (Nginx):** Placeholder domain receipts.yourdomain.com used; must be replaced with actual subdomain before deployment
@@ -33,6 +26,10 @@
 - **01-03 (Schema):** All money columns use NUMERIC(12,2) — no FLOAT, no INTEGER cents — immutable after initial migration
 - **01-03 (Schema):** debt_balances view computes balance from confirmed payments only — pending payments don't reduce displayed balance
 - **01-03 (Schema):** audit_logs immutability enforced at DB level with REVOKE UPDATE, DELETE (FR-11.2) — application layer alone is insufficient
+- **01-05 (Frontend):** React Router v7 imports from 'react-router' (not 'react-router-dom') — v7 unified the package; standardized across all files
+- **01-05 (Frontend):** Tailwind v4: no tailwind.config.js, no postcss — CSS entry is @import 'tailwindcss' via @tailwindcss/vite plugin
+- **01-05 (Frontend):** Provider order: QueryClientProvider > BrowserRouter > App — query cache is outermost for availability across all route-aware components
+- **01-05 (Frontend):** apiClient uses credentials:include for httpOnly cookie auth to be established in Phase 2
 
 ## Blockers
 
