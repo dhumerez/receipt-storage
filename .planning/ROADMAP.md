@@ -2,7 +2,7 @@
 
 **Milestone:** 1.0 — Core SaaS MVP
 **Target:** Full-featured debt tracking web app deployed on Hetzner
-**Last updated:** 2026-03-29
+**Last updated:** 2026-03-30
 
 ---
 
@@ -60,13 +60,26 @@ Plans:
 
 ### Plans
 
+**Plans:** 7 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
-| 2.1 | Super admin panel | Protected `/admin` section; create/deactivate companies; create initial owner accounts; company settings (name, currency) |
-| 2.2 | Invitation flow | Email invite via Resend 6.9.4; invite token generation + validation; new user sets password on first login |
-| 2.3 | Login & session | Email/password login; JWT issued with `sub, companyId, role, isSuperAdmin`; refresh token pattern; logout |
-| 2.4 | User management (owner) | Owner can invite collaborators, viewers, clients; change roles; deactivate users; auto-reject orphaned pending items on removal |
-| 2.5 | Password reset | "Forgot password" flow via Resend; token expiry 1 hour |
+| 2.1 | Schema + auth service | tokens + refresh_tokens schema; auth.service.ts (JWT, bcrypt, token gen/hash); Wave 0 test stubs |
+| 2.2 | Login & session | POST /api/auth/login, /refresh, /logout; httpOnly refresh cookie; token rotation |
+| 2.3 | Super admin panel | requireSuperAdmin middleware; GET/POST/PATCH /admin/companies; POST /admin/companies/:id/owner |
+| 2.4 | Invite + password reset API | POST /api/auth/forgot-password, /reset-password, /accept-invite; email.service.ts + Resend 6.9.4 |
+| 2.5 | User management API | GET/POST /api/v1/users/invite; PATCH /api/v1/users/:id/role + deactivate; auto-reject on removal (FR-02.9) |
+| 2.6 | Frontend auth layer | AuthContext, ProtectedRoute, LoginPage form, apiClient 401 interceptor + refresh |
+| 2.7 | Frontend invite/reset pages | AcceptInvitePage, ResetPasswordPage with token-from-URL + form |
+
+Plans:
+- [ ] 02-01-PLAN.md — Schema tokens/refresh_tokens + auth.service.ts + Wave 0 test stubs (wave 1)
+- [ ] 02-02-PLAN.md — Login/refresh/logout API endpoints (wave 2)
+- [ ] 02-03-PLAN.md — Super admin company management panel (wave 2)
+- [ ] 02-04-PLAN.md — Forgot-password, reset-password, accept-invite endpoints + email service (wave 3)
+- [ ] 02-05-PLAN.md — Owner user management: invite, role change, deactivate + auto-reject (wave 3)
+- [ ] 02-06-PLAN.md — Frontend auth: AuthContext, ProtectedRoute, LoginPage, apiClient interceptor (wave 4)
+- [ ] 02-07-PLAN.md — Frontend: AcceptInvitePage + ResetPasswordPage (wave 5)
 
 **Verification:** All 5 roles can log in and receive appropriately scoped data; collaborator cannot access owner-only endpoints; cross-tenant access returns 403/404.
 
