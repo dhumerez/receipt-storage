@@ -64,7 +64,7 @@ completed: 2026-03-31
 - **Duration:** ~5 min
 - **Started:** 2026-03-31T02:51:23Z
 - **Completed:** 2026-03-31T02:55:37Z
-- **Tasks:** 3 of 4 (Task 4 is human-verify checkpoint)
+- **Tasks:** 4 of 4 (Task 4 human-verify checkpoint approved)
 - **Files modified:** 7
 
 ## Accomplishments
@@ -81,6 +81,7 @@ Each task was committed atomically:
 1. **Task 1: Create products API module + register /products route** - `86db8d8` (feat)
 2. **Task 2: Build ProductModal, DeactivateProductModal, ProductTable, ProductTableRow** - `56bcf4b` (feat)
 3. **Task 3: Build ProductsPage** - `9222d93` (feat)
+4. **Task 4: Visual verification checkpoint** - approved; bug fix applied - `85c3df8` (fix)
 
 ## Files Created/Modified
 - `frontend/src/api/products.ts` - 5 exported functions; ProductListItem includes description field
@@ -97,7 +98,14 @@ Each task was committed atomically:
 
 ## Deviations from Plan
 
-None — plan executed exactly as written. The plan itself specified adding `description: string | null` to `ProductListItem` as the "SIMPLEST APPROACH" (Task 2 action block), which was implemented as instructed.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Fixed stopPropagation on inline price cell keyboard events**
+- **Found during:** Task 4 (visual verification checkpoint)
+- **Issue:** Pressing Enter or Escape inside the inline PriceCell input also triggered the row-level click handler, opening the full ProductModal edit dialog on top of (or instead of) committing/cancelling the inline price edit.
+- **Fix:** Added `e.stopPropagation()` to the `keyDown` handler in PriceCell so Enter/Escape events do not bubble up to the `<tr>` click handler.
+- **Files modified:** `frontend/src/components/products/ProductTableRow.tsx`
+- **Commit:** `85c3df8`
 
 ## Issues Encountered
 - Worktree had no `node_modules/` directory. Created symlinks pointing to the main repo's `frontend/node_modules` and `backend/node_modules` so TypeScript and Vitest could run in the worktree.
@@ -115,6 +123,22 @@ None — no external service configuration required.
 ## Known Stubs
 
 None — all data flows are wired to the live products API. The product list, create, edit, deactivate, and reactivate operations all call real endpoints.
+
+---
+
+## Self-Check: PASSED
+
+- FOUND: frontend/src/api/products.ts
+- FOUND: frontend/src/pages/products/ProductsPage.tsx
+- FOUND: frontend/src/components/products/ProductTable.tsx
+- FOUND: frontend/src/components/products/ProductTableRow.tsx
+- FOUND: frontend/src/components/products/ProductModal.tsx
+- FOUND: frontend/src/components/products/DeactivateProductModal.tsx
+- FOUND: .planning/phases/04-product-catalog/04-02-SUMMARY.md
+- FOUND commit 86db8d8
+- FOUND commit 56bcf4b
+- FOUND commit 9222d93
+- FOUND commit 85c3df8 (bug fix)
 
 ---
 *Phase: 04-product-catalog*
