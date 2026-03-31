@@ -57,6 +57,26 @@ clientsRouter.get('/', async (req, res) => {
   res.json(result);
 });
 
+// ─── GET /api/v1/clients/:id ──────────────────────────────────────────────────
+// Returns single client by ID, scoped to company
+
+clientsRouter.get('/:id', async (req, res) => {
+  const companyId = req.companyId!;
+  const { id } = req.params;
+
+  const [client] = await db
+    .select()
+    .from(clients)
+    .where(and(eq(clients.id, id), eq(clients.companyId, companyId)));
+
+  if (!client) {
+    res.status(404).json({ error: 'Client not found' });
+    return;
+  }
+
+  res.json(client);
+});
+
 // ─── POST /api/v1/clients ─────────────────────────────────────────────────────
 // FR-03.1: Create client profile; companyId from JWT only
 

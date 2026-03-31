@@ -15,9 +15,9 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Already logged in — redirect away from login page
+  // Already logged in — redirect away from login page (role-aware)
   if (!isLoading && user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={user.role === 'client' ? '/portal' : '/'} replace />;
   }
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
