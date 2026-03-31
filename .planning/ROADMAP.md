@@ -79,7 +79,7 @@ Plans:
 - [x] 02-04-PLAN.md — Forgot-password, reset-password, accept-invite endpoints + email service (wave 3)
 - [x] 02-05-PLAN.md — Owner user management: invite, role change, deactivate + auto-reject (wave 3)
 - [x] 02-06-PLAN.md — Frontend auth: AuthContext, ProtectedRoute, LoginPage, apiClient interceptor (wave 4)
-- [ ] 02-07-PLAN.md — Frontend: AcceptInvitePage + ResetPasswordPage (wave 5)
+- [x] 02-07-PLAN.md — Frontend: AcceptInvitePage + ResetPasswordPage (wave 5)
 
 **Verification:** All 5 roles can log in and receive appropriately scoped data; collaborator cannot access owner-only endpoints; cross-tenant access returns 403/404.
 
