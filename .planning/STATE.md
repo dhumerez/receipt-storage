@@ -2,24 +2,24 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 4
-current_plan: 01 complete
-status: In progress
-last_updated: "2026-03-31T06:48:05Z"
+current_phase: 04
+current_plan: 1
+status: Executing Phase 04
+last_updated: "2026-03-31T06:43:32.675Z"
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 20
-  completed_plans: 19
+  completed_plans: 18
 ---
 
 # Project State
 
 **Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** 4
-**Current plan:** 01 complete
-**Last session stopped at:** Completed 04-01-PLAN.md
+**Current phase:** 04
+**Current plan:** 1
+**Last session stopped at:** Completed 03-06-PLAN.md
 
 ## Status
 
@@ -28,7 +28,7 @@ progress:
 | Phase 1: Foundation | Complete | All 5 plans executed |
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
 | Phase 3: Client Management | Complete | All 6 plans executed |
-| Phase 4: Product Catalog | In progress | Plan 01 complete |
+| Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
 | Phase 7: Reports & PDF | Not started | |
@@ -84,9 +84,6 @@ progress:
 
 - **03-06 (Portal UI):** PortalDebt type structurally excludes internalNotes — frontend cannot accidentally render internal notes (type-level guard mirrors backend structural guard)
 - **03-06 (Portal UI):** portal.ts sends no clientId — JWT-scoped on backend; frontend cannot accidentally scope to wrong client (FR-03.4, RESEARCH Pitfall 2)
-
-- **04-01 (Products):** Products API is owner-only at mount; collaborator/viewer GET access deferred to Phase 5 when transaction line-item picker is built
-- **04-01 (Products):** unitPrice validated as string regex /^\d+(\.\d{1,2})?$/ throughout — consistent with Drizzle NUMERIC column return type (strings, not floats)
 
 ## Blockers
 
