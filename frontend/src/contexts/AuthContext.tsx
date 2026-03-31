@@ -7,7 +7,7 @@ import { setAccessToken } from '../api/client.ts';
 interface AuthContextValue {
   user: AuthUser | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser>;
   logout: () => Promise<void>;
 }
 
@@ -33,10 +33,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string): Promise<AuthUser> => {
     const { accessToken, user } = await apiLogin(email, password);
     setAccessToken(accessToken);
     setUser(user);
+    return user;
   }, []);
 
   const logout = useCallback(async () => {
