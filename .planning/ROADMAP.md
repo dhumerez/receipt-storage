@@ -131,6 +131,12 @@ Plans:
 | 4.1 | Product CRUD API | Create/update/deactivate products; name, description, unit price, unit of measure; company-scoped |
 | 4.2 | Product list UI | Searchable list; active/inactive toggle; quick-edit inline price |
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Backend CRUD API with Wave 0 tests, products router, app.ts mount (wave 1)
+- [ ] 04-02-PLAN.md — Frontend UI: API module, ProductsPage, table with inline price edit, modals (wave 2)
+
 **Verification:** Product prices can change without affecting existing transaction line items (snapshot confirmed).
 
 ---
