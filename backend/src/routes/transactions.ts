@@ -13,6 +13,8 @@ import {
   users,
   documents,
 } from '../db/schema.js';
+import { uploadMiddleware } from '../middleware/upload.js';
+import { processFile } from '../services/upload.service.js';
 
 export const transactionsRouter = Router();
 
@@ -95,8 +97,12 @@ const VoidSchema = z.object({
 // ─── POST / — Create transaction ─────────────────────────────────────────────
 // FR-05.1 through FR-05.7: Role-based status, reference number, auto-debt
 
-transactionsRouter.post('/', async (req, res) => {
-  const parsed = CreateTransactionSchema.safeParse(req.body);
+transactionsRouter.post('/', uploadMiddleware, async (req, res) => {
+  // Support both multipart FormData (with files) and plain JSON
+  const rawData = typeof req.body.data === 'string'
+    ? JSON.parse(req.body.data)
+    : req.body;
+  const parsed = CreateTransactionSchema.safeParse(rawData);
   if (!parsed.success) {
     res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
     return;
@@ -213,7 +219,34 @@ transactionsRouter.post('/', async (req, res) => {
       entityId: created.id,
     });
 
-    return { transaction: created, items: insertedItems };
+    // Process uploaded files and insert document rows (FR-06.1, D-03, D-10)
+    const uploadedFiles = (req.files as Express.Multer.File[]) || [];
+    const documentRows = [];
+
+    for (const file of uploadedFiles) {
+      const result = await processFile(
+        file.buffer,
+        file.originalname,
+        companyId,
+        'transactions',
+        created.id,
+      );
+
+      const [doc] = await tx.insert(documents).values({
+        companyId,
+        uploadedBy: userId,
+        entityType: 'transaction',
+        entityId: created.id,
+        filePath: result.filePath,
+        originalName: result.originalName,
+        mimeType: result.mimeType,
+        fileSizeBytes: result.sizeBytes,
+      }).returning();
+
+      documentRows.push(doc);
+    }
+
+    return { transaction: created, items: insertedItems, documents: documentRows };
   });
 
   res.status(201).json(result);
