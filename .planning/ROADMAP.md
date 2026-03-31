@@ -149,7 +149,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -161,7 +161,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Transaction CRUD API + approval + notifications router (wave 1)
-- [ ] 05-02-PLAN.md — File upload middleware + Dockerfile HEIC + file serving (wave 1)
+- [x] 05-02-PLAN.md — File upload middleware + Dockerfile HEIC + file serving (wave 1)
 - [ ] 05-03-PLAN.md — Transaction creation form + line items + file attachments (wave 2)
 - [ ] 05-04-PLAN.md — Notification bell + slide-out approval panel (wave 2)
 - [ ] 05-05-PLAN.md — Transaction list page + detail page + App.tsx routes (wave 3)

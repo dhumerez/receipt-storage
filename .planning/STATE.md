@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 5
-current_plan: 2
+current_plan: Not started
 status: In progress
-last_updated: "2026-03-31T21:48:59.011Z"
+last_updated: "2026-03-31T21:55:21.639Z"
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 25
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -90,6 +90,10 @@ progress:
 
 - **04-02 (Products UI):** description added to ProductListItem — backend GET /api/v1/products returns all columns including description; avoids extra GET /products/:id call on edit icon click
 - **04-02 (Products UI):** Reactivate mutation at page level (ProductsPage) — keeps query cache management in one place; reactivate is reversible so no confirmation modal needed
+
+- **05-02 (Uploads):** Dockerfile base changed from node:22-alpine to node:22-bookworm-slim for libvips/libheif native support
+- **05-02 (Uploads):** file-type imported via dynamic import() since it is ESM-only and project uses CJS (module: NodeNext)
+- **05-02 (Uploads):** filesRouter mounted with authenticate only (no requireTenant) — companyId verified from URL path in handler
 
 ## Blockers
 
