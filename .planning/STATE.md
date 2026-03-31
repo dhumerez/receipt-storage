@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 4
-current_plan: 01 complete
+current_plan: 02 complete
 status: In progress
-last_updated: "2026-03-31T06:48:05Z"
+last_updated: "2026-03-31T02:55:37Z"
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 20
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -18,8 +18,8 @@ progress:
 **Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 4
-**Current plan:** 01 complete
-**Last session stopped at:** Completed 04-01-PLAN.md
+**Current plan:** 02 complete
+**Last session stopped at:** Completed 04-02-PLAN.md
 
 ## Status
 
@@ -28,7 +28,7 @@ progress:
 | Phase 1: Foundation | Complete | All 5 plans executed |
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
 | Phase 3: Client Management | Complete | All 6 plans executed |
-| Phase 4: Product Catalog | In progress | Plan 01 complete |
+| Phase 4: Product Catalog | In progress | Plans 01-02 complete |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
 | Phase 7: Reports & PDF | Not started | |
@@ -87,6 +87,9 @@ progress:
 
 - **04-01 (Products):** Products API is owner-only at mount; collaborator/viewer GET access deferred to Phase 5 when transaction line-item picker is built
 - **04-01 (Products):** unitPrice validated as string regex /^\d+(\.\d{1,2})?$/ throughout — consistent with Drizzle NUMERIC column return type (strings, not floats)
+
+- **04-02 (Products UI):** description added to ProductListItem — backend GET /api/v1/products returns all columns including description; avoids extra GET /products/:id call on edit icon click
+- **04-02 (Products UI):** Reactivate mutation at page level (ProductsPage) — keeps query cache management in one place; reactivate is reversible so no confirmation modal needed
 
 ## Blockers
 
