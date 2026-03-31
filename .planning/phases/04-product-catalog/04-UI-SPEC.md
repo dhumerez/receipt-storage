@@ -34,8 +34,8 @@ Declared values (multiples of 4 only):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps (`gap-1`), inline badge padding (`px-2.5 py-0.5`) |
-| sm | 8px | Button gaps (`gap-3` = 12px exception noted below), compact padding |
+| xs | 4px | Icon gaps (`gap-1`), inline badge padding (`px-2 py-1`) |
+| sm | 8px | Button gaps (`gap-2`), compact padding |
 | md | 16px | Default element spacing, input padding (`px-4`) |
 | lg | 24px | Section padding (`p-6` on modals), column gap between toolbar items |
 | xl | 32px | Page content padding (`p-8`) |
@@ -43,10 +43,12 @@ Declared values (multiples of 4 only):
 | 3xl | 64px | Empty state vertical padding (`py-16`) |
 
 Exceptions:
-- `gap-3` (12px) — button row gaps in modal footers and toolbar rows; established in Phase 3, carry forward unchanged
-- `min-h-[44px]` — minimum touch target height on all sidebar nav links and interactive table rows (accessibility floor)
 - `py-16` (64px) — EmptyState component top/bottom padding; established component, do not change
-- `px-2.5 py-0.5` — status badge pill padding; matches Phase 3 ClientStatusBadge exactly
+- `min-h-[48px]` — minimum touch target height on all sidebar nav links and interactive table rows (accessibility floor; 48px meets WCAG touch target guidance)
+
+Status badge padding: `px-2 py-1` (8px horizontal / 4px vertical). Replaces prior `px-2.5 py-0.5` which contained non-multiples of 4.
+
+Button row / toolbar gaps: `gap-2` (8px). Replaces prior `gap-3` (12px) which was not in the standard set.
 
 ---
 
@@ -54,15 +56,15 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Tailwind Class | Source |
 |------|------|--------|-------------|----------------|--------|
-| Body / table cell | 14px | 400 (regular) | 1.5 | `text-sm` | ClientTableRow.tsx cells |
-| Label / form label | 14px | 500 (medium) | 1.4 | `text-sm font-medium` | ClientModal.tsx labels |
+| Body / table cell | 14px | 400 (regular) | 1.5 | `text-sm font-normal` | ClientTableRow.tsx cells |
+| Label / form label | 14px | 400 (regular) | 1.4 | `text-sm font-normal` | ClientModal.tsx labels — weight dropped from 500 to 400 |
 | Page heading | 24px | 600 (semibold) | 1.2 | `text-2xl font-semibold` | ClientsPage.tsx `<h1>` |
 | Modal heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` | ClientModal.tsx `<h2>` |
 
-Exactly 4 sizes declared (14, 20, 24 px + the 12px badge as noted below), 3 weights used (400/500/600).
+Exactly 4 sizes declared (14, 20, 24 px + the 12px badge noted below). Exactly 2 weights: 400 (regular) and 600 (semibold). Weight 500 (font-medium) is not used in this phase.
 
 Additional declared size:
-- Badge / table header: 12px weight 500, `text-xs font-medium` — status badge text and `<th>` uppercase labels; do not add new sizes
+- Badge / table header: 12px weight 400, `text-xs font-normal` — status badge text and `<th>` uppercase labels; do not add new sizes. (Prior `font-medium` on badges replaced with `font-normal`.)
 
 ---
 
@@ -87,6 +89,18 @@ Accent is NOT used for: secondary buttons, table rows, badges, informational tex
 Status badge colors (established, reuse without change):
 - Active: `bg-green-100 text-green-800`
 - Inactive: `bg-gray-100 text-gray-600`
+
+---
+
+## Visual Hierarchy
+
+**ProductsPage focal points:**
+
+Primary focal point: the "Add Product" button in the page header toolbar; it is the only accent-colored (`bg-blue-600`) element above the table fold and draws the owner's eye to the single available create action.
+
+Secondary anchor: the product name column in the first visible row of the table; the name cell is the widest column and renders at `text-sm font-normal` against the white row background, making it the natural reading entry point for each row.
+
+All other row actions (Edit icon, Deactivate/Reactivate) are visually subordinate: the edit icon uses `text-gray-400` at rest, and the deactivate/reactivate links use `text-sm text-blue-600` without fill — ensuring they do not compete with the primary CTA.
 
 ---
 
@@ -138,7 +152,7 @@ Edit mode (activated by click):
 ### Deactivate / Reactivate (D-04)
 
 - Active product row: Deactivate button/link — opens DeactivateProductModal (follows DeactivateConfirmModal pattern)
-- Inactive product row: "Reactivate" button — calls `PATCH /api/v1/products/:id/reactivate` directly (no confirmation modal needed; reversible action)
+- Inactive product row: "Reactivate Product" button — calls `PATCH /api/v1/products/:id/reactivate` directly (no confirmation modal needed; reversible action)
 - Reactivate: `text-sm text-blue-600 hover:underline` inline button; no modal
 - Both actions follow the same row-level pattern; no page navigation after either action
 
@@ -166,7 +180,7 @@ All modal behavior matches ClientModal.tsx exactly:
 | Modal heading (edit) | "Edit Product" | Matches "Edit Client" pattern |
 | Modal submit (create) | "Create Product" | Matches "Create Client" button text |
 | Modal submit (edit) | "Save Changes" | Matches existing "Save Changes" pattern |
-| Modal cancel | "Cancel" | Established across all modals |
+| Modal cancel | "Discard Changes" | Replaces generic "Cancel" — applies to both create and edit mode |
 | Empty state heading (active filter) | "No products yet" | Mirrors "No clients yet" pattern |
 | Empty state body (active filter) | "Add your first product to start building your catalog." | Informs next step; no product = no transaction line items in Phase 5 |
 | Empty state CTA (active filter) | "Add Product" | Same as page header CTA |
@@ -182,7 +196,7 @@ All modal behavior matches ClientModal.tsx exactly:
 | Deactivate modal body | "This product will be hidden from active lists. Existing transaction line items that reference it are preserved. You can reactivate it at any time." | Adapted from client deactivate copy; notes data preservation |
 | Deactivate modal cancel | "Keep Product" | Mirrors "Keep Client" |
 | Deactivate modal confirm | "Deactivate Product" | Mirrors "Deactivate Client" |
-| Reactivate (row inline) | "Reactivate" | No modal; direct action label |
+| Reactivate (row inline) | "Reactivate Product" | No modal; direct action label; noun added for specificity |
 | Search placeholder | "Search by name or unit" | Specific to products fields available |
 | Unit Price field label | "Unit Price" | Direct, matches schema column name |
 | Unit of Measure field label | "Unit of Measure" | Matches FR-04.1 language; includes "(optional)" hint |
@@ -214,6 +228,7 @@ Unit Price note: frontend sends as `parseFloat(value).toFixed(2)` string to matc
 - Table headers: `<th scope="col">` implicit in existing pattern; maintain
 - Modal: backdrop div is a click target only; modal content div gets focus management via `firstInputRef`
 - Inline price edit input: `aria-label="Unit price for {product.name}"` when in edit mode
+- Touch targets: `min-h-[48px]` on all sidebar nav links and interactive table rows
 
 ---
 
