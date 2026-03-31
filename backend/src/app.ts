@@ -11,6 +11,7 @@ import { clientsRouter } from './routes/clients.js';
 import { productsRouter } from './routes/products.js';
 import { transactionsRouter } from './routes/transactions.js';
 import { notificationsRouter } from './routes/notifications.js';
+import { filesRouter } from './routes/files.js';
 import { portalRouter } from './routes/portal.js';
 import { authenticate } from './middleware/auth.js';
 import { requireSuperAdmin, requireRole } from './middleware/rbac.js';
@@ -52,6 +53,7 @@ app.use(
 );
 app.use('/api/v1/transactions', authenticate, requireTenant, requireRole('owner', 'collaborator', 'viewer'), transactionsRouter);
 app.use('/api/v1/notifications', authenticate, requireTenant, notificationsRouter);
+app.use('/api/v1/files', authenticate, filesRouter);
 app.use('/api/v1/portal', authenticate, requireRole('client'), portalRouter);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
