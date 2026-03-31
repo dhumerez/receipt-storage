@@ -20,7 +20,10 @@ services:
       - receipts_internal
 
   receipts-frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000
     restart: unless-stopped
     ports:
       - "127.0.0.1:4001:4001"
