@@ -12,6 +12,9 @@ import ClientsPage from './pages/clients/ClientsPage.tsx';
 import ClientDetailPage from './pages/clients/ClientDetailPage.tsx';
 import PortalPage from './pages/portal/PortalPage.tsx';
 import ProductsPage from './pages/products/ProductsPage.tsx';
+import TransactionsPage from './pages/transactions/TransactionsPage.tsx';
+import NewTransactionPage from './pages/transactions/NewTransactionPage.tsx';
+import TransactionDetailPage from './pages/transactions/TransactionDetailPage.tsx';
 
 export default function App() {
   return (
@@ -29,7 +32,9 @@ export default function App() {
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/clients/:id" element={<ClientDetailPage />} />
           <Route path="/products" element={<ProductsPage />} />
-          {/* /transactions, /reports — stub pages added in future phases */}
+          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/transactions/new" element={<NewTransactionPage />} />
+          <Route path="/transactions/:id" element={<TransactionDetailPage />} />
         </Route>
       </Route>
 
