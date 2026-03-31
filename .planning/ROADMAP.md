@@ -2,7 +2,7 @@
 
 **Milestone:** 1.0 — Core SaaS MVP
 **Target:** Full-featured debt tracking web app deployed on Hetzner
-**Last updated:** 2026-03-30
+**Last updated:** 2026-03-31
 
 ---
 
@@ -95,12 +95,24 @@ Plans:
 
 ### Plans
 
+**Plans:** 6 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
-| 3.1 | Client CRUD API | Create/update/deactivate clients; full profile (name, email, phone, address, references); link to user record for portal login; company-scoped |
-| 3.2 | Client list UI | Searchable/filterable client list; active/inactive toggle; click to detail |
-| 3.3 | Client detail page | Outstanding balance, all debts (open/partial/paid), payment history per debt; "as of [date]" on balance |
-| 3.4 | Client portal | Client logs in → sees own balance (confirmed only), pending payments ("Awaiting confirmation"), transaction breakdowns, proof documents; `internal_notes` never returned |
+| 3.1 | Backend CRUD + Wave 0 tests | DB migration (clientId on tokens), clients CRUD router, client invite endpoint, accept-invite extension |
+| 3.2 | Portal API + router mounts | Portal summary + debts endpoints, client detail debts, mount clientsRouter + portalRouter in app.ts |
+| 3.3 | Frontend navigation shell | AppLayout sidebar + BottomTabBar, PortalLayout, ClientRoute guard, App.tsx routes, LoginPage role redirect |
+| 3.4 | Client list UI | Searchable/filterable client table, ClientModal create/edit, DeactivateConfirmModal, common UI components |
+| 3.5 | Client detail UI | ClientDetailPage, ClientDetailHeader, BalanceSummary ("as of [date]"), DebtGroupList, DebtCard |
+| 3.6 | Client portal UI | PortalPage, PortalBalanceSummary (confirmed + pending), PortalDebtGroup, PortalTransactionRow |
+
+Plans:
+- [ ] 03-01-PLAN.md — Backend CRUD + Wave 0 test stubs + DB migration (wave 1)
+- [ ] 03-02-PLAN.md — Portal API + debts endpoint + app.ts mounts (wave 2)
+- [ ] 03-03-PLAN.md — Frontend navigation shell + routing restructure (wave 3, parallel track)
+- [ ] 03-04-PLAN.md — Client list UI with search, filter, table, modal (wave 4)
+- [ ] 03-05-PLAN.md — Client detail page with balance summary and debt groups (wave 4)
+- [ ] 03-06-PLAN.md — Client portal UI with balance summary and debt groups (wave 5)
 
 **Verification:** Client A cannot see Client B's data; `internal_notes` absent from all client-scoped API responses; portal balance matches confirmed payments only.
 
