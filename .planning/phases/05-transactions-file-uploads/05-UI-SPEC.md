@@ -58,8 +58,8 @@ Note: Only 2 weights in use — regular (400) and semibold (600). No bold (700),
 
 Phase 5 additions:
 - Section labels within NewTransactionPage (e.g., "Line Items", "Attachments"): `text-sm font-semibold text-gray-700` (600 weight, 14px — consistent with table header pattern `text-xs font-normal text-gray-500 uppercase tracking-wider` is for table-only).
-- Reference number badge in notification panel: `text-xs font-medium text-gray-500` (12px, 500 weight — exception only for reference number display; no new weight added to regular use).
-- Transaction status badge: `text-xs font-medium` at 12px — matches ClientStatusBadge pattern.
+- Reference number badge in notification panel: `text-xs font-normal text-gray-500` (12px, 400 weight — small size provides sufficient visual distinction without a third weight).
+- Transaction status badge: `text-xs font-semibold` at 12px — matches ClientStatusBadge pattern.
 
 ---
 
@@ -101,7 +101,7 @@ Semantic colors for transaction status badges:
 | New transaction page CTA | "Save Transaction" | Submit button on `/transactions/new` — D-03 |
 | Cancel on new transaction | "Discard Changes" | Cancel button — D-04, consistent with Phase 4 modal cancel |
 | Catalog picker confirm | "Add to Line Items" | Confirm button inside CatalogPickerModal after selecting a product |
-| Catalog picker cancel | "Cancel" | Dismiss without selection |
+| Catalog picker cancel | "Back to Form" | Dismiss picker without selecting — returns user to transaction form |
 | Notification panel approve | "Approve" | Inline action on pending item — D-14 |
 | Notification panel reject | "Reject" | Triggers inline reason input — D-15 |
 | Reject confirm | "Confirm Reject" | After typing rejection reason — D-15 |
@@ -188,6 +188,11 @@ Reused components (no changes needed):
 - Panel width: `w-96` (384px) on desktop; full-width `w-full` on mobile (< 640px breakpoint).
 - Panel z-index: `z-50` (same as existing modals — panel and modal should not coexist).
 
+Accessibility labels for icon-only interactive elements:
+- Bell icon button: `aria-label="Notifications"` — add to the `<button>` wrapping the bell SVG.
+- Notification panel close button (×): `aria-label="Close notifications"` — add to the `<button>` in the panel header.
+- File thumbnail remove button (×): `aria-label="Remove file"` — add to each `<button>` overlaid on file thumbnails.
+
 ### Reject Inline Expansion
 
 - Click "Reject": the button transforms — row expands to show a `<textarea rows={2}>` labeled "Reason for rejection" and a "Confirm Reject" button below it.
@@ -215,7 +220,7 @@ Reused components (no changes needed):
 - "Choose from Gallery" button: same visual style. Hidden `<input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,.heic" multiple>`. No `capture` attribute.
 - Both buttons always visible; never hidden or disabled based on device.
 - File thumbnails: `w-20 h-20 rounded-md object-cover` for images. PDF files: gray `w-20 h-20 rounded-md bg-gray-100 flex items-center justify-center` with a document SVG icon and truncated filename below.
-- Remove [×]: `absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gray-700 text-white text-xs flex items-center justify-center hover:bg-gray-900` — positioned relative to thumbnail wrapper.
+- Remove [×]: `absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gray-700 text-white text-xs flex items-center justify-center hover:bg-gray-900` — positioned relative to thumbnail wrapper. `aria-label="Remove file"` required on every instance.
 - Thumbnail grid: `flex flex-wrap gap-3 mt-3`.
 - File count indicator: "3 / 5 files" in `text-xs text-gray-500` below the grid when files are staged.
 
