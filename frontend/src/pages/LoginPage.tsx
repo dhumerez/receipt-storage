@@ -2,6 +2,11 @@ import { useState, useCallback } from 'react';
 import { useNavigate, Navigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext.tsx';
 
+const DEMO_USERS = [
+  { label: 'Super Admin', email: 'admin@demo.com', password: 'Admin1234!' },
+  { label: 'Owner', email: 'owner@demo.com', password: 'Owner1234!' },
+];
+
 export default function LoginPage() {
   const { login, user, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -80,6 +85,21 @@ export default function LoginPage() {
             Forgot your password?
           </a>
         </p>
+        <div className="mt-6 border-t border-gray-200 pt-4">
+          <p className="text-xs text-gray-400 text-center mb-2">Demo accounts</p>
+          <div className="flex gap-2">
+            {DEMO_USERS.map((u) => (
+              <button
+                key={u.email}
+                type="button"
+                onClick={() => { setEmail(u.email); setPassword(u.password); }}
+                className="flex-1 py-1.5 px-3 text-xs border border-gray-300 rounded text-gray-600 hover:bg-gray-50"
+              >
+                {u.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
