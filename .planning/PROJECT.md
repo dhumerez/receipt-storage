@@ -12,21 +12,18 @@ The owner always knows exactly who owes what, with full documentary proof — an
 
 ### Validated
 
-(None yet — ship to validate)
+**Multi-tenant platform** *(Validated in Phase 2: Authentication & User Management)*
+- [x] Multiple companies can register on the platform, each with isolated data
+- [x] Super admin panel to create companies and manage platform users
+- [x] Email invitations for onboarding owners and team members
+
+**Authentication & roles** *(Validated in Phase 2: Authentication & User Management)*
+- [x] Owner role: full control — manage clients, transactions, debts, payments, team members
+- [x] Collaborator role: can create transactions and payments (requires owner approval before taking effect)
+- [x] Viewer role: read-only access to company records
+- [x] Client role: can log in and view their own debt and payment history only
 
 ### Active
-
-**Multi-tenant platform**
-- [ ] Multiple companies can register on the platform, each with isolated data
-- [ ] Super admin panel to create companies and manage platform users
-- [ ] Email invitations for onboarding owners and team members
-
-**Authentication & roles**
-- [ ] Owner role: full control — manage clients, transactions, debts, payments, team members
-- [ ] Collaborator role: can create transactions and payments (requires owner approval before taking effect)
-- [ ] Viewer role: read-only access to company records
-- [ ] Client role: can log in and view their own debt and payment history only
-- [ ] In-app notification center for owner to approve/reject pending collaborator submissions
 
 **Client management**
 - [ ] Full client profile: name, phone number, address, references, email
