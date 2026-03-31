@@ -54,11 +54,11 @@ Exceptions:
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 14px (text-sm) | 400 (regular) | 1.5 | Table cell content, form helper text, description paragraphs |
-| Label | 14px (text-sm) | 500 (medium) | 1.4 | Form field labels, table column headers, sidebar nav links |
+| Label | 14px (text-sm) | 400 (regular) | 1.4 | Form field labels, table column headers, sidebar nav links |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Page titles, modal headings, section headings |
-| Display | 24px (text-2xl) | 700 (bold) | 1.2 | Top-level page heading ("Clients"), portal balance figure |
+| Display | 24px (text-2xl) | 600 (semibold) | 1.2 | Top-level page heading ("Clients"), portal balance figure |
 
-Declared weight set: **regular (400)** and **semibold (600)**. Medium (500) is permitted only for labels — never for decorative emphasis.
+Declared weight set: **regular (400)** and **semibold (600)**. No intermediate weights.
 
 **Source:** Extracted from LoginPage.tsx (`text-2xl font-bold`, `text-xl font-semibold`, `text-sm font-medium`, `text-sm` body), AcceptInvitePage.tsx, ForgotPasswordPage.tsx — consistent across all Phase 2 pages.
 
@@ -163,6 +163,8 @@ Components to build in this phase (all hand-rolled Tailwind, no library):
 - Table header row: `bg-gray-50 text-sm font-medium text-gray-500 uppercase text-xs tracking-wider`
 - Table data rows: `text-sm text-gray-900`, hover `bg-gray-50`, `cursor-pointer`
 
+**Primary focal point:** The client table — draws the eye via full-width bordered container (`border border-gray-200 rounded-lg`) that spans the entire main content area, making it the dominant element below the page header.
+
 ### `/clients/:id` — Client Detail Page
 
 ```
@@ -217,7 +219,7 @@ Components to build in this phase (all hand-rolled Tailwind, no library):
 |---------|------|
 | Primary CTA (owner) | "Add Client" |
 | Edit action | "Edit Client" |
-| Deactivate action | "Deactivate" |
+| Deactivate action | "Deactivate Client" |
 | Send invite action | "Send Portal Invite" |
 | Resend invite action | "Resend Invite" |
 | Save form | "Save Changes" (edit) / "Create Client" (new) |
@@ -237,8 +239,8 @@ Components to build in this phase (all hand-rolled Tailwind, no library):
 | Error — portal load failed | "Could not load your account. Please refresh the page." |
 | Deactivate confirmation heading | "Deactivate client?" |
 | Deactivate confirmation body | "This client will be hidden from active lists. Existing debts and payment history are preserved. You can reactivate them at any time." |
-| Deactivate confirmation CTA | "Deactivate" (red, destructive button) |
-| Deactivate cancel | "Cancel" |
+| Deactivate confirmation CTA | "Deactivate Client" (red, destructive button) |
+| Deactivate cancel | "Keep Client" |
 | Portal invite tooltip (no email set) | "Add an email address to this client before sending a portal invite." |
 | Search placeholder | "Search by name, email, or phone" |
 
