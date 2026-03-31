@@ -30,15 +30,15 @@ The owner always knows exactly who owes what, with full documentary proof — an
 - [x] Per-client debt history — open, partially paid, and fully paid debts
 - [x] Client portal: clients log in to see their own balance and payment history
 
-**Transactions & receipts**
-- [ ] Create a transaction for a client with: description, line items (catalog or free-form), initial amount paid, and outstanding debt
-- [ ] A transaction always generates a receipt regardless of payment status
-- [ ] Attach proof documents to a transaction: file upload (image/PDF) or live camera capture
-- [ ] If initial payment < total → a debt record is automatically created
+**Transactions & receipts** *(Validated in Phase 5: Transactions & File Uploads)*
+- [x] Create a transaction for a client with: description, line items (catalog or free-form), initial amount paid, and outstanding debt
+- [x] A transaction always generates a receipt regardless of payment status
+- [x] Attach proof documents to a transaction: file upload (image/PDF) or live camera capture
+- [x] If initial payment < total → a debt record is automatically created
 
 **Product catalog** *(Validated in Phase 4: Product Catalog)*
 - [x] Owner maintains a product/inventory catalog with prices per unit
-- [ ] Transactions can reference catalog products OR free-form line items (or both)
+- [x] Transactions can reference catalog products OR free-form line items (or both) *(Validated in Phase 5)*
 
 **Debt & payment tracking**
 - [ ] Each debt shows total owed, total paid, and remaining balance
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 — Phase 4 complete: product catalog — CRUD API, inline price editing, create/edit/deactivate/reactivate UI, 16/16 must-haves verified*
+*Last updated: 2026-03-31 — Phase 5 complete: transactions & file uploads — transaction CRUD with approval workflow, file upload pipeline (multer/sharp/HEIC), notification bell UI, full transaction form/list/detail pages, 7/7 must-haves verified*
