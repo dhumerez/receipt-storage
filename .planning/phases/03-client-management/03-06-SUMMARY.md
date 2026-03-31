@@ -123,3 +123,19 @@ None — all plan goals achieved. PortalPage stub from 03-03 replaced with full 
 ---
 *Phase: 03-client-management*
 *Completed: 2026-03-31*
+
+## Self-Check: PASSED
+
+| Check | Result |
+|-------|--------|
+| frontend/src/api/portal.ts | FOUND |
+| frontend/src/components/portal/PortalBalanceSummary.tsx | FOUND |
+| frontend/src/components/portal/PortalTransactionRow.tsx | FOUND |
+| frontend/src/components/portal/PortalDebtGroup.tsx | FOUND |
+| frontend/src/pages/portal/PortalPage.tsx | FOUND |
+| .planning/phases/03-client-management/03-06-SUMMARY.md | FOUND |
+| Commit 3acb07a (Task 1) | FOUND |
+| Commit 43882bf (Task 2) | FOUND |
+| TypeScript 0 errors | PASS |
+| internalNotes absent from portal components | PASS |
+| clientId absent from portal.ts request code | PASS |
