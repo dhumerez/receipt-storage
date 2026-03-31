@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 3
-current_plan: "03"
+current_plan: 04
 status: In progress
-last_updated: "2026-03-31T04:16:00.000Z"
+last_updated: "2026-03-31T04:22:24Z"
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -18,8 +18,8 @@ progress:
 **Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 3
-**Current plan:** 03
-**Last session stopped at:** Completed 03-02-PLAN.md
+**Current plan:** 04
+**Last session stopped at:** Completed 03-03-PLAN.md
 
 ## Status
 
@@ -27,7 +27,7 @@ progress:
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
-| Phase 3: Client Management | In progress | Plans 01-02 complete (03-02 executed both) |
+| Phase 3: Client Management | In progress | Plans 01-03 complete |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
@@ -73,6 +73,10 @@ progress:
 - **03-02 (Clients):** GET /api/v1/clients allows owner+collaborator+viewer — all non-client roles need client data access
 - **03-02 (Portal):** internalNotes protection via no transactions table join (structural guard, not column exclusion) — cannot accidentally leak even if columns are added
 - **03-02 (Portal/Auth):** accept-invite for client role embeds clientId in JWT immediately + links clients.user_id in same transaction (D-08)
+
+- **03-03 (Nav Shell):** AuthContext.login() returns AuthUser — enables role-based redirect after login without stale React state issues (role read from API response, not from React state)
+- **03-03 (Nav Shell):** Sidebar desktop-only (hidden md:flex) + BottomTabBar mobile-only (md:hidden) — two separate components, not one responsive component
+- **03-03 (Nav Shell):** Stub pages (ClientsPage, ClientDetailPage, PortalPage) created now so routes are active for plans 03-04 through 03-06
 
 ## Blockers
 
