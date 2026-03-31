@@ -95,7 +95,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 1/6 plans executed
+**Plans:** 3/6 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -107,9 +107,9 @@ Plans:
 | 3.6 | Client portal UI | PortalPage, PortalBalanceSummary (confirmed + pending), PortalDebtGroup, PortalTransactionRow |
 
 Plans:
-- [ ] 03-01-PLAN.md — Backend CRUD + Wave 0 test stubs + DB migration (wave 1)
+- [x] 03-01-PLAN.md — Backend CRUD + Wave 0 test stubs + DB migration (wave 1)
 - [x] 03-02-PLAN.md — Portal API + debts endpoint + app.ts mounts (wave 2)
-- [ ] 03-03-PLAN.md — Frontend navigation shell + routing restructure (wave 3, parallel track)
+- [x] 03-03-PLAN.md — Frontend navigation shell + routing restructure (wave 3, parallel track)
 - [ ] 03-04-PLAN.md — Client list UI with search, filter, table, modal (wave 4)
 - [ ] 03-05-PLAN.md — Client detail page with balance summary and debt groups (wave 4)
 - [ ] 03-06-PLAN.md — Client portal UI with balance summary and debt groups (wave 5)

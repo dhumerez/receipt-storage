@@ -25,8 +25,14 @@ export default function LoginPage() {
     setError('');
     setSubmitting(true);
     try {
-      await login(email, password);
-      navigate('/', { replace: true });
+      const loggedInUser = await login(email, password);
+      // D-11: Role-based redirect after login (per 03-CONTEXT.md)
+      // Client role → portal; all other roles → owner dashboard
+      if (loggedInUser.role === 'client') {
+        navigate('/portal', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
