@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 5
-current_plan: 2
+current_plan: Not started
 status: In progress
-last_updated: "2026-03-31T21:48:59.011Z"
+last_updated: "2026-03-31T21:55:20.677Z"
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 25
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -90,6 +90,10 @@ progress:
 
 - **04-02 (Products UI):** description added to ProductListItem — backend GET /api/v1/products returns all columns including description; avoids extra GET /products/:id call on edit icon click
 - **04-02 (Products UI):** Reactivate mutation at page level (ProductsPage) — keeps query cache management in one place; reactivate is reversible so no confirmation modal needed
+
+- **05-04 (Notifications):** notifications.ts is fully self-contained — no imports from transactions.ts to avoid cross-plan dependency
+- **05-04 (Notifications):** Collaborator status badges inlined directly (not importing TransactionStatusBadge) for plan isolation
+- **05-04 (Notifications):** Sidebar and BottomTabBar enhanced with Heroicons outline SVG icons for all nav items (not just Transactions)
 
 ## Blockers
 
