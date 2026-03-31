@@ -95,6 +95,10 @@ progress:
 - **05-02 (Uploads):** file-type imported via dynamic import() since it is ESM-only and project uses CJS (module: NodeNext)
 - **05-02 (Uploads):** filesRouter mounted with authenticate only (no requireTenant) — companyId verified from URL path in handler
 
+- **05-04 (Notifications):** notifications.ts is fully self-contained — no imports from transactions.ts to avoid cross-plan dependency
+- **05-04 (Notifications):** Collaborator status badges inlined directly (not importing TransactionStatusBadge) for plan isolation
+- **05-04 (Notifications):** Sidebar and BottomTabBar enhanced with Heroicons outline SVG icons for all nav items (not just Transactions)
+
 ## Blockers
 
 None.
