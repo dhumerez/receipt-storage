@@ -11,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import ClientsPage from './pages/clients/ClientsPage.tsx';
 import ClientDetailPage from './pages/clients/ClientDetailPage.tsx';
 import PortalPage from './pages/portal/PortalPage.tsx';
+import ProductsPage from './pages/products/ProductsPage.tsx';
 
 export default function App() {
   return (
@@ -27,7 +28,8 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/clients/:id" element={<ClientDetailPage />} />
-          {/* /products, /transactions, /reports — stub pages added in future phases */}
+          <Route path="/products" element={<ProductsPage />} />
+          {/* /transactions, /reports — stub pages added in future phases */}
         </Route>
       </Route>
 
