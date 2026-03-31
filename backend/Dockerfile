@@ -11,6 +11,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
+COPY src/db/migrations ./src/db/migrations
 COPY healthcheck.js ./
 COPY docker-entrypoint.sh ./
 RUN chmod +x docker-entrypoint.sh
