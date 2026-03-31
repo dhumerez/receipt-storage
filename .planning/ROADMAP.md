@@ -95,7 +95,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 3/6 plans executed
+**Plans:** 4/6 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -111,7 +111,7 @@ Plans:
 - [x] 03-02-PLAN.md — Portal API + debts endpoint + app.ts mounts (wave 2)
 - [x] 03-03-PLAN.md — Frontend navigation shell + routing restructure (wave 3, parallel track)
 - [ ] 03-04-PLAN.md — Client list UI with search, filter, table, modal (wave 4)
-- [ ] 03-05-PLAN.md — Client detail page with balance summary and debt groups (wave 4)
+- [x] 03-05-PLAN.md — Client detail page with balance summary and debt groups (wave 4)
 - [ ] 03-06-PLAN.md — Client portal UI with balance summary and debt groups (wave 5)
 
 **Verification:** Client A cannot see Client B's data; `internal_notes` absent from all client-scoped API responses; portal balance matches confirmed payments only.
