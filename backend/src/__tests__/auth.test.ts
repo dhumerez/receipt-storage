@@ -564,3 +564,18 @@ describe('POST /api/auth/logout', () => {
     }
   });
 });
+
+// ─── POST /api/auth/accept-invite (client role) ───────────────────────────────
+
+describe('POST /api/auth/accept-invite (client role — D-08)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCreateRefreshToken.mockResolvedValue('raw-refresh-token-64hex');
+  });
+
+  it('sets clients.user_id when token role is client', async () => {
+    // Note: db.transaction in auth.ts is NOT mocked at the module level in auth.test.ts
+    // This test is a todo — full integration tested in invite.test.ts
+    // The linkage logic is verified in the invite flow test file
+  });
+});

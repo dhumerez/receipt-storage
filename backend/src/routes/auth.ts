@@ -337,6 +337,15 @@ authRouter.post('/accept-invite', async (req, res) => {
         isSuperAdmin: users.isSuperAdmin,
       });
     newUser = inserted;
+
+    // D-08: Link portal user back to client record (Phase 3)
+    // When a client accepts their invite, update clients.user_id to link the new account
+    if (tokenRow.role === 'client' && tokenRow.clientId) {
+      await tx
+        .update(clients)
+        .set({ userId: newUser.id, updatedAt: now })
+        .where(eq(clients.id, tokenRow.clientId));
+    }
   });
 
   if (!newUser) {
@@ -345,11 +354,18 @@ authRouter.post('/accept-invite', async (req, res) => {
   }
 
   // Log user in immediately (FR-02.7: accept-invite → auto-login)
+  // D-08: embed clientId in JWT for client role (same pattern as login handler)
+  let clientIdForJwt: string | undefined;
+  if (newUser.role === 'client' && tokenRow.clientId) {
+    clientIdForJwt = tokenRow.clientId;
+  }
+
   const accessToken = issueAccessToken({
     sub: newUser.id,
     companyId: newUser.companyId,
     role: newUser.role as JWTPayload['role'],
     isSuperAdmin: newUser.isSuperAdmin,
+    ...(clientIdForJwt ? { clientId: clientIdForJwt } : {}),
   });
   const rawRefreshToken = await createRefreshToken(newUser.id);
   res.cookie('refresh_token', rawRefreshToken, REFRESH_COOKIE_OPTIONS);
