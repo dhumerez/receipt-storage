@@ -51,8 +51,8 @@ function PriceCell({ product }: { product: ProductListItem }) {
         className="w-24 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') { e.preventDefault(); commit(); }
-          if (e.key === 'Escape') { setEditing(false); setValue(product.unitPrice); }
+          if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); commit(); }
+          if (e.key === 'Escape') { e.stopPropagation(); setEditing(false); setValue(product.unitPrice); }
         }}
         onBlur={commit}
       />
