@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth.js';
 import { adminRouter } from './routes/admin.js';
 import { usersRouter } from './routes/users.js';
 import { clientsRouter } from './routes/clients.js';
+import { productsRouter } from './routes/products.js';
 import { portalRouter } from './routes/portal.js';
 import { authenticate } from './middleware/auth.js';
 import { requireSuperAdmin, requireRole } from './middleware/rbac.js';
@@ -40,6 +41,13 @@ app.use('/api/auth', authRouter);
 app.use('/admin', authenticate, requireSuperAdmin, adminRouter);
 app.use('/api/v1/users', authenticate, requireTenant, requireRole('owner'), usersRouter);
 app.use('/api/v1/clients', authenticate, requireTenant, requireRole('owner', 'collaborator', 'viewer'), clientsRouter);
+app.use(
+  '/api/v1/products',
+  authenticate,
+  requireTenant,
+  requireRole('owner'),
+  productsRouter,
+);
 app.use('/api/v1/portal', authenticate, requireRole('client'), portalRouter);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
