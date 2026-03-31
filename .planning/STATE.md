@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 5
 current_plan: Not started
 status: In progress
-last_updated: "2026-03-31T22:02:04.235Z"
+last_updated: "2026-03-31T22:07:57.477Z"
 progress:
   total_phases: 7
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 25
-  completed_plans: 24
+  completed_plans: 25
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 5
 **Current plan:** Not started
-**Last session stopped at:** Completed 05-03-PLAN.md
+**Last session stopped at:** Completed 05-05-PLAN.md
 
 ## Status
 
@@ -102,6 +102,9 @@ progress:
 - **05-03 (Transaction Form):** FormData with headers:{} override lets browser set multipart boundary — critical for file uploads via apiClient
 - **05-03 (Transaction Form):** LineItemRow type exported from LineItemBuilder for shared typing with NewTransactionPage
 - **05-03 (Transaction Form):** Object URLs for file previews cleaned up in useEffect cleanup to prevent memory leaks in FileAttachmentSection
+
+- **05-05 (List/Detail UI):** Inline segmented status filter for transaction-specific statuses (All/Pending/Active/Voided) instead of reusing StatusFilterToggle
+- **05-05 (List/Detail UI):** AttachmentThumbnail renders image preview for image/* mimeTypes and document icon with filename for PDFs/other types
 
 ## Blockers
 
