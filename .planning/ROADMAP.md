@@ -149,6 +149,8 @@ Plans:
 
 ### Plans
 
+**Plans:** 5 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
 | 5.1 | Transaction creation API | Full transaction model: client, reference_number, description, line items (catalog + free-form), initial payment, `delivered_at`, `internal_notes`, `client_notes`; owner → `active`; collaborator → `pending_approval`; approval with `SELECT FOR UPDATE` |
@@ -156,6 +158,13 @@ Plans:
 | 5.3 | Transaction UI | Create transaction form with line item builder (add from catalog or free-form); document upload (react-dropzone + two-button camera/gallery); preview attachments |
 | 5.4 | Approval workflow UI | Notification center (owner); unread badge on all pages; approve/reject with reason; collaborator sees submission status |
 | 5.5 | Transaction list & detail | Filterable list (by client, status, date); detail view with line items, documents, debt status |
+
+Plans:
+- [ ] 05-01-PLAN.md — Transaction CRUD API + approval + notifications router (wave 1)
+- [ ] 05-02-PLAN.md — File upload middleware + Dockerfile HEIC + file serving (wave 1)
+- [ ] 05-03-PLAN.md — Transaction creation form + line items + file attachments (wave 2)
+- [ ] 05-04-PLAN.md — Notification bell + slide-out approval panel (wave 2)
+- [ ] 05-05-PLAN.md — Transaction list page + detail page + App.tsx routes (wave 3)
 
 **Verification:** Collaborator submission does not create debt until owner approves; two concurrent approvals produce one debt (race condition test); HEIC file uploads and converts correctly; `capture` attribute two-button UX works on iOS and Android.
 
