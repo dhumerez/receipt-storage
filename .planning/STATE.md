@@ -1,17 +1,32 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+current_phase: 02
+current_plan: 7
+status: in_progress
+last_updated: "2026-03-31T00:24:29Z"
+progress:
+  total_phases: 7
+  completed_phases: 1
+  total_plans: 12
+  completed_plans: 11
+---
+
 # Project State
 
-**Last updated:** 2026-03-30
+**Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** 02-authentication-user-management
-**Current plan:** 06 of 07 (02-05 complete)
-**Last session stopped at:** Completed 02-05-PLAN.md
+**Current phase:** 02
+**Current plan:** 7
+**Last session stopped at:** Completed 02-06-PLAN.md
 
 ## Status
 
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
-| Phase 2: Auth & Users | In progress | Plans 02-01, 02-03, 02-05 complete |
+| Phase 2: Auth & Users | In progress | Plans 02-01 through 02-06 complete |
 | Phase 3: Client Management | Not started | |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
@@ -45,6 +60,11 @@
 - **02-05 (Users):** validateCallerOwner fetches role + isActive + companyId from DB before sensitive ops — prevents stale JWT privilege escalation (NFR-01.5)
 - **02-05 (Users):** PATCH /:id/deactivate wraps user + transactions + payments in single db.transaction — atomicity ensures no orphaned pending records (FR-02.9)
 - **02-05 (Users):** email.service.ts created in this plan (not 02-04) as a blocking dependency; 02-04 may overwrite with extended implementation
+
+- **02-06 (Frontend Auth):** Access token stored in memory only (not localStorage) — httpOnly cookie carries refresh token for XSS protection
+- **02-06 (Frontend Auth):** Concurrent refresh calls deduplicated via shared _refreshPromise in apiClient — prevents duplicate /api/auth/refresh on simultaneous 401s
+- **02-06 (Frontend Auth):** AuthProvider placed inside BrowserRouter so useNavigate is available in child components
+- **02-06 (Frontend Auth):** ForgotPasswordPage added proactively — LoginPage links to /forgot-password so route was needed to avoid blank screen
 
 ## Blockers
 
