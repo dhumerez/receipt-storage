@@ -36,8 +36,8 @@ The owner always knows exactly who owes what, with full documentary proof — an
 - [ ] Attach proof documents to a transaction: file upload (image/PDF) or live camera capture
 - [ ] If initial payment < total → a debt record is automatically created
 
-**Product catalog**
-- [ ] Owner maintains a product/inventory catalog with prices per unit
+**Product catalog** *(Validated in Phase 4: Product Catalog)*
+- [x] Owner maintains a product/inventory catalog with prices per unit
 - [ ] Transactions can reference catalog products OR free-form line items (or both)
 
 **Debt & payment tracking**
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 — Phase 3 complete: client management UI + portal + backend CRUD API all verified*
+*Last updated: 2026-03-31 — Phase 4 complete: product catalog — CRUD API, inline price editing, create/edit/deactivate/reactivate UI, 16/16 must-haves verified*
