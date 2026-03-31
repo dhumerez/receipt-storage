@@ -25,10 +25,10 @@ The owner always knows exactly who owes what, with full documentary proof — an
 
 ### Active
 
-**Client management**
-- [ ] Full client profile: name, phone number, address, references, email
-- [ ] Per-client debt history — open, partially paid, and fully paid debts
-- [ ] Client portal: clients log in to see their own balance and payment history
+**Client management** *(Validated in Phase 3: Client Management)*
+- [x] Full client profile: name, phone number, address, references, email
+- [x] Per-client debt history — open, partially paid, and fully paid debts
+- [x] Client portal: clients log in to see their own balance and payment history
 
 **Transactions & receipts**
 - [ ] Create a transaction for a client with: description, line items (catalog or free-form), initial amount paid, and outstanding debt
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 after initialization*
+*Last updated: 2026-03-31 — Phase 3 complete: client management UI + portal + backend CRUD API all verified*
