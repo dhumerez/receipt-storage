@@ -149,7 +149,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -160,7 +160,7 @@ Plans:
 | 5.5 | Transaction list & detail | Filterable list (by client, status, date); detail view with line items, documents, debt status |
 
 Plans:
-- [ ] 05-01-PLAN.md — Transaction CRUD API + approval + notifications router (wave 1)
+- [x] 05-01-PLAN.md — Transaction CRUD API + approval + notifications router (wave 1)
 - [ ] 05-02-PLAN.md — File upload middleware + Dockerfile HEIC + file serving (wave 1)
 - [ ] 05-03-PLAN.md — Transaction creation form + line items + file attachments (wave 2)
 - [ ] 05-04-PLAN.md — Notification bell + slide-out approval panel (wave 2)

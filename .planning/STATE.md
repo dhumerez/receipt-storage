@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 5
-current_plan: Not started
-status: Ready to plan
-last_updated: "2026-03-31T07:15:46.044Z"
+current_plan: 2
+status: In progress
+last_updated: "2026-03-31T21:48:59.011Z"
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 20
-  completed_plans: 20
+  total_plans: 25
+  completed_plans: 21
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 5
 **Current plan:** Not started
-**Last session stopped at:** Completed 04-02-PLAN.md
+**Last session stopped at:** Completed 05-01-PLAN.md
 
 ## Status
 
@@ -29,7 +29,7 @@ progress:
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
 | Phase 3: Client Management | Complete | All 6 plans executed |
 | Phase 4: Product Catalog | In progress | Plans 01-02 complete |
-| Phase 5: Transactions & Files | Not started | |
+| Phase 5: Transactions & Files | In progress | Plan 01 complete |
 | Phase 6: Debt & Payments | Not started | |
 | Phase 7: Reports & PDF | Not started | |
 
@@ -90,6 +90,11 @@ progress:
 
 - **04-02 (Products UI):** description added to ProductListItem — backend GET /api/v1/products returns all columns including description; avoids extra GET /products/:id call on edit icon click
 - **04-02 (Products UI):** Reactivate mutation at page level (ProductsPage) — keeps query cache management in one place; reactivate is reversible so no confirmation modal needed
+
+- **05-01 (Transactions):** toCents/fromCents exported for unit testing; integer cents arithmetic prevents floating point errors
+- **05-01 (Transactions):** nextReferenceNumber uses INSERT...ON CONFLICT DO UPDATE for atomic counter increment
+- **05-01 (Transactions):** Approve/reject use SELECT FOR UPDATE within db.transaction for race safety
+- **05-01 (Transactions):** Notifications router mounted without requireRole — all authenticated tenant users receive notifications
 
 ## Blockers
 
