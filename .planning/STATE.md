@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 3
-current_plan: 05
+current_plan: 06
 status: In progress
-last_updated: "2026-03-31T05:00:00Z"
+last_updated: "2026-03-31T04:38:08Z"
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -18,8 +18,8 @@ progress:
 **Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 3
-**Current plan:** 05
-**Last session stopped at:** Completed 03-05-PLAN.md
+**Current plan:** 06
+**Last session stopped at:** Completed 03-06-PLAN.md
 
 ## Status
 
@@ -27,7 +27,7 @@ progress:
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
-| Phase 3: Client Management | In progress | Plans 01-03, 05 complete |
+| Phase 3: Client Management | Complete | All 6 plans executed |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
@@ -81,6 +81,9 @@ progress:
 - **03-05 (Client Detail):** Prerequisite files from 03-04 created in parallel worktree — same code produced by 03-04 agent, merge resolves overlap
 - **03-05 (Client Detail):** GROUPS constant array in DebtGroupList ensures consistent Open/Partially Paid/Fully Paid render order
 - **03-05 (Client Detail):** ClientDetailPage waits on both clientLoading and debtsLoading before rendering — prevents flash of partial content
+
+- **03-06 (Portal UI):** PortalDebt type structurally excludes internalNotes — frontend cannot accidentally render internal notes (type-level guard mirrors backend structural guard)
+- **03-06 (Portal UI):** portal.ts sends no clientId — JWT-scoped on backend; frontend cannot accidentally scope to wrong client (FR-03.4, RESEARCH Pitfall 2)
 
 ## Blockers
 
