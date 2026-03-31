@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 5
 current_plan: Not started
 status: In progress
-last_updated: "2026-03-31T21:55:21.639Z"
+last_updated: "2026-03-31T22:02:04.235Z"
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 25
-  completed_plans: 22
+  completed_plans: 24
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 5
 **Current plan:** Not started
-**Last session stopped at:** Completed 05-01-PLAN.md
+**Last session stopped at:** Completed 05-03-PLAN.md
 
 ## Status
 
@@ -98,6 +98,10 @@ progress:
 - **05-04 (Notifications):** notifications.ts is fully self-contained — no imports from transactions.ts to avoid cross-plan dependency
 - **05-04 (Notifications):** Collaborator status badges inlined directly (not importing TransactionStatusBadge) for plan isolation
 - **05-04 (Notifications):** Sidebar and BottomTabBar enhanced with Heroicons outline SVG icons for all nav items (not just Transactions)
+
+- **05-03 (Transaction Form):** FormData with headers:{} override lets browser set multipart boundary — critical for file uploads via apiClient
+- **05-03 (Transaction Form):** LineItemRow type exported from LineItemBuilder for shared typing with NewTransactionPage
+- **05-03 (Transaction Form):** Object URLs for file previews cleaned up in useEffect cleanup to prevent memory leaks in FileAttachmentSection
 
 ## Blockers
 
