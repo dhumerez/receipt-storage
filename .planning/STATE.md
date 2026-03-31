@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 3
-current_plan: Not started
-status: Ready to plan
-last_updated: "2026-03-31T00:40:55.276Z"
+current_plan: "03"
+status: In progress
+last_updated: "2026-03-31T04:16:00.000Z"
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 18
+  completed_plans: 14
 ---
 
 # Project State
@@ -18,8 +18,8 @@ progress:
 **Last updated:** 2026-03-31
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 3
-**Current plan:** Not started
-**Last session stopped at:** Completed 02-07-PLAN.md
+**Current plan:** 03
+**Last session stopped at:** Completed 03-02-PLAN.md
 
 ## Status
 
@@ -27,7 +27,7 @@ progress:
 |-------|--------|-------|
 | Phase 1: Foundation | Complete | All 5 plans executed |
 | Phase 2: Auth & Users | Complete | All 7 plans executed |
-| Phase 3: Client Management | Not started | |
+| Phase 3: Client Management | In progress | Plans 01-02 complete (03-02 executed both) |
 | Phase 4: Product Catalog | Not started | |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
@@ -68,6 +68,11 @@ progress:
 
 - **02-07 (Invite/Reset Pages):** AcceptInvitePage stores accessToken via setAccessToken after invite acceptance (in-memory, consistent with 02-06 auth pattern)
 - **02-07 (Invite/Reset Pages):** ResetPasswordPage uses local success state instead of navigate-with-state for post-reset confirmation
+
+- **03-02 (Portal):** Portal mount uses no requireTenant — clientId-scoped from JWT (RESEARCH.md Pitfall 4); companyId from JWT still used in all queries for double-scoping
+- **03-02 (Clients):** GET /api/v1/clients allows owner+collaborator+viewer — all non-client roles need client data access
+- **03-02 (Portal):** internalNotes protection via no transactions table join (structural guard, not column exclusion) — cannot accidentally leak even if columns are added
+- **03-02 (Portal/Auth):** accept-invite for client role embeds clientId in JWT immediately + links clients.user_id in same transaction (D-08)
 
 ## Blockers
 
