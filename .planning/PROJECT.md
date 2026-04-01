@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 — Phase 5 complete: transactions & file uploads — transaction CRUD with approval workflow, file upload pipeline (multer/sharp/HEIC), notification bell UI, full transaction form/list/detail pages, 7/7 must-haves verified*
+*Last updated: 2026-03-31 — Phase 6 complete: debt & payment tracking — debt lifecycle API (6 endpoints), payment recording with role-based approval, overpayment prevention via cents arithmetic, SELECT FOR UPDATE concurrency safety, write-off/reopen, DebtDetailPage, PortalDebtDetailPage, 11/11 must-haves verified*
