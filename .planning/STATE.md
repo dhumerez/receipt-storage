@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 06
 **Current plan:** 1
-**Last session stopped at:** Completed 05-05-PLAN.md
+**Last session stopped at:** Completed 06-03-PLAN.md
 
 ## Status
 
@@ -105,6 +105,9 @@ progress:
 
 - **05-05 (List/Detail UI):** Inline segmented status filter for transaction-specific statuses (All/Pending/Active/Voided) instead of reusing StatusFilterToggle
 - **05-05 (List/Detail UI):** AttachmentThumbnail renders image preview for image/* mimeTypes and document icon with filename for PDFs/other types
+
+- **06-03 (Portal Detail):** PaymentStatusBadge inlined in PortalDebtDetailPage rather than importing from Plan 02 — avoids cross-plan dependency in parallel execution
+- **06-03 (Portal Detail):** PortalTransactionRow converted from div to Link for debt detail navigation — simpler than onClick prop or wrapper
 
 ## Blockers
 
