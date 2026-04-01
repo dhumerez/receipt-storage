@@ -5,9 +5,10 @@ status: draft
 nyquist_compliant: false
 wave_0_complete: false
 created: 2026-04-01
+updated: 2026-04-01
 ---
 
-# Phase 7 — Validation Strategy
+# Phase 7 --- Validation Strategy
 
 > Per-phase validation contract for feedback sampling during execution.
 
@@ -17,18 +18,18 @@ created: 2026-04-01
 
 | Property | Value |
 |----------|-------|
-| **Framework** | vitest (frontend) / jest + supertest (backend API) |
-| **Config file** | `vitest.config.ts` (frontend), `jest.config.js` (backend) |
-| **Quick run command** | `npm test -- --run` |
-| **Full suite command** | `npm run test:all` |
+| **Framework** | vitest (backend + frontend) |
+| **Config file** | `backend/vitest.config.ts`, `frontend/vitest.config.ts` |
+| **Quick run command** | `cd backend && npx vitest run --reporter=verbose` |
+| **Full suite command** | `cd backend && npx vitest run && cd ../frontend && npx vitest run` |
 | **Estimated runtime** | ~30 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `npm test -- --run`
-- **After every plan wave:** Run `npm run test:all`
+- **After every task commit:** `cd backend && npx vitest run --reporter=verbose` (backend tasks) or `cd frontend && npx vitest run --reporter=verbose` (frontend tasks)
+- **After every plan wave:** `cd backend && npx vitest run && cd ../frontend && npx vitest run`
 - **Before `/gsd:verify-work`:** Full suite must be green
 - **Max feedback latency:** 30 seconds
 
@@ -38,27 +39,29 @@ created: 2026-04-01
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 07-01-01 | 01 | 1 | Report API endpoints | integration | `npx jest --testPathPattern=reports` | ❌ W0 | ⬜ pending |
-| 07-01-02 | 01 | 1 | Company report query | unit | `npx jest --testPathPattern=reports` | ❌ W0 | ⬜ pending |
-| 07-01-03 | 01 | 1 | Per-client report query | unit | `npx jest --testPathPattern=reports` | ❌ W0 | ⬜ pending |
-| 07-02-01 | 02 | 2 | Report UI components | unit | `npx vitest run --reporter=verbose` | ❌ W0 | ⬜ pending |
-| 07-02-02 | 02 | 2 | Date range picker | unit | `npx vitest run --reporter=verbose` | ❌ W0 | ⬜ pending |
-| 07-03-01 | 03 | 2 | PDF generation | integration | `npx jest --testPathPattern=pdf` | ❌ W0 | ⬜ pending |
-| 07-03-02 | 03 | 2 | PDF streaming response | integration | `npx jest --testPathPattern=pdf` | ❌ W0 | ⬜ pending |
-| 07-03-03 | 03 | 2 | Company logo in PDF | integration | `npx jest --testPathPattern=pdf` | ❌ W0 | ⬜ pending |
+| 07-01-T1 | 01 | 1 | FR-10.1, FR-10.2: Schema + report service + logo upload | unit | `cd backend && npx vitest run src/__tests__/reports.test.ts -t "company report" --reporter=verbose` | No - W0 | pending |
+| 07-01-T2 | 01 | 1 | FR-10.1, FR-10.2: Report API routes + logo endpoints | integration | `cd backend && npx vitest run src/__tests__/reports.test.ts -t "report endpoints" --reporter=verbose` | No - W0 | pending |
+| 07-02-T1 | 02 | 2 | FR-10.3: PDFKit install + shared PDF utilities | unit | `cd backend && npx vitest run src/__tests__/pdf.test.ts -t "pdf-base" --reporter=verbose` | No - W0 | pending |
+| 07-02-T2 | 02 | 2 | FR-10.3, D-09 to D-15: PDF builders + streaming endpoints | integration | `cd backend && npx vitest run src/__tests__/pdf.test.ts -t "pdf endpoints" --reporter=verbose` | No - W0 | pending |
+| 07-03-T1 | 03 | 2 | D-05, D-07: API module + utility components | unit | `cd frontend && npx vitest run src/__tests__/reports.test.tsx --reporter=verbose` | No - W0 | pending |
+| 07-03-T2 | 03 | 2 | FR-10.1, FR-10.2, D-05: Report tab components + ReportsPage | unit | `cd frontend && npx vitest run src/__tests__/reports.test.tsx --reporter=verbose` | No - W0 | pending |
+| 07-03-T3 | 03 | 2 | D-08, D-09: Settings + logo + nav + routes + print CSS | unit | `cd frontend && npx vitest run src/__tests__/settings.test.tsx --reporter=verbose` | No - W0 | pending |
+| 07-04-T1 | 04 | 3 | D-14: PDF download buttons on detail pages | unit | `cd frontend && npx vitest run src/__tests__/reports.test.tsx -t "download" --reporter=verbose` | No - W0 | pending |
+| 07-04-T2 | 04 | 3 | FR-10.4: Verify portal summary coverage | verification | `cd backend && grep -c "confirmedBalance\|amountPaid\|payments" src/routes/portal.ts` | Existing | pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: pending / green / red / flaky*
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `server/src/__tests__/reports.test.ts` — stubs for report API endpoints
-- [ ] `server/src/__tests__/pdf.test.ts` — stubs for PDF generation
-- [ ] `client/src/__tests__/reports/` — stubs for report UI components
-- [ ] PDFKit 0.18.0 installed as dependency
+- [ ] `backend/src/__tests__/reports.test.ts` --- stubs for report service + report API endpoints (FR-10.1, FR-10.2)
+- [ ] `backend/src/__tests__/pdf.test.ts` --- stubs for PDF generation + streaming (FR-10.3, D-09 to D-15)
+- [ ] `frontend/src/__tests__/reports.test.tsx` --- stubs for report UI components (D-05, D-07, D-14)
+- [ ] `frontend/src/__tests__/settings.test.tsx` --- stubs for settings/logo upload (D-09)
+- [ ] PDFKit mocking strategy: mock `PDFDocument` constructor in tests to verify method calls without generating actual PDFs
 
-*Existing test infrastructure (vitest, jest, supertest) covers framework needs.*
+*Existing test infrastructure (vitest) covers framework needs.*
 
 ---
 
@@ -66,9 +69,9 @@ created: 2026-04-01
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| PDF visual layout | PDF renders correctly | Visual rendering quality cannot be automated without snapshot comparison | Open generated PDF, verify headers/footers/tables render correctly |
-| Multi-page PDF | Page breaks work | Page break positioning is visual | Generate report with 50+ rows, verify page breaks and repeated headers |
-| Print layout CSS | Screen/print layout | Print media queries need browser | Use browser print preview on report page |
+| PDF visual layout | D-09 to D-15 | Visual rendering quality cannot be automated without snapshot comparison | Open generated PDF, verify headers/footers/tables render correctly |
+| Multi-page PDF | D-11 | Page break positioning is visual | Generate report with 50+ rows, verify page breaks and repeated headers |
+| Print layout CSS | D-08 | Print media queries need browser | Use browser print preview on report page |
 
 ---
 
