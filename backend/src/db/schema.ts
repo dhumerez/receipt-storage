@@ -58,6 +58,7 @@ export const companies = pgTable('companies', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   currencyCode: char('currency_code', { length: 3 }).notNull().default('USD'),
+  logoPath: varchar('logo_path', { length: 500 }),
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),

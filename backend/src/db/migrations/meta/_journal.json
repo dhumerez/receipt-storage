@@ -2,8 +2,33 @@
   "version": "7",
   "dialect": "postgresql",
   "entries": [
-    { "idx": 0, "version": "7", "when": 1743299340000, "tag": "0000_init", "breakpoints": true },
-    { "idx": 1, "version": "7", "when": 1743299400000, "tag": "0001_audit_log_immutability", "breakpoints": true },
-    { "idx": 2, "version": "7", "when": 1743360420000, "tag": "0002_tokens_refresh_tokens", "breakpoints": true }
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1743299340000,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1743299400000,
+      "tag": "0001_audit_log_immutability",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743360420000,
+      "tag": "0002_tokens_refresh_tokens",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1775026038685,
+      "tag": "0003_lazy_veda",
+      "breakpoints": true
+    }
   ]
 }

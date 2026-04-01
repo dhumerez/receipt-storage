@@ -17,7 +17,7 @@ export async function processFile(
   buffer: Buffer,
   originalName: string,
   companyId: string,
-  entityType: 'transactions' | 'payments',
+  entityType: 'transactions' | 'payments' | 'logos',
   entityId: string,
 ): Promise<{ filePath: string; mimeType: string; sizeBytes: number; originalName: string }> {
   // Dynamic import — file-type is ESM-only (Pitfall 1)
@@ -81,4 +81,32 @@ export async function processFile(
     sizeBytes: finalBuffer.length,
     originalName,
   };
+}
+
+// ─── Logo processing ─────────────────────────────────────────────────────────
+
+export async function processLogo(
+  buffer: Buffer,
+  companyId: string,
+): Promise<{ filePath: string; sizeBytes: number }> {
+  const { fileTypeFromBuffer } = await import('file-type');
+  const detected = await fileTypeFromBuffer(buffer);
+  if (!detected || !['image/jpeg', 'image/png', 'image/webp'].includes(detected.mime)) {
+    throw new Error(`Unsupported logo type: ${detected?.mime ?? 'unknown'}`);
+  }
+  const finalBuffer = await sharp(buffer)
+    .rotate()
+    .resize({ width: 300, withoutEnlargement: true })
+    .jpeg({ quality: 90 })
+    .toBuffer();
+  const dir = path.join(UPLOAD_DIR, companyId);
+  await fs.promises.mkdir(dir, { recursive: true });
+  const filePath = path.join(dir, 'logo.jpg');
+  await fs.promises.writeFile(filePath, finalBuffer);
+  return { filePath, sizeBytes: finalBuffer.length };
+}
+
+export async function deleteLogo(companyId: string): Promise<void> {
+  const filePath = path.join(UPLOAD_DIR, companyId, 'logo.jpg');
+  await fs.promises.unlink(filePath).catch(() => {}); // ignore if not exists
 }
