@@ -180,7 +180,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -189,7 +189,7 @@ Plans:
 | 6.3 | Client portal debt view | PortalDebtDetailPage at /portal/debts/:id with payment history ("Awaiting confirmation" for pending), proof documents, portal navigation wiring |
 
 Plans:
-- [ ] 06-01-PLAN.md — Backend debts router + tests + app.ts mount + portal extension + notifications fix (wave 1)
+- [x] 06-01-PLAN.md — Backend debts router + tests + app.ts mount + portal extension + notifications fix (wave 1)
 - [ ] 06-02-PLAN.md — Frontend DebtDetailPage + components + API module + DebtCard nav + route (wave 2)
 - [ ] 06-03-PLAN.md — Portal debt detail page + portal API extension + portal navigation (wave 2)
 

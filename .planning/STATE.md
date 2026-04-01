@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 6
-current_plan: Not started
-status: Ready to plan
-last_updated: "2026-03-31T22:13:48.067Z"
+current_plan: 1 of 3
+status: Executing
+last_updated: "2026-04-01T00:56:02Z"
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 25
-  completed_plans: 25
+  total_plans: 28
+  completed_plans: 26
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 6
 **Current plan:** Not started
-**Last session stopped at:** Completed 05-05-PLAN.md
+**Last session stopped at:** Completed 06-01-PLAN.md
 
 ## Status
 
@@ -105,6 +105,11 @@ progress:
 
 - **05-05 (List/Detail UI):** Inline segmented status filter for transaction-specific statuses (All/Pending/Active/Voided) instead of reusing StatusFilterToggle
 - **05-05 (List/Detail UI):** AttachmentThumbnail renders image preview for image/* mimeTypes and document icon with filename for PDFs/other types
+
+- **06-01 (Debts):** Overpayment check uses FILTER (WHERE status != 'rejected') to include pending payments in limit calculation — prevents over-committing even before approval
+- **06-01 (Debts):** Approval re-validates overpayment using FILTER (WHERE status = 'confirmed') for confirmed-only check with SELECT FOR UPDATE
+- **06-01 (Debts):** Portal debt detail joins transactions only for referenceNumber (explicit column select), never for internalNotes — structural guard
+- **06-01 (Debts):** Notifications query uses COALESCE on clientId/createdBy to handle both transaction and payment entity types in LEFT JOINs
 
 ## Blockers
 
