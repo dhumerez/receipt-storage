@@ -4,6 +4,8 @@ import { db } from '../db/client.js';
 import {
   notifications,
   transactions,
+  payments,
+  debts,
   clients,
   users,
 } from '../db/schema.js';
@@ -48,13 +50,16 @@ notificationsRouter.get('/', async (req, res) => {
       createdAt: notifications.createdAt,
       referenceNumber: transactions.referenceNumber,
       totalAmount: transactions.totalAmount,
+      paymentAmount: payments.amount,
       clientName: clients.fullName,
       submitterName: users.fullName,
     })
     .from(notifications)
-    .leftJoin(transactions, eq(notifications.entityId, transactions.id))
-    .leftJoin(clients, eq(transactions.clientId, clients.id))
-    .leftJoin(users, eq(transactions.createdBy, users.id))
+    .leftJoin(transactions, and(eq(notifications.entityId, transactions.id), eq(notifications.entityType, 'transaction')))
+    .leftJoin(payments, and(eq(notifications.entityId, payments.id), eq(notifications.entityType, 'payment')))
+    .leftJoin(debts, eq(payments.debtId, debts.id))
+    .leftJoin(clients, sql`${clients.id} = COALESCE(${transactions.clientId}, ${debts.clientId})`)
+    .leftJoin(users, sql`${users.id} = COALESCE(${transactions.createdBy}, ${payments.recordedBy})`)
     .where(
       and(
         eq(notifications.recipientId, userId),
