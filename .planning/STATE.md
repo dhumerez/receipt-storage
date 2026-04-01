@@ -5,12 +5,12 @@ milestone_name: milestone
 current_phase: 7
 current_plan: 3
 status: In progress
-last_updated: "2026-04-01T06:57:40.595Z"
+last_updated: "2026-04-01T07:00:53.525Z"
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 31
+  completed_plans: 30
 ---
 
 # Project State
@@ -18,8 +18,8 @@ progress:
 **Last updated:** 2026-04-01
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 7
-**Current plan:** 2
-**Last session stopped at:** Completed 07-02-PLAN.md
+**Current plan:** 3
+**Last session stopped at:** Completed 07-03-PLAN.md
 
 ## Status
 
@@ -31,7 +31,7 @@ progress:
 | Phase 4: Product Catalog | In progress | Plans 01-02 complete |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
-| Phase 7: Reports & PDF | In progress | Plan 01 complete |
+| Phase 7: Reports & PDF | In progress | Plans 01, 03 complete |
 
 ## Active Decisions
 
@@ -114,9 +114,8 @@ progress:
 - **07-01 (Reports):** Logo resized to 300px width JPEG via sharp at fixed path {UPLOAD_DIR}/{companyId}/logo.jpg — not UUID-named like documents
 - **07-01 (Reports):** Date filtering uses exclusive upper bound (< dateTo + 1 day) — handles timestamp boundary correctly (Pitfall 4)
 
-- **07-02 (PDF):** PDFKit InstanceType<typeof PDFDocument> used as function parameter type for NodeNext module resolution compatibility
-- **07-02 (PDF):** Logo read as Buffer with try/catch ENOENT — graceful skip if file missing (Pitfall 3)
-- **07-02 (PDF):** drawTable returns final y position for content chaining across multiple PDF sections
+- **07-03 (Reports UI):** downloadPdf uses getAccessToken() from client.ts for authenticated blob fetch rather than adding apiClientRaw
+- **07-03 (Reports UI):** BottomTabBar not modified — Settings accessible via sidebar on desktop or direct URL on mobile (too many tabs for mobile)
 
 ## Blockers
 

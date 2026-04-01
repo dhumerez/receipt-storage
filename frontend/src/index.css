@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+@media print {
+  /* Hide navigation and controls */
+  nav[aria-label="Main navigation"],
+  nav[aria-label="Mobile navigation"],
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Full width for content */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Table formatting for paper */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #d1d5db !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Remove shadows and rounded corners */
+  .rounded-lg,
+  .shadow {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}

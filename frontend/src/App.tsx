@@ -17,6 +17,8 @@ import TransactionsPage from './pages/transactions/TransactionsPage.tsx';
 import NewTransactionPage from './pages/transactions/NewTransactionPage.tsx';
 import TransactionDetailPage from './pages/transactions/TransactionDetailPage.tsx';
 import DebtDetailPage from './pages/debts/DebtDetailPage.tsx';
+import ReportsPage from './pages/reports/ReportsPage.tsx';
+import SettingsPage from './pages/settings/SettingsPage.tsx';
 
 export default function App() {
   return (
@@ -38,6 +40,8 @@ export default function App() {
           <Route path="/transactions/new" element={<NewTransactionPage />} />
           <Route path="/transactions/:id" element={<TransactionDetailPage />} />
           <Route path="/debts/:id" element={<DebtDetailPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Route>
 
