@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import type { DebtItem } from '../../api/clients.ts';
 
 const STATUS_LABELS: Record<DebtItem['status'], string> = {
@@ -22,7 +23,8 @@ export default function DebtCard({ debt }: DebtCardProps) {
   const remainingBalance = parseFloat(debt.remainingBalance);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <Link to={`/debts/${debt.id}`} className="block">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
       <div className="flex items-center justify-between mb-3">
         <span
           aria-label={`Status: ${STATUS_LABELS[debt.status]}`}
@@ -48,5 +50,6 @@ export default function DebtCard({ debt }: DebtCardProps) {
         </div>
       </div>
     </div>
+    </Link>
   );
 }
