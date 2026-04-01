@@ -40,16 +40,16 @@ The owner always knows exactly who owes what, with full documentary proof — an
 - [x] Owner maintains a product/inventory catalog with prices per unit
 - [x] Transactions can reference catalog products OR free-form line items (or both) *(Validated in Phase 5)*
 
-**Debt & payment tracking**
-- [ ] Each debt shows total owed, total paid, and remaining balance
-- [ ] Multiple partial payments can be logged against a debt
-- [ ] Each payment can include proof documents (receipt photo, transfer screenshot, etc.)
-- [ ] Debt status: Open → Partially Paid → Fully Paid
+**Debt & payment tracking** *(Validated in Phase 6: Debt & Payment Tracking)*
+- [x] Each debt shows total owed, total paid, and remaining balance
+- [x] Multiple partial payments can be logged against a debt
+- [x] Each payment can include proof documents (receipt photo, transfer screenshot, etc.)
+- [x] Debt status: Open → Partially Paid → Fully Paid
 
-**Reports**
-- [ ] Company report: all clients with outstanding balances for a selected date range
-- [ ] Per-client report: breakdown of debts and payments over time
-- [ ] Clients see a personal summary when they log in (how much paid, how much remaining)
+**Reports** *(Validated in Phase 7: Reports & PDF Export)*
+- [x] Company report: all clients with outstanding balances for a selected date range
+- [x] Per-client report: breakdown of debts and payments over time
+- [x] Clients see a personal summary when they log in (how much paid, how much remaining)
 
 **Infrastructure**
 - [ ] Deployed on existing Hetzner server alongside Restaurant app (Docker + Nginx)
@@ -104,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 — Phase 6 complete: debt & payment tracking — debt lifecycle API (6 endpoints), payment recording with role-based approval, overpayment prevention via cents arithmetic, SELECT FOR UPDATE concurrency safety, write-off/reopen, DebtDetailPage, PortalDebtDetailPage, 11/11 must-haves verified*
+*Last updated: 2026-04-01 — Phase 7 complete: reports & PDF export — report data API with SQL aggregation, PDFKit PDF generation (company/client/receipt), Reports page with two-tab UI and filtering, Settings page with logo upload, PDF download buttons on detail pages, 7/7 must-haves verified. All 7 milestone phases complete.*
