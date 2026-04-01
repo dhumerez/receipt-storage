@@ -190,7 +190,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — Backend debts router + tests + app.ts mount + portal extension + notifications fix (wave 1)
-- [ ] 06-02-PLAN.md — Frontend DebtDetailPage + components + API module + DebtCard nav + route (wave 2)
+- [x] 06-02-PLAN.md — Frontend DebtDetailPage + components + API module + DebtCard nav + route (wave 2)
 - [ ] 06-03-PLAN.md — Portal debt detail page + portal API extension + portal navigation (wave 2)
 
 **Verification:** 10 x $10 payments on $100 debt reaches exactly $0.00 remaining (no float drift); concurrent payment approval test; client cannot see other clients' debts; pending payments do not affect displayed balance.
