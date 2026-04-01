@@ -11,6 +11,10 @@ import {
 } from '../services/report.service.js';
 import { processLogo, deleteLogo } from '../services/upload.service.js';
 import multer from 'multer';
+import { streamPdf } from '../services/pdf/pdf-base.js';
+import { buildCompanyReportPdf } from '../services/pdf/company-report.pdf.js';
+import { buildClientReportPdf } from '../services/pdf/client-report.pdf.js';
+import { buildReceiptPdf } from '../services/pdf/receipt.pdf.js';
 
 export const reportsRouter = Router();
 
@@ -93,6 +97,79 @@ reportsRouter.get('/receipt/:transactionId', async (req, res) => {
 
   const result = await getReceiptData(req.companyId!, txIdParsed.data);
   res.json(result);
+});
+
+// ─── GET /company/pdf — Company report PDF download ─────────────────────────
+// D-09 through D-12: Branded PDF with per-client balance table
+
+reportsRouter.get('/company/pdf', async (req, res) => {
+  const parsed = CompanyReportQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    return;
+  }
+
+  const { dateFrom, dateTo, showSettled } = parsed.data;
+  const data = await getCompanyReport(req.companyId!, dateFrom, dateTo, showSettled === 'true');
+
+  const [company] = await db
+    .select({ name: companies.name, logoPath: companies.logoPath })
+    .from(companies)
+    .where(eq(companies.id, req.companyId!))
+    .limit(1);
+
+  const today = new Date().toISOString().slice(0, 10);
+  await streamPdf(res, `company-report-${today}.pdf`, async (doc) => {
+    await buildCompanyReportPdf(doc, company.name, company.logoPath, data, dateFrom, dateTo);
+  });
+});
+
+// ─── GET /client/:clientId/pdf — Client report PDF download ─────────────────
+
+reportsRouter.get('/client/:clientId/pdf', async (req, res) => {
+  const clientIdParsed = UuidSchema.safeParse(req.params.clientId);
+  if (!clientIdParsed.success) {
+    res.status(400).json({ error: 'Invalid client ID format' });
+    return;
+  }
+
+  const parsed = DateRangeSchema.safeParse(req.query);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    return;
+  }
+
+  const { dateFrom, dateTo } = parsed.data;
+  const reportData = await getClientReport(req.companyId!, clientIdParsed.data, dateFrom, dateTo);
+
+  const [company] = await db
+    .select({ name: companies.name, logoPath: companies.logoPath })
+    .from(companies)
+    .where(eq(companies.id, req.companyId!))
+    .limit(1);
+
+  const clientName = reportData.client.fullName.replace(/[^a-zA-Z0-9]/g, '-');
+  const today = new Date().toISOString().slice(0, 10);
+  await streamPdf(res, `client-report-${clientName}-${today}.pdf`, async (doc) => {
+    await buildClientReportPdf(doc, company.name, company.logoPath, reportData, dateFrom, dateTo);
+  });
+});
+
+// ─── GET /receipt/:transactionId/pdf — Receipt PDF download ─────────────────
+// D-13, D-15: Single transaction receipt with company branding
+
+reportsRouter.get('/receipt/:transactionId/pdf', async (req, res) => {
+  const txIdParsed = UuidSchema.safeParse(req.params.transactionId);
+  if (!txIdParsed.success) {
+    res.status(400).json({ error: 'Invalid transaction ID format' });
+    return;
+  }
+
+  const receiptData = await getReceiptData(req.companyId!, txIdParsed.data);
+  const refNum = receiptData.transaction.referenceNumber || txIdParsed.data.slice(0, 8);
+  await streamPdf(res, `receipt-${refNum}.pdf`, async (doc) => {
+    await buildReceiptPdf(doc, receiptData);
+  });
 });
 
 // ─── POST /logo — Upload company logo ────────────────────────────────────────
