@@ -2,7 +2,7 @@
 
 **Milestone:** 1.0 — Core SaaS MVP
 **Target:** Full-featured debt tracking web app deployed on Hetzner
-**Last updated:** 2026-03-31
+**Last updated:** 2026-04-01
 
 ---
 
@@ -180,7 +180,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 1/3 plans executed
+**Plans:** 3/3 plans complete
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -199,17 +199,26 @@ Plans:
 
 ## Phase 7: Reports & PDF Export
 
-**Goal:** Owners can generate company-wide and per-client reports; PDF export available.
+**Goal:** Owners can generate company-wide and per-client reports with PDF export; company logo branding on PDFs; Settings page for logo management.
 
 **Why last:** Reporting is a read layer on top of fully working data. All upstream data must be correct before reports are meaningful.
 
 ### Plans
 
+**Plans:** 4 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
-| 7.1 | Report API | Company report: clients with outstanding balance in date range; per-client report: transactions + payment history; data only (no PDF yet) |
-| 7.2 | Report UI | Date range picker; company report table sortable by outstanding amount; per-client breakdown; print/screen layout |
-| 7.3 | PDF export | PDFKit 0.18.0 server-side; company report PDF; per-client report PDF; receipt PDF for individual transaction; stream directly to HTTP response |
+| 7.1 | Report API + Logo upload | Schema migration (logoPath), report data service (company/client/receipt queries), report + logo REST endpoints, app.ts mount |
+| 7.2 | PDF generation | PDFKit 0.18.0 install, shared PDF utilities (table builder, headers, page numbers), company/client/receipt PDF builders, 3 streaming PDF endpoints |
+| 7.3 | Report UI + Settings | Reports page (two tabs, filters, sorting), Settings page (logo upload), navigation updates, routes, print CSS |
+| 7.4 | PDF download buttons | "Download Receipt PDF" on transaction detail, "Download Statement" on debt detail |
+
+Plans:
+- [ ] 07-01-PLAN.md — Schema migration + report service + logo upload + API endpoints (wave 1)
+- [ ] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
+- [ ] 07-03-PLAN.md — Reports page UI + Settings page + navigation + routes + print CSS (wave 2)
+- [ ] 07-04-PLAN.md — PDF download buttons on transaction detail and debt detail pages (wave 3)
 
 **Verification:** Company report totals match sum of open debts; PDF renders correctly for multi-page report; report respects `company_id` scoping; client-scoped PDF contains only that client's data.
 
