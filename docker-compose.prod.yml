@@ -21,7 +21,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: ""
+        VITE_API_URL: /receipts-app
         VITE_BASE_PATH: ${VITE_BASE_PATH:-/receipts-app/}
     restart: always
     labels:
