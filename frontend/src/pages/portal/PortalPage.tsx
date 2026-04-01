@@ -37,9 +37,14 @@ export default function PortalPage() {
     );
   }
 
+  // FR-10.4: Compute total paid across all debts for personal summary
+  const totalPaid = debts
+    .reduce((sum, d) => sum + parseFloat(d.amountPaid), 0)
+    .toFixed(2);
+
   return (
     <div>
-      <PortalBalanceSummary summary={summary} />
+      <PortalBalanceSummary summary={summary} totalPaid={totalPaid} />
 
       {debts.length === 0 ? (
         <EmptyState
