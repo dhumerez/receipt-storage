@@ -180,14 +180,20 @@ Plans:
 
 ### Plans
 
+**Plans:** 3 plans
+
 | # | Plan | Deliverable |
 |---|------|-------------|
-| 6.1 | Debt lifecycle API | Auto-create debt on transaction approval; `debt_balances` view; debt status transitions; `written_off` with reason; owner-only debt status changes |
-| 6.2 | Payment recording API | Create payment with `paid_at`, method, reference, notes; owner → `confirmed`; collaborator → `pending_approval`; `SELECT FOR UPDATE` on debt row; overpayment prevention; approval flow mirrors transactions |
-| 6.3 | Debt & payment UI | Debt dashboard per client; remaining balance (via view); payment list with confirmed/pending separation; payment form with document upload |
-| 6.4 | Client portal debt view | Client sees own debts, confirmed balance, pending payments ("Awaiting confirmation"), payment proof documents |
+| 6.1 | Debt lifecycle + payment API | Debt detail endpoint, payment recording (role-based status), payment approval/rejection with SELECT FOR UPDATE, write-off/reopen with audit logging, overpayment prevention, portal debt detail, notification system extension |
+| 6.2 | Debt & payment UI | DebtDetailPage at /debts/:id with inline payment form (FileAttachmentSection reuse), payment history list with status badges, write-off dialog, DebtCard navigation, App.tsx route |
+| 6.3 | Client portal debt view | PortalDebtDetailPage at /portal/debts/:id with payment history ("Awaiting confirmation" for pending), proof documents, portal navigation wiring |
 
-**Verification:** 10 × $10 payments on $100 debt reaches exactly $0.00 remaining (no float drift); concurrent payment approval test; client cannot see other clients' debts; pending payments do not affect displayed balance.
+Plans:
+- [ ] 06-01-PLAN.md — Backend debts router + tests + app.ts mount + portal extension + notifications fix (wave 1)
+- [ ] 06-02-PLAN.md — Frontend DebtDetailPage + components + API module + DebtCard nav + route (wave 2)
+- [ ] 06-03-PLAN.md — Portal debt detail page + portal API extension + portal navigation (wave 2)
+
+**Verification:** 10 x $10 payments on $100 debt reaches exactly $0.00 remaining (no float drift); concurrent payment approval test; client cannot see other clients' debts; pending payments do not affect displayed balance.
 
 ---
 
@@ -226,7 +232,7 @@ The 1.0 milestone is complete when:
 
 ## Phase Sequencing Notes
 
-- **Phases 1–2** must be done sequentially; every other phase depends on both
+- **Phases 1-2** must be done sequentially; every other phase depends on both
 - **Phases 3 and 4** can be done in parallel after Phase 2
 - **Phase 5** requires Phase 3 (clients) and Phase 4 (products) to be complete
 - **Phase 6** requires Phase 5
