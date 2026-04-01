@@ -5,6 +5,7 @@ status: draft
 shadcn_initialized: false
 preset: none
 created: 2026-04-01
+revised: 2026-04-01
 ---
 
 # Phase 7 — UI Design Contract
@@ -52,13 +53,15 @@ Source: Codebase scan. Existing components use Tailwind spacing utilities at the
 | Role | Size | Weight | Line Height | Tailwind Class |
 |------|------|--------|-------------|----------------|
 | Body | 14px | 400 (regular) | 1.5 | `text-sm` |
-| Label | 12px | 500 (medium) | 1.5 | `text-xs font-medium` |
+| Label | 12px | 400 (regular) | 1.5 | `text-xs uppercase tracking-wider` |
 | Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` |
-| Page Title | 24px | 700 (bold) | 1.2 | `text-2xl font-bold` |
+| Page Title | 24px | 600 (semibold) | 1.2 | `text-2xl font-semibold` |
 
-Table headers use: `text-xs font-medium text-gray-500 uppercase tracking-wider` (established in ClientTable, ProductTable, TransactionTable).
+Only 2 font weights used: 400 (regular) and 600 (semibold). Label differentiates from Body via its smaller 12px size and uppercase tracking. Page Title differentiates from Heading via its larger 24px size.
 
-Source: Codebase scan. EmptyState uses `text-xl font-semibold` for headings and `text-sm` for body. Sidebar uses `text-base font-semibold` for brand name, `text-sm` for nav items. Table headers use `text-xs font-medium uppercase`.
+Table headers use: `text-xs uppercase tracking-wider text-gray-500` (established in ClientTable, ProductTable, TransactionTable). Weight is 400 (regular) — the uppercase tracking provides sufficient visual distinction.
+
+Source: Codebase scan. EmptyState uses `text-xl font-semibold` for headings and `text-sm` for body. Sidebar uses `text-base font-semibold` for brand name, `text-sm` for nav items.
 
 ---
 
@@ -68,11 +71,11 @@ Source: Codebase scan. EmptyState uses `text-xl font-semibold` for headings and 
 |------|-------|-------|
 | Dominant (60%) | `bg-gray-50` (#F9FAFB) | Page background, loading states |
 | Secondary (30%) | `bg-white` (#FFFFFF) | Cards, tables, modals, filter bar |
-| Accent (10%) | `bg-blue-600` (#2563EB) | Primary CTA buttons, active nav indicator, notification badge, sort indicator arrows, "Download PDF" button, active tab underline |
-| Destructive | `text-red-600` / `bg-red-600` (#DC2626) | Not used in this phase (no destructive actions) |
+| Accent (10%) | `bg-blue-600` (#2563EB) | Primary CTA buttons, active nav indicator, notification badge, sort indicator arrows, "Export PDF" / "Download" buttons, active tab underline |
+| Destructive | `text-red-600` / `bg-red-600` (#DC2626) | "Remove" logo button (text-only destructive action) |
 
 Accent reserved for:
-- "Export PDF" / "Download PDF" buttons (primary CTA per page context)
+- "Export PDF" / "Download Statement" / "Download Receipt PDF" buttons (primary CTA per page context)
 - Active tab underline on report tab switcher
 - Active sort column header indicator arrow
 - Active sidebar nav item (border-l-4 + bg-blue-50 + text-blue-600)
@@ -123,14 +126,16 @@ Source: Codebase scan. All colors match established patterns from Phases 3-6.
 |-----------|--------|
 | `Sidebar` | Add "Settings" nav item below "Reports" (gear icon) |
 | `BottomTabBar` | Add "Reports" tab (bar chart icon) |
-| Transaction detail page | Add "Download PDF" button |
-| Debt detail page | Add "Download PDF" button |
+| Transaction detail page | Add "Download Receipt PDF" button |
+| Debt detail page | Add "Download Statement" button |
 
 ---
 
 ## Layout Contract
 
 ### Reports Page (`/reports`)
+
+**Focal point:** The report table is the primary visual anchor. "Export PDF" is the primary action focal point, positioned at the bottom-right of the content area to conclude the data-reading flow.
 
 ```
 +----------------------------------------------+
@@ -139,13 +144,13 @@ Source: Codebase scan. All colors match established patterns from Phases 3-6.
 | Filter Bar:                                   |
 | [Date From] [Date To] [Status v] [x Settled] |
 +----------------------------------------------+
-| Report Table                                  |
+| Report Table                    (focal point) |
 | Client Name | Total Debts | Paid | Balance   |
 | (sortable)  | (sortable)  | ...  | (sorted)  |
 |                                               |
 | ...rows...                                    |
 +----------------------------------------------+
-| [Export PDF]                                  |
+| [Export PDF]             (action focal point)  |
 +----------------------------------------------+
 ```
 
@@ -157,6 +162,8 @@ Source: Codebase scan. All colors match established patterns from Phases 3-6.
 
 ### Settings Page (`/settings`)
 
+**Focal point:** The logo upload area is the primary visual anchor. "Upload Logo" / "Replace" is the primary action focal point.
+
 ```
 +----------------------------------------------+
 | Company Settings              (page heading)  |
@@ -164,7 +171,7 @@ Source: Codebase scan. All colors match established patterns from Phases 3-6.
 | Company Logo                                  |
 | +--------+                                    |
 | | [logo] |  [Upload Logo] / [Replace]         |
-| +--------+                                    |
+| +--------+  [Remove] (text-red-600)           |
 | Logo appears on PDF reports.                  |
 +----------------------------------------------+
 ```
@@ -172,6 +179,7 @@ Source: Codebase scan. All colors match established patterns from Phases 3-6.
 - Minimal page: heading + single card with logo upload area
 - No logo uploaded: show dashed border placeholder with "Upload Logo" button
 - Logo uploaded: show preview thumbnail (max 120px wide) with "Replace" and "Remove" options
+- "Remove" button styled as `text-red-600 hover:text-red-700` text link (no bg fill)
 
 ### Print Layout (`@media print`)
 
@@ -224,11 +232,17 @@ Source: D-07 (single page with two tabs), D-08 (print stylesheet), D-06 (sidebar
 - Response is a blob; triggers browser download via programmatic `<a>` click
 - Filename pattern: `company-report-YYYY-MM-DD.pdf` or `client-report-{name}-YYYY-MM-DD.pdf`
 
-### "Download PDF" on Detail Pages (D-14)
+### "Download" on Detail Pages (D-14)
 - Transaction detail page: button labeled "Download Receipt PDF"
-- Debt detail page: button labeled "Download PDF"
+- Debt detail page: button labeled "Download Statement"
 - Both use same download pattern as report PDF
 - Secondary button style: `border border-gray-300 text-gray-700 hover:bg-gray-50`
+
+### Logo Remove Confirmation
+- "Remove" button click shows a browser `window.confirm()` dialog
+- Confirmation copy: "Remove company logo? It will no longer appear on exported PDFs."
+- On confirm: sends DELETE request to logo endpoint, clears preview
+- On cancel: no action
 
 ---
 
@@ -238,7 +252,7 @@ Source: D-07 (single page with two tabs), D-08 (print stylesheet), D-06 (sidebar
 |---------|------|
 | Primary CTA (Reports page) | "Export PDF" |
 | Primary CTA (Transaction detail) | "Download Receipt PDF" |
-| Primary CTA (Debt detail) | "Download PDF" |
+| Primary CTA (Debt detail) | "Download Statement" |
 | Tab label 1 | "Company Report" |
 | Tab label 2 | "Client Report" |
 | Empty state heading (Company) | "No outstanding balances" |
@@ -258,6 +272,7 @@ Source: D-07 (single page with two tabs), D-08 (print stylesheet), D-06 (sidebar
 | Logo upload button (no logo) | "Upload Logo" |
 | Logo replace button | "Replace" |
 | Logo remove button | "Remove" |
+| Destructive confirmation (Remove logo) | "Remove company logo? It will no longer appear on exported PDFs." |
 | Error state (report load) | "Failed to load report data. Check your connection and try again." |
 | Error state (PDF export) | "PDF generation failed. Please try again." |
 | Loading state (table) | "Loading report..." |
