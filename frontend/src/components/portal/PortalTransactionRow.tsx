@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import type { PortalDebt } from '../../api/portal.ts';
 
 interface PortalTransactionRowProps {
@@ -6,7 +7,10 @@ interface PortalTransactionRowProps {
 
 export default function PortalTransactionRow({ debt }: PortalTransactionRowProps) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0 text-sm">
+    <Link
+      to={`/portal/debts/${debt.id}`}
+      className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0 text-sm hover:bg-gray-50 -mx-4 px-4 transition-colors"
+    >
       <div className="flex-1">
         <span className="text-gray-700">Original: ${parseFloat(debt.totalAmount).toFixed(2)}</span>
       </div>
@@ -16,6 +20,6 @@ export default function PortalTransactionRow({ debt }: PortalTransactionRowProps
           Remaining: ${parseFloat(debt.remainingBalance).toFixed(2)}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

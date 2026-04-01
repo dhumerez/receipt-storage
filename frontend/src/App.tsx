@@ -11,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage.tsx';
 import ClientsPage from './pages/clients/ClientsPage.tsx';
 import ClientDetailPage from './pages/clients/ClientDetailPage.tsx';
 import PortalPage from './pages/portal/PortalPage.tsx';
+import PortalDebtDetailPage from './pages/portal/PortalDebtDetailPage.tsx';
 import ProductsPage from './pages/products/ProductsPage.tsx';
 import TransactionsPage from './pages/transactions/TransactionsPage.tsx';
 import NewTransactionPage from './pages/transactions/NewTransactionPage.tsx';
@@ -42,6 +43,7 @@ export default function App() {
       <Route element={<ClientRoute />}>
         <Route element={<PortalLayout />}>
           <Route path="/portal" element={<PortalPage />} />
+          <Route path="/portal/debts/:id" element={<PortalDebtDetailPage />} />
         </Route>
       </Route>
     </Routes>
