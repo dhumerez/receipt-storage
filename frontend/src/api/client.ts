@@ -8,6 +8,10 @@ export function setAccessToken(token: string | null): void {
   _accessToken = token;
 }
 
+export function getAccessToken(): string | null {
+  return _accessToken;
+}
+
 interface ApiOptions extends RequestInit {
   json?: unknown;
   _isRetry?: boolean; // internal flag — prevents infinite retry loop
