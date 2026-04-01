@@ -1,16 +1,14 @@
 services:
   receipts-api:
     build: ./backend
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:4000:4000"
+    restart: always
     environment:
       NODE_ENV: production
       DATABASE_URL: postgres://receipts_user:${DB_PASSWORD}@receipts-db:5432/receipts
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: /var/receipts/uploads
       PORT: "4000"
-      CORS_ORIGIN: ${CORS_ORIGIN}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
     volumes:
       - /var/receipts/uploads:/var/receipts/uploads
     depends_on:
@@ -23,16 +21,25 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:4000}
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:4001:4001"
+        VITE_API_URL: ""
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/receipts-app/}
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.receipts.rule=PathPrefix(`/receipts-app`)"
+      - "traefik.http.routers.receipts.entrypoints=web"
+      - "traefik.http.middlewares.receipts-strip.stripprefix.prefixes=/receipts-app"
+      - "traefik.http.routers.receipts.middlewares=receipts-strip"
+      - "traefik.http.services.receipts.loadbalancer.server.port=4001"
+    depends_on:
+      - receipts-api
     networks:
       - receipts_internal
+      - web
 
   receipts-db:
     image: postgres:16-alpine
-    restart: unless-stopped
+    restart: always
     environment:
       POSTGRES_DB: receipts
       POSTGRES_USER: receipts_user
@@ -54,3 +61,5 @@ volumes:
 networks:
   receipts_internal:
     driver: bridge
+  web:
+    external: true
