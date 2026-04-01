@@ -205,7 +205,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -215,7 +215,7 @@ Plans:
 | 7.4 | PDF download buttons | "Download Receipt PDF" on transaction detail, "Download Statement" on debt detail |
 
 Plans:
-- [ ] 07-01-PLAN.md — Schema migration + report service + logo upload + API endpoints (wave 1)
+- [x] 07-01-PLAN.md — Schema migration + report service + logo upload + API endpoints (wave 1)
 - [ ] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
 - [ ] 07-03-PLAN.md — Reports page UI + Settings page + navigation + routes + print CSS (wave 2)
 - [ ] 07-04-PLAN.md — PDF download buttons on transaction detail and debt detail pages (wave 3)

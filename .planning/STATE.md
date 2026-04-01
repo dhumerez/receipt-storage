@@ -3,23 +3,23 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 7
-current_plan: Not started
-status: Ready to plan
-last_updated: "2026-04-01T01:10:57.423Z"
+current_plan: 2
+status: In progress
+last_updated: "2026-04-01T06:48:40Z"
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 28
-  completed_plans: 28
+  total_plans: 32
+  completed_plans: 29
 ---
 
 # Project State
 
-**Last updated:** 2026-03-31
+**Last updated:** 2026-04-01
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 7
-**Current plan:** Not started
-**Last session stopped at:** Completed 06-03-PLAN.md
+**Current plan:** 2
+**Last session stopped at:** Completed 07-01-PLAN.md
 
 ## Status
 
@@ -31,7 +31,7 @@ progress:
 | Phase 4: Product Catalog | In progress | Plans 01-02 complete |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
-| Phase 7: Reports & PDF | Not started | |
+| Phase 7: Reports & PDF | In progress | Plan 01 complete |
 
 ## Active Decisions
 
@@ -108,6 +108,11 @@ progress:
 
 - **06-03 (Portal Detail):** PaymentStatusBadge inlined in PortalDebtDetailPage rather than importing from Plan 02 — avoids cross-plan dependency in parallel execution
 - **06-03 (Portal Detail):** PortalTransactionRow converted from div to Link for debt detail navigation — simpler than onClick prop or wrapper
+
+- **07-01 (Reports):** Reports endpoints are owner-only (requireRole('owner')) — company report data is sensitive financial summary
+- **07-01 (Reports):** Company report filters out settled clients by default (showSettled=false) — surfaces only actionable balances
+- **07-01 (Reports):** Logo resized to 300px width JPEG via sharp at fixed path {UPLOAD_DIR}/{companyId}/logo.jpg — not UUID-named like documents
+- **07-01 (Reports):** Date filtering uses exclusive upper bound (< dateTo + 1 day) — handles timestamp boundary correctly (Pitfall 4)
 
 ## Blockers
 
