@@ -31,7 +31,7 @@ Declared values (multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Icon gaps (`gap-1`), badge inline padding, status badge `px-2 py-0.5` |
+| xs | 4px | Icon gaps (`gap-1`), badge inline padding, status badge `px-2` |
 | sm | 8px | Input inner padding, row gap between form fields (`gap-2`), payment history row internal gap |
 | md | 16px | Default element spacing, card content padding (`p-4`), form field padding |
 | lg | 24px | Section padding (`p-6`), debt detail header padding, payment form section margin (`mb-6`) |
@@ -40,8 +40,9 @@ Declared values (multiples of 4):
 | 3xl | 64px | Reserved; not directly used in Phase 6 |
 
 Exceptions:
-- Touch targets: minimum 44px height on all interactive elements — "Record Payment" button, "Write Off" button, payment history rows, "Approve"/"Reject" buttons. Apply via `min-h-[44px]`.
+- Touch targets: minimum 44px height on all interactive elements — "Record Payment" button, "Write Off" button, payment history rows, "Approve Payment"/"Reject Payment" buttons. Apply via `min-h-[44px]`.
 - WriteOffDialog modal: max-width 480px (`max-w-md`) — narrower than full-page forms since it contains only a textarea and two buttons.
+- Badge vertical padding uses 2px (`py-0.5`) for compact pill appearance — intentional exception to the 4px-minimum scale, applied to `PaymentStatusBadge` and portal annotation badges.
 
 ---
 
@@ -61,7 +62,7 @@ Phase 6 specifics:
 - Payment status badge: `text-xs font-semibold` (12px, 600 weight — matches TransactionStatusBadge).
 - "Does not affect balance" annotation on pending payments: `text-xs font-normal text-gray-500` (12px, 400 weight).
 - Write-off reason inline display: `text-sm font-normal text-gray-600 italic` (14px, 400 weight).
-- Money amounts in debt header (Original, Paid, Remaining): `text-2xl font-semibold text-gray-900` for the primary remaining balance; `text-sm font-medium text-gray-700` for original and paid sub-values.
+- Money amounts in debt header (Original, Paid, Remaining): `text-2xl font-semibold text-gray-900` for the primary remaining balance; `text-sm font-normal text-gray-700` for original and paid sub-values.
 
 ---
 
@@ -116,8 +117,8 @@ NOT accent: payment history row hover (use `hover:bg-gray-50`), status badges (u
 | Write-off confirm | "Write Off Debt" | Confirm button in WriteOffDialog (D-09) |
 | Write-off cancel | "Cancel" | Dismiss dialog without action |
 | Reopen debt | "Reopen Debt" | Button in debt header when status is `written_off`, owner-only (D-10) |
-| Approve payment | "Approve" | Inline action on pending payment row |
-| Reject payment | "Reject" | Triggers inline reason input on pending payment row |
+| Approve payment | "Approve Payment" | Inline action on pending payment row |
+| Reject payment | "Reject Payment" | Triggers inline reason input on pending payment row |
 | Reject confirm | "Confirm Reject" | After typing rejection reason |
 | Back link | "Back to Client" | Navigates to `/clients/:clientId` from debt detail |
 
@@ -147,7 +148,7 @@ NOT accent: payment history row hover (use `hover:bg-gray-50`), status badges (u
 | Action | Trigger | Confirmation Approach |
 |--------|---------|----------------------|
 | Write off debt | "Write Off" button in header (owner-only) | Modal dialog (WriteOffDialog): textarea for reason (`placeholder="Describe why this debt is being written off"`, `maxLength={500}`, `required`), "Write Off Debt" button `bg-red-600 text-white hover:bg-red-700`, "Cancel" text button. (D-09) |
-| Reject pending payment | "Reject" button on payment row | Inline expansion: textarea appears below the payment row labeled "Reason for rejection", "Confirm Reject" button `bg-red-600 text-white hover:bg-red-700`, "Cancel" link to collapse. Matches Phase 5 notification panel reject pattern. |
+| Reject pending payment | "Reject Payment" button on payment row | Inline expansion: textarea appears below the payment row labeled "Reason for rejection", "Confirm Reject" button `bg-red-600 text-white hover:bg-red-700`, "Cancel" link to collapse. Matches Phase 5 notification panel reject pattern. |
 
 ---
 
@@ -204,15 +205,15 @@ Reused components (no changes or minor changes):
   - Right: amount `text-sm font-semibold text-gray-900`.
   - If `pending_approval`: show `text-xs text-gray-500` annotation "Does not affect balance" below the badge.
   - If payment has proof documents: thumbnail row `flex gap-2 mt-2` using same AttachmentThumbnail pattern from TransactionDetailPage (link to authenticated download, `w-16 h-16 rounded-md object-cover`).
-  - Owner sees "Approve" / "Reject" buttons on `pending_approval` rows: `flex gap-2 mt-2`.
-    - "Approve": `bg-blue-600 text-white hover:bg-blue-700 px-3 py-1.5 rounded-md text-xs font-medium`.
-    - "Reject": `border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-xs font-medium`.
+  - Owner sees "Approve Payment" / "Reject Payment" buttons on `pending_approval` rows: `flex gap-2 mt-2`.
+    - "Approve Payment": `bg-blue-600 text-white hover:bg-blue-700 px-3 py-1.5 rounded-md text-xs font-semibold`.
+    - "Reject Payment": `border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-xs font-semibold`.
 - If no payments: render `EmptyState` with heading "No payments recorded", body "Record the first payment to start tracking this debt.", CTA "Record Payment".
 
 **Section 3 — Record Payment (D-01):**
 - Only visible to `owner` and `collaborator` roles. Hidden for `viewer` and on portal.
 - Only visible when debt status is `open` or `partially_paid` (not `fully_paid` or `written_off`).
-- Default state: single button "Record Payment" — `bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium`.
+- Default state: single button "Record Payment" — `bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold`.
 - Expanded state: `PaymentForm` component appears below the button (button is replaced by the form).
 - Form container: `bg-white border border-gray-200 rounded-lg p-6`.
 - Form fields stacked with `space-y-4`:
@@ -222,7 +223,7 @@ Reused components (no changes or minor changes):
   - Reference Number: `<input type="text">`. Label "Reference Number". Optional.
   - Notes: `<textarea rows={2} resize-none>`. Label "Notes". Optional.
   - Proof Documents: `FileAttachmentSection` — full reuse, same Take Photo + Choose from Gallery UX (D-03).
-- Form actions: `flex justify-end gap-3 mt-4`. "Cancel" as `text-sm text-gray-600 hover:text-gray-900`, "Save Payment" as `bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium`.
+- Form actions: `flex justify-end gap-3 mt-4`. "Cancel" as `text-sm text-gray-600 hover:text-gray-900`, "Save Payment" as `bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold`.
 - All inputs: `w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm` — established pattern.
 - On success: collapse form, show success toast (discretionary), invalidate debt query cache.
 
@@ -232,10 +233,10 @@ Reused components (no changes or minor changes):
 
 ### Reject Payment Inline Expansion
 
-- Click "Reject" on a pending payment row: row expands to show a `<textarea rows={2}>` labeled "Reason for rejection" and "Confirm Reject" button below.
-- "Reject" button hidden during expansion (replaced by "Confirm Reject" and "Cancel" link).
+- Click "Reject Payment" on a pending payment row: row expands to show a `<textarea rows={2}>` labeled "Reason for rejection" and "Confirm Reject" button below.
+- "Reject Payment" button hidden during expansion (replaced by "Confirm Reject" and "Cancel" link).
 - Textarea: `placeholder="Describe why this payment is being rejected"`, `maxLength={500}`, `required`.
-- "Confirm Reject": `bg-red-600 text-white hover:bg-red-700 px-3 py-1.5 rounded-md text-xs font-medium`.
+- "Confirm Reject": `bg-red-600 text-white hover:bg-red-700 px-3 py-1.5 rounded-md text-xs font-semibold`.
 - "Cancel": `text-xs text-gray-500 hover:text-gray-700 ml-2`.
 - If reason is empty on submit: show inline validation "A reason is required to reject a payment." in `text-xs text-red-600`.
 
@@ -247,7 +248,7 @@ Reused components (no changes or minor changes):
 - Title: "Write Off Debt" at `text-xl font-semibold text-gray-900`.
 - Description: "This will mark the debt as uncollectible. You can reopen it later if needed." at `text-sm text-gray-500 mt-1 mb-4`.
 - Textarea: `rows={3}`, `placeholder="Describe why this debt is being written off"`, `maxLength={500}`, `required`. Same input styling as all other textareas.
-- Actions: `flex justify-end gap-3 mt-4`. "Cancel" as `text-sm text-gray-600 hover:text-gray-900`, "Write Off Debt" as `bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium`.
+- Actions: `flex justify-end gap-3 mt-4`. "Cancel" as `text-sm text-gray-600 hover:text-gray-900`, "Write Off Debt" as `bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-semibold`.
 - Close on backdrop click or Cancel. Do not close on Escape if textarea has content (prevent accidental loss).
 
 ### Portal Debt Detail (D-12, D-13, D-14)
@@ -255,7 +256,7 @@ Reused components (no changes or minor changes):
 - Same structural layout as owner DebtDetailPage.
 - Back link: "Back to Dashboard" navigates to `/portal`.
 - Header: identical money grid and status badge. No "Write Off" or "Reopen" buttons.
-- Payment History: identical list. Pending payments show "Awaiting confirmation" annotation instead of "Does not affect balance" — same visual style (`text-xs text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded`). No Approve/Reject buttons.
+- Payment History: identical list. Pending payments show "Awaiting confirmation" annotation instead of "Does not affect balance" — same visual style (`text-xs text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded`). No "Approve Payment"/"Reject Payment" buttons.
 - No Record Payment section.
 - Original Transaction section: show transaction reference number as plain text (not a link — portal users do not have access to `/transactions/:id`).
 - Proof documents on payments: visible and downloadable (same AttachmentThumbnail pattern with authenticated URLs).
