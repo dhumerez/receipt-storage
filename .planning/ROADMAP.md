@@ -205,7 +205,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -216,7 +216,7 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — Schema migration + report service + logo upload + API endpoints (wave 1)
-- [ ] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
+- [x] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
 - [ ] 07-03-PLAN.md — Reports page UI + Settings page + navigation + routes + print CSS (wave 2)
 - [ ] 07-04-PLAN.md — PDF download buttons on transaction detail and debt detail pages (wave 3)
 

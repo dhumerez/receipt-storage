@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 7
-current_plan: 2
+current_plan: 3
 status: In progress
-last_updated: "2026-04-01T06:48:40Z"
+last_updated: "2026-04-01T06:57:40.595Z"
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 32
-  completed_plans: 29
+  completed_plans: 31
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 7
 **Current plan:** 2
-**Last session stopped at:** Completed 07-01-PLAN.md
+**Last session stopped at:** Completed 07-02-PLAN.md
 
 ## Status
 
@@ -113,6 +113,10 @@ progress:
 - **07-01 (Reports):** Company report filters out settled clients by default (showSettled=false) — surfaces only actionable balances
 - **07-01 (Reports):** Logo resized to 300px width JPEG via sharp at fixed path {UPLOAD_DIR}/{companyId}/logo.jpg — not UUID-named like documents
 - **07-01 (Reports):** Date filtering uses exclusive upper bound (< dateTo + 1 day) — handles timestamp boundary correctly (Pitfall 4)
+
+- **07-02 (PDF):** PDFKit InstanceType<typeof PDFDocument> used as function parameter type for NodeNext module resolution compatibility
+- **07-02 (PDF):** Logo read as Buffer with try/catch ENOENT — graceful skip if file missing (Pitfall 3)
+- **07-02 (PDF):** drawTable returns final y position for content chaining across multiple PDF sections
 
 ## Blockers
 
