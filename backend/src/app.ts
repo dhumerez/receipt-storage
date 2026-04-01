@@ -11,6 +11,7 @@ import { clientsRouter } from './routes/clients.js';
 import { productsRouter } from './routes/products.js';
 import { transactionsRouter } from './routes/transactions.js';
 import { debtsRouter } from './routes/debts.js';
+import { reportsRouter } from './routes/reports.js';
 import { notificationsRouter } from './routes/notifications.js';
 import { filesRouter } from './routes/files.js';
 import { portalRouter } from './routes/portal.js';
@@ -54,6 +55,7 @@ app.use(
 );
 app.use('/api/v1/transactions', authenticate, requireTenant, requireRole('owner', 'collaborator', 'viewer'), transactionsRouter);
 app.use('/api/v1/debts', authenticate, requireTenant, requireRole('owner', 'collaborator', 'viewer'), debtsRouter);
+app.use('/api/v1/reports', authenticate, requireTenant, requireRole('owner'), reportsRouter);
 app.use('/api/v1/notifications', authenticate, requireTenant, notificationsRouter);
 app.use('/api/v1/files', authenticate, filesRouter);
 app.use('/api/v1/portal', authenticate, requireRole('client'), portalRouter);
