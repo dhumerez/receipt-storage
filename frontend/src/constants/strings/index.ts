@@ -7,3 +7,4 @@ export { DEBTS } from './debts.ts';
 export { REPORTS } from './reports.ts';
 export { SETTINGS } from './settings.ts';
 export { PORTAL } from './portal.ts';
+export { DASHBOARD } from './dashboard.ts';
