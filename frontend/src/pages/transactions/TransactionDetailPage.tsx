@@ -6,6 +6,8 @@ import type { DocumentInfo } from '../../api/transactions.ts';
 import { downloadPdf } from '../../api/reports.ts';
 import TransactionStatusBadge from '../../components/transactions/TransactionStatusBadge.tsx';
 import { useAuth } from '../../contexts/AuthContext.tsx';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 function AttachmentThumbnail({ doc }: { doc: DocumentInfo }) {
   const url = getFileUrl(doc.filePath);
@@ -65,7 +67,7 @@ export default function TransactionDetailPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading transaction...</div>
+        <div className="text-sm text-gray-400">{TRANSACTIONS.loadingTransaction}</div>
       </div>
     );
   }
@@ -74,10 +76,10 @@ export default function TransactionDetailPage() {
     return (
       <div className="p-8">
         <Link to="/transactions" className="text-sm text-blue-600 hover:text-blue-700">
-          &larr; Transactions
+          &larr; {TRANSACTIONS.pageTitle}
         </Link>
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load this transaction. Please refresh the page.
+          {TRANSACTIONS.errorLoadingTransaction}
         </div>
       </div>
     );
@@ -116,7 +118,7 @@ export default function TransactionDetailPage() {
   return (
     <div className="p-8">
       <Link to="/transactions" className="text-sm text-blue-600 hover:text-blue-700">
-        &larr; Transactions
+        &larr; {TRANSACTIONS.pageTitle}
       </Link>
 
       {/* Section 1: Header */}
@@ -130,7 +132,7 @@ export default function TransactionDetailPage() {
             aria-busy={pdfLoading}
             className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm"
           >
-            {pdfLoading ? 'Generating...' : 'Download Receipt PDF'}
+            {pdfLoading ? TRANSACTIONS.generating : TRANSACTIONS.downloadReceiptPdf}
           </button>
         </div>
         <Link
@@ -140,29 +142,29 @@ export default function TransactionDetailPage() {
           {data.clientName}
         </Link>
         {formattedDeliveredAt && (
-          <p className="text-sm text-gray-500">Delivered: {formattedDeliveredAt}</p>
+          <p className="text-sm text-gray-500">{TRANSACTIONS.delivered} {formattedDeliveredAt}</p>
         )}
-        <p className="text-sm text-gray-500">Submitted by: {data.submittedBy}</p>
+        <p className="text-sm text-gray-500">{TRANSACTIONS.submittedBy} {data.submittedBy}</p>
       </div>
 
       {/* Section 2: Line Items */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Line Items</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{TRANSACTIONS.lineItems}</h2>
         <div className="border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50">
                 <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
-                  Name
+                  {TRANSACTIONS.thName}
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">
-                  Qty
+                  {TRANSACTIONS.thQty}
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">
-                  Unit Price
+                  {TRANSACTIONS.thUnitPrice}
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">
-                  Line Total
+                  {TRANSACTIONS.thLineTotal}
                 </th>
               </tr>
             </thead>
@@ -178,7 +180,7 @@ export default function TransactionDetailPage() {
               {/* Total row */}
               <tr className="border-t border-gray-200 bg-gray-50">
                 <td colSpan={3} className="px-4 py-3 text-sm font-semibold text-gray-900 text-right">
-                  Total
+                  {COMMON.total}
                 </td>
                 <td className="px-4 py-3 text-sm font-semibold text-gray-900 text-right">
                   ${data.totalAmount}
@@ -191,14 +193,14 @@ export default function TransactionDetailPage() {
 
       {/* Section 3: Payment Summary */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Payment Summary</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{TRANSACTIONS.paymentSummary}</h2>
         <div className="space-y-1">
           <p className="text-sm text-gray-700">
-            Initial Payment: <span className="font-medium text-gray-900">${data.initialPayment}</span>
+            {TRANSACTIONS.initialPayment} <span className="font-medium text-gray-900">${data.initialPayment}</span>
           </p>
           {amountOwed > 0 && (
             <p className="text-sm text-gray-700">
-              Amount Owed: <span className="font-medium text-red-600">${amountOwed.toFixed(2)}</span>
+              {TRANSACTIONS.amountOwed} <span className="font-medium text-red-600">${amountOwed.toFixed(2)}</span>
             </p>
           )}
         </div>
@@ -206,7 +208,7 @@ export default function TransactionDetailPage() {
 
       {/* Section 4: Attachments */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Attachments</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{TRANSACTIONS.attachmentsLabel}</h2>
         {data.documents.length > 0 ? (
           <div className="flex flex-wrap gap-3">
             {data.documents.map((doc) => (
@@ -214,7 +216,7 @@ export default function TransactionDetailPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">No attachments</p>
+          <p className="text-sm text-gray-500">{TRANSACTIONS.noAttachments}</p>
         )}
       </div>
 
@@ -224,19 +226,19 @@ export default function TransactionDetailPage() {
           <div className="space-y-4">
             {hasClientNotes && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-700 mb-1">Client Notes</h2>
+                <h2 className="text-sm font-semibold text-gray-700 mb-1">{TRANSACTIONS.clientNotes}</h2>
                 <p className="text-sm text-gray-700">{data.clientNotes}</p>
               </div>
             )}
             {canSeeInternalNotes && hasInternalNotes && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-700 mb-1">Internal Notes</h2>
+                <h2 className="text-sm font-semibold text-gray-700 mb-1">{TRANSACTIONS.internalNotes}</h2>
                 <p className="text-sm text-gray-700">{data.internalNotes}</p>
               </div>
             )}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">No notes</p>
+          <p className="text-sm text-gray-500">{TRANSACTIONS.noNotes}</p>
         )}
       </div>
     </div>

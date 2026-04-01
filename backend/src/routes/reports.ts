@@ -15,6 +15,7 @@ import { streamPdf } from '../services/pdf/pdf-base.js';
 import { buildCompanyReportPdf } from '../services/pdf/company-report.pdf.js';
 import { buildClientReportPdf } from '../services/pdf/client-report.pdf.js';
 import { buildReceiptPdf } from '../services/pdf/receipt.pdf.js';
+import { REPORTS } from '../constants/strings/reports.js';
 
 export const reportsRouter = Router();
 
@@ -44,7 +45,7 @@ const logoUpload = multer({
 reportsRouter.get('/company', async (req, res) => {
   const parsed = CompanyReportQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: REPORTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -65,13 +66,13 @@ reportsRouter.get('/company', async (req, res) => {
 reportsRouter.get('/client/:clientId', async (req, res) => {
   const clientIdParsed = UuidSchema.safeParse(req.params.clientId);
   if (!clientIdParsed.success) {
-    res.status(400).json({ error: 'Invalid client ID format' });
+    res.status(400).json({ error: REPORTS.invalidClientIdFormat });
     return;
   }
 
   const parsed = DateRangeSchema.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: REPORTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -91,7 +92,7 @@ reportsRouter.get('/client/:clientId', async (req, res) => {
 reportsRouter.get('/receipt/:transactionId', async (req, res) => {
   const txIdParsed = UuidSchema.safeParse(req.params.transactionId);
   if (!txIdParsed.success) {
-    res.status(400).json({ error: 'Invalid transaction ID format' });
+    res.status(400).json({ error: REPORTS.invalidTransactionIdFormat });
     return;
   }
 
@@ -105,7 +106,7 @@ reportsRouter.get('/receipt/:transactionId', async (req, res) => {
 reportsRouter.get('/company/pdf', async (req, res) => {
   const parsed = CompanyReportQuerySchema.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: REPORTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -129,13 +130,13 @@ reportsRouter.get('/company/pdf', async (req, res) => {
 reportsRouter.get('/client/:clientId/pdf', async (req, res) => {
   const clientIdParsed = UuidSchema.safeParse(req.params.clientId);
   if (!clientIdParsed.success) {
-    res.status(400).json({ error: 'Invalid client ID format' });
+    res.status(400).json({ error: REPORTS.invalidClientIdFormat });
     return;
   }
 
   const parsed = DateRangeSchema.safeParse(req.query);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: REPORTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -161,7 +162,7 @@ reportsRouter.get('/client/:clientId/pdf', async (req, res) => {
 reportsRouter.get('/receipt/:transactionId/pdf', async (req, res) => {
   const txIdParsed = UuidSchema.safeParse(req.params.transactionId);
   if (!txIdParsed.success) {
-    res.status(400).json({ error: 'Invalid transaction ID format' });
+    res.status(400).json({ error: REPORTS.invalidTransactionIdFormat });
     return;
   }
 
@@ -179,7 +180,7 @@ reportsRouter.post('/logo', (req, res, next) => {
   logoUpload(req, res, async (err) => {
     if (err) {
       if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
-        res.status(400).json({ error: 'Logo file must be under 5MB' });
+        res.status(400).json({ error: REPORTS.logoFileTooLarge });
         return;
       }
       next(err);
@@ -187,7 +188,7 @@ reportsRouter.post('/logo', (req, res, next) => {
     }
 
     if (!req.file) {
-      res.status(400).json({ error: 'No logo file provided' });
+      res.status(400).json({ error: REPORTS.noLogoFileProvided });
       return;
     }
 
@@ -234,7 +235,7 @@ reportsRouter.get('/logo', async (req, res) => {
     .limit(1);
 
   if (!company?.logoPath) {
-    res.status(404).json({ error: 'No logo uploaded' });
+    res.status(404).json({ error: REPORTS.noLogoUploaded });
     return;
   }
 
@@ -244,7 +245,7 @@ reportsRouter.get('/logo', async (req, res) => {
     res.send(buffer);
   } catch (error: any) {
     if (error.code === 'ENOENT') {
-      res.status(404).json({ error: 'Logo file not found' });
+      res.status(404).json({ error: REPORTS.logoFileNotFound });
       return;
     }
     throw error;

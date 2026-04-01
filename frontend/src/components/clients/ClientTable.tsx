@@ -1,5 +1,6 @@
 import type { ClientListItem } from '../../api/clients.ts';
 import ClientTableRow from './ClientTableRow.tsx';
+import { CLIENTS } from '../../constants/strings/clients.ts';
 
 interface ClientTableProps {
   clients: ClientListItem[];
@@ -12,10 +13,10 @@ export default function ClientTable({ clients, onRowClick }: ClientTableProps) {
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50">
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Outstanding Balance</th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{CLIENTS.thName}</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{CLIENTS.thPhone}</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{CLIENTS.thOutstandingBalance}</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{CLIENTS.thStatus}</th>
           </tr>
         </thead>
         <tbody>

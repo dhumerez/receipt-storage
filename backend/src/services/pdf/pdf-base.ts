@@ -1,6 +1,7 @@
 import PDFDocument from 'pdfkit';
 import type { Response } from 'express';
 import fs from 'node:fs';
+import { PDF } from '../../constants/strings/pdf.js';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -55,13 +56,13 @@ export function addPageNumbers(doc: InstanceType<typeof PDFDocument>): void {
       .font('Helvetica')
       .fontSize(8)
       .fillColor('#9CA3AF')
-      .text(`Page ${i + 1} of ${range.count}`, 50, y, {
+      .text(PDF.pageOf(i + 1, range.count), 50, y, {
         width: contentWidth,
         align: 'center',
       });
 
     // "Generated: YYYY-MM-DD" right-aligned
-    doc.text(`Generated: ${today}`, 50, y, {
+    doc.text(PDF.generated(today), 50, y, {
       width: contentWidth,
       align: 'right',
     });

@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClient, getClientDebts } from '../../api/clients.ts';
+import { CLIENTS } from '../../constants/strings/clients.ts';
 import ClientDetailHeader from '../../components/clients/ClientDetailHeader.tsx';
 import BalanceSummary from '../../components/clients/BalanceSummary.tsx';
 import DebtGroupList from '../../components/clients/DebtGroupList.tsx';
@@ -28,7 +29,7 @@ export default function ClientDetailPage() {
   if (clientLoading || debtsLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading client...</div>
+        <div className="text-sm text-gray-400">{CLIENTS.loadingClient}</div>
       </div>
     );
   }
@@ -37,7 +38,7 @@ export default function ClientDetailPage() {
     return (
       <div className="p-8">
         <div className="p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load client. Please refresh the page.
+          {CLIENTS.errorLoadingClient}
         </div>
       </div>
     );
@@ -50,7 +51,7 @@ export default function ClientDetailPage() {
         to="/clients"
         className="inline-flex items-center text-sm text-blue-600 hover:underline mb-6"
       >
-        &#8592; Clients
+        &#8592; {CLIENTS.pageTitle}
       </Link>
 
       <ClientDetailHeader client={client} />

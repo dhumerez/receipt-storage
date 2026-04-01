@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { uploadLogo, deleteLogo, getLogoUrl } from '../../api/reports.ts';
+import { SETTINGS } from '../../constants/strings/settings.ts';
 
 export default function LogoUpload() {
   const [logoExists, setLogoExists] = useState(false);
@@ -38,7 +39,7 @@ export default function LogoUpload() {
   };
 
   const handleRemove = () => {
-    if (window.confirm('Remove company logo? It will no longer appear on exported PDFs.')) {
+    if (window.confirm(SETTINGS.removeConfirm)) {
       deleteMutation.mutate();
     }
   };
@@ -62,7 +63,7 @@ export default function LogoUpload() {
           <img
             key={logoKey}
             src={getLogoUrl()}
-            alt="Company logo"
+            alt={SETTINGS.companyLogoAlt}
             className="max-w-[120px] rounded"
             onError={() => setLogoExists(false)}
           />
@@ -73,7 +74,7 @@ export default function LogoUpload() {
               disabled={uploading}
               className="px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50"
             >
-              {uploading ? 'Uploading...' : 'Replace'}
+              {uploading ? SETTINGS.uploading : SETTINGS.replace}
             </button>
             <button
               type="button"
@@ -81,7 +82,7 @@ export default function LogoUpload() {
               disabled={deleteMutation.isPending}
               className="text-sm text-red-600 hover:text-red-700 text-left"
             >
-              Remove
+              {SETTINGS.remove}
             </button>
           </div>
         </div>
@@ -102,12 +103,12 @@ export default function LogoUpload() {
             aria-label="Upload company logo"
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 font-medium"
           >
-            {uploading ? 'Uploading...' : 'Upload Logo'}
+            {uploading ? SETTINGS.uploading : SETTINGS.uploadLogo}
           </button>
         </div>
       )}
 
-      <p className="text-xs text-gray-500">Logo appears on exported PDF reports.</p>
+      <p className="text-xs text-gray-500">{SETTINGS.logoAppearsOnPdfs}</p>
     </div>
   );
 }

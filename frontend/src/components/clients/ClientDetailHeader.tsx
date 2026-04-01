@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import type { Client } from '../../api/clients.ts';
 import { sendPortalInvite } from '../../api/clients.ts';
+import { CLIENTS } from '../../constants/strings/clients.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 import ClientStatusBadge from './ClientStatusBadge.tsx';
 import ClientModal from './ClientModal.tsx';
 import DeactivateConfirmModal from './DeactivateConfirmModal.tsx';
@@ -23,7 +25,7 @@ export default function ClientDetailHeader({ client }: ClientDetailHeaderProps) 
       setInviteError('');
     },
     onError: () =>
-      setInviteError('Invite could not be sent. Check the email address and try again.'),
+      setInviteError(CLIENTS.inviteCouldNotBeSent),
   });
 
   const hasEmail = !!client.email;
@@ -49,7 +51,7 @@ export default function ClientDetailHeader({ client }: ClientDetailHeaderProps) 
             onClick={() => setEditOpen(true)}
             className="px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
-            Edit Client
+            {CLIENTS.editClient}
           </button>
           {client.isActive && (
             <button
@@ -58,18 +60,18 @@ export default function ClientDetailHeader({ client }: ClientDetailHeaderProps) 
               disabled={!hasEmail || portalActive || inviteMutation.isPending}
               title={
                 !hasEmail
-                  ? 'Add an email address to this client before sending a portal invite.'
+                  ? CLIENTS.addEmailBeforeInvite
                   : portalActive
-                  ? 'Portal access is already active.'
+                  ? CLIENTS.portalAccessAlreadyActive
                   : undefined
               }
               className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {inviteMutation.isPending
-                ? 'Sending...'
+                ? COMMON.processing
                 : portalActive
-                ? 'Portal Active'
-                : 'Send Portal Invite'}
+                ? CLIENTS.portalActive
+                : CLIENTS.sendPortalInvite}
             </button>
           )}
           {client.isActive && (
@@ -78,7 +80,7 @@ export default function ClientDetailHeader({ client }: ClientDetailHeaderProps) 
               onClick={() => setDeactivateOpen(true)}
               className="px-4 py-2 text-sm border border-red-300 rounded-md text-red-700 hover:bg-red-50"
             >
-              Deactivate Client
+              {CLIENTS.deactivateClient}
             </button>
           )}
         </div>
@@ -86,7 +88,7 @@ export default function ClientDetailHeader({ client }: ClientDetailHeaderProps) 
 
       {inviteSuccess && (
         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
-          Portal invite sent to {client.email}.
+          {CLIENTS.inviteSentTo(client.email!)}
         </div>
       )}
       {inviteError && (

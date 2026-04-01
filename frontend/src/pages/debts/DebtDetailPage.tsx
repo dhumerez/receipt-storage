@@ -15,12 +15,13 @@ import type { DocumentInfo } from '../../api/debts.ts';
 import PaymentForm from '../../components/debts/PaymentForm.tsx';
 import PaymentHistoryList from '../../components/debts/PaymentHistoryList.tsx';
 import WriteOffDialog from '../../components/debts/WriteOffDialog.tsx';
+import { DEBTS } from '../../constants/strings/debts.ts';
 
 const STATUS_LABELS: Record<string, string> = {
-  open: 'Open',
-  partially_paid: 'Partially Paid',
-  fully_paid: 'Fully Paid',
-  written_off: 'Written Off',
+  open: DEBTS.statusOpen,
+  partially_paid: DEBTS.statusPartiallyPaid,
+  fully_paid: DEBTS.statusFullyPaid,
+  written_off: DEBTS.statusWrittenOff,
 };
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -133,7 +134,7 @@ export default function DebtDetailPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading debt details...</div>
+        <div className="text-sm text-gray-400">{DEBTS.loadingDebtDetails}</div>
       </div>
     );
   }
@@ -142,7 +143,7 @@ export default function DebtDetailPage() {
     return (
       <div className="p-8">
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load this debt. Please refresh the page.
+          {DEBTS.errorLoadingDebt}
         </div>
       </div>
     );
@@ -175,7 +176,7 @@ export default function DebtDetailPage() {
         to={`/clients/${debt.clientId}`}
         className="text-sm text-blue-600 hover:text-blue-700"
       >
-        &larr; Back to Client
+        {DEBTS.backToClient}
       </Link>
 
       {/* Section 1 - Header */}
@@ -198,7 +199,7 @@ export default function DebtDetailPage() {
             aria-busy={pdfLoading}
             className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm"
           >
-            {pdfLoading ? 'Generating...' : 'Download Statement'}
+            {pdfLoading ? DEBTS.generating : DEBTS.downloadStatement}
           </button>
         </div>
 
@@ -208,19 +209,19 @@ export default function DebtDetailPage() {
 
         <div className="grid grid-cols-3 gap-4 mt-4">
           <div>
-            <p className="text-gray-500 text-xs mb-0.5">Original Amount</p>
+            <p className="text-gray-500 text-xs mb-0.5">{DEBTS.originalAmount}</p>
             <p className="text-sm font-normal text-gray-700">
               ${parseFloat(debt.totalAmount).toFixed(2)}
             </p>
           </div>
           <div>
-            <p className="text-gray-500 text-xs mb-0.5">Total Paid</p>
+            <p className="text-gray-500 text-xs mb-0.5">{DEBTS.totalPaid}</p>
             <p className="text-sm font-normal text-gray-700">
               ${parseFloat(debt.amountPaid).toFixed(2)}
             </p>
           </div>
           <div>
-            <p className="text-gray-500 text-xs mb-0.5">Remaining Balance</p>
+            <p className="text-gray-500 text-xs mb-0.5">{DEBTS.remainingBalance}</p>
             <p
               className={`text-2xl font-semibold ${remainingBalance === 0 ? 'text-green-700' : 'text-gray-900'}`}
             >
@@ -238,7 +239,7 @@ export default function DebtDetailPage() {
                 onClick={() => setShowWriteOff(true)}
                 className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md text-sm min-h-[44px]"
               >
-                Write Off
+                {DEBTS.writeOff}
               </button>
             )}
             {debt.status === 'written_off' && (
@@ -248,7 +249,7 @@ export default function DebtDetailPage() {
                 onClick={() => reopenMutation.mutate()}
                 className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {reopenMutation.isPending ? 'Processing...' : 'Reopen Debt'}
+                {reopenMutation.isPending ? DEBTS.processing : DEBTS.reopenDebt}
               </button>
             )}
           </div>
@@ -257,7 +258,7 @@ export default function DebtDetailPage() {
 
       {/* Section 2 - Payment History */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Payment History</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{DEBTS.paymentHistory}</h2>
         <PaymentHistoryList
           payments={debt.payments}
           debtId={debt.id}
@@ -272,14 +273,14 @@ export default function DebtDetailPage() {
       {/* Section 3 - Record Payment */}
       {canRecordPayment && isPayable && (
         <div className="border-t border-gray-200 mt-8 pt-8">
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">Record Payment</h2>
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">{DEBTS.recordPayment}</h2>
           {!showPaymentForm ? (
             <button
               type="button"
               onClick={() => setShowPaymentForm(true)}
               className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold min-h-[44px]"
             >
-              Record Payment
+              {DEBTS.recordPayment}
             </button>
           ) : (
             <PaymentForm
@@ -297,12 +298,12 @@ export default function DebtDetailPage() {
 
       {/* Section 4 - Original Transaction */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Original Transaction</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{DEBTS.originalTransaction}</h2>
         <Link
           to={`/transactions/${debt.transactionId}`}
           className="text-sm text-blue-600 hover:text-blue-700"
         >
-          View Transaction {debt.transactionRef}
+          {DEBTS.viewTransaction(debt.transactionRef)}
         </Link>
         {debt.transactionDocuments.length > 0 && (
           <div className="flex gap-2 mt-2">

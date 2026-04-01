@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { apiClient, setAccessToken } from '../api/client.ts';
+import { AUTH } from '../constants/strings/auth.ts';
 
 export default function AcceptInvitePage() {
   const [searchParams] = useSearchParams();
@@ -18,9 +19,9 @@ export default function AcceptInvitePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Invalid Link</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">{AUTH.invalidLink}</h2>
           <p className="text-gray-500 text-sm">
-            This invitation link is missing a token. Please check the email and try again.
+            {AUTH.inviteLinkMissingToken}
           </p>
         </div>
       </div>
@@ -32,11 +33,11 @@ export default function AcceptInvitePage() {
     setError('');
 
     if (password !== passwordConfirm) {
-      setError('Passwords do not match');
+      setError(AUTH.passwordsDoNotMatch);
       return;
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(AUTH.passwordMinLength);
       return;
     }
 
@@ -49,7 +50,7 @@ export default function AcceptInvitePage() {
       setAccessToken(data.accessToken);
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to accept invitation');
+      setError(err instanceof Error ? err.message : AUTH.failedToAcceptInvite);
     } finally {
       setSubmitting(false);
     }
@@ -58,8 +59,8 @@ export default function AcceptInvitePage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Accept Invitation</h2>
-        <p className="text-gray-500 text-sm mb-6">Set your name and password to get started.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{AUTH.acceptInviteTitle}</h2>
+        <p className="text-gray-500 text-sm mb-6">{AUTH.acceptInviteSubtitle}</p>
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
             {error}
@@ -68,7 +69,7 @@ export default function AcceptInvitePage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
+              {AUTH.fullNameLabel}
             </label>
             <input
               id="fullName"
@@ -82,7 +83,7 @@ export default function AcceptInvitePage() {
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              {AUTH.passwordLabel}
             </label>
             <input
               id="password"
@@ -97,7 +98,7 @@ export default function AcceptInvitePage() {
           </div>
           <div>
             <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
+              {AUTH.confirmPasswordLabel}
             </label>
             <input
               id="passwordConfirm"
@@ -115,7 +116,7 @@ export default function AcceptInvitePage() {
             disabled={submitting}
             className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 font-medium"
           >
-            {submitting ? 'Setting up account...' : 'Create Account'}
+            {submitting ? AUTH.settingUpAccount : AUTH.createAccount}
           </button>
         </form>
       </div>

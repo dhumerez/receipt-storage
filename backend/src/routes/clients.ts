@@ -6,6 +6,7 @@ import { db } from '../db/client.js';
 import { clients, debtBalances, tokens, companies, users } from '../db/schema.js';
 import { generateRawToken, hashToken } from '../services/auth.service.js';
 import { sendInviteEmail } from '../services/email.service.js';
+import { CLIENTS } from '../constants/strings/clients.js';
 
 export const clientsRouter = Router();
 
@@ -70,7 +71,7 @@ clientsRouter.get('/:id', async (req, res) => {
     .where(and(eq(clients.id, id), eq(clients.companyId, companyId)));
 
   if (!client) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: CLIENTS.notFound });
     return;
   }
 
@@ -91,7 +92,7 @@ const CreateClientSchema = z.object({
 clientsRouter.post('/', async (req, res) => {
   const parsed = CreateClientSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: CLIENTS.validationError, details: parsed.error.flatten() });
     return;
   }
   const companyId = req.companyId!;
@@ -129,7 +130,7 @@ clientsRouter.patch('/:id', async (req, res) => {
 
   const parsed = UpdateClientSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: CLIENTS.validationError, details: parsed.error.flatten() });
     return;
   }
   const companyId = req.companyId!;
@@ -143,7 +144,7 @@ clientsRouter.patch('/:id', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: CLIENTS.notFound });
     return;
   }
 
@@ -170,7 +171,7 @@ clientsRouter.patch('/:id/deactivate', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: CLIENTS.notFound });
     return;
   }
 
@@ -203,13 +204,13 @@ clientsRouter.post('/:id/invite', async (req, res) => {
     .limit(1);
 
   if (!client) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: CLIENTS.notFound });
     return;
   }
 
   // D-07: email required for portal invite
   if (!client.email) {
-    res.status(400).json({ error: 'Client has no email address. Add an email before sending a portal invite.' });
+    res.status(400).json({ error: CLIENTS.noEmailForInvite });
     return;
   }
 
@@ -221,7 +222,7 @@ clientsRouter.post('/:id/invite', async (req, res) => {
       .where(eq(users.id, client.userId))
       .limit(1);
     if (existingUser?.isActive) {
-      res.status(400).json({ error: 'Portal access is already active for this client.' });
+      res.status(400).json({ error: CLIENTS.portalAlreadyActive });
       return;
     }
   }
@@ -264,7 +265,7 @@ clientsRouter.post('/:id/invite', async (req, res) => {
     role: 'client',
   }).catch(console.error);
 
-  res.status(201).json({ message: 'Invite sent' });
+  res.status(201).json({ message: CLIENTS.inviteSent });
 });
 
 // ─── GET /api/v1/clients/:id/debts ───────────────────────────────────────────
@@ -286,7 +287,7 @@ clientsRouter.get('/:id/debts', async (req, res) => {
     .limit(1);
 
   if (!client) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: CLIENTS.notFound });
     return;
   }
 

@@ -1,0 +1,9 @@
+export { COMMON } from './common.ts';
+export { AUTH } from './auth.ts';
+export { CLIENTS } from './clients.ts';
+export { PRODUCTS } from './products.ts';
+export { TRANSACTIONS } from './transactions.ts';
+export { DEBTS } from './debts.ts';
+export { REPORTS } from './reports.ts';
+export { SETTINGS } from './settings.ts';
+export { PORTAL } from './portal.ts';

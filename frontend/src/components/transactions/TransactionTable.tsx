@@ -1,5 +1,7 @@
 import type { TransactionListItem } from '../../api/transactions.ts';
 import TransactionTableRow from './TransactionTableRow.tsx';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 interface TransactionTableProps {
   transactions: TransactionListItem[];
@@ -11,13 +13,13 @@ export default function TransactionTable({ transactions }: TransactionTableProps
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50">
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Ref #</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Client</th>
-            <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">Total</th>
-            <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">Initial Payment</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Delivered</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Submitted By</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thRef}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thClient}</th>
+            <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">{COMMON.total}</th>
+            <th className="px-4 py-3 text-right text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thInitialPayment}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thStatus}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thDelivered}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thSubmittedBy}</th>
           </tr>
         </thead>
         <tbody>

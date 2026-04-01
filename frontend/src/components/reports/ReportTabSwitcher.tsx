@@ -1,3 +1,5 @@
+import { REPORTS } from '../../constants/strings/reports.ts';
+
 interface ReportTabSwitcherProps {
   activeTab: 'company' | 'client';
   onTabChange: (tab: 'company' | 'client') => void;
@@ -5,8 +7,8 @@ interface ReportTabSwitcherProps {
 
 export default function ReportTabSwitcher({ activeTab, onTabChange }: ReportTabSwitcherProps) {
   const tabs: Array<{ key: 'company' | 'client'; label: string }> = [
-    { key: 'company', label: 'Company Report' },
-    { key: 'client', label: 'Client Report' },
+    { key: 'company', label: REPORTS.companyReport },
+    { key: 'client', label: REPORTS.clientReport },
   ];
 
   return (

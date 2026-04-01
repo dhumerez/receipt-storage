@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '../../api/products.ts';
 import type { ProductListItem } from '../../api/products.ts';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 interface CatalogPickerModalProps {
   isOpen: boolean;
@@ -49,7 +51,7 @@ export default function CatalogPickerModal({ isOpen, onClose, onSelect }: Catalo
     >
       <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6 max-h-[80vh] flex flex-col">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Select Product</h2>
+          <h2 className="text-xl font-semibold text-gray-900">{TRANSACTIONS.selectProduct}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-xl leading-none"
@@ -62,21 +64,21 @@ export default function CatalogPickerModal({ isOpen, onClose, onSelect }: Catalo
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search products..."
+          placeholder={TRANSACTIONS.searchProducts}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm mb-4"
         />
 
         <div className="flex-1 overflow-y-auto">
           {isLoading && (
-            <p className="text-sm text-gray-500 p-3">Loading products...</p>
+            <p className="text-sm text-gray-500 p-3">{COMMON.loading}</p>
           )}
           {isError && (
             <p className="text-sm text-red-600 p-3">
-              Couldn't load products. Please try again.
+              {TRANSACTIONS.couldntLoadProducts}
             </p>
           )}
           {!isLoading && !isError && products.length === 0 && (
-            <p className="text-sm text-gray-500 p-3">No products found.</p>
+            <p className="text-sm text-gray-500 p-3">{TRANSACTIONS.noProductsFound}</p>
           )}
           {products.map((product) => (
             <div
@@ -103,7 +105,7 @@ export default function CatalogPickerModal({ isOpen, onClose, onSelect }: Catalo
             onClick={onClose}
             className="text-sm text-gray-600 hover:text-gray-900"
           >
-            Back to Form
+            {TRANSACTIONS.backToForm}
           </button>
         </div>
       </div>

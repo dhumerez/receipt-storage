@@ -10,6 +10,8 @@ import type { LineItemRow } from '../../components/transactions/LineItemBuilder.
 import CatalogPickerModal from '../../components/transactions/CatalogPickerModal.tsx';
 import FileAttachmentSection from '../../components/transactions/FileAttachmentSection.tsx';
 import type { ProductListItem } from '../../api/products.ts';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 const inputClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm';
@@ -44,7 +46,7 @@ export default function NewTransactionPage() {
       navigate('/transactions');
     },
     onError: () => {
-      setError("Couldn't save transaction. Check your connection and try again.");
+      setError(TRANSACTIONS.couldntSaveTransaction);
     },
   });
 
@@ -56,11 +58,11 @@ export default function NewTransactionPage() {
 
     // Validation
     if (!clientId) {
-      setError('Please select a client.');
+      setError(TRANSACTIONS.pleaseSelectClient);
       return;
     }
     if (items.length === 0) {
-      setError('Please add at least one line item.');
+      setError(TRANSACTIONS.pleaseAddLineItem);
       return;
     }
 
@@ -101,7 +103,7 @@ export default function NewTransactionPage() {
 
   return (
     <div className="p-8 pb-24">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-8">New Transaction</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 mb-8">{TRANSACTIONS.newTransaction}</h1>
 
       {error && (
         <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
@@ -112,13 +114,13 @@ export default function NewTransactionPage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Client selector */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-3 block">Client</label>
+          <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.clientLabel}</label>
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
             className={inputClass}
           >
-            <option value="">Select a client...</option>
+            <option value="">{TRANSACTIONS.selectClient}</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.fullName}
@@ -129,7 +131,7 @@ export default function NewTransactionPage() {
 
         {/* Delivery date */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-3 block">Delivery Date</label>
+          <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.deliveryDateLabel}</label>
           <input
             type="date"
             value={deliveredAt}
@@ -140,19 +142,19 @@ export default function NewTransactionPage() {
 
         {/* Description */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-3 block">Description</label>
+          <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.descriptionLabel}</label>
           <textarea
             rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className={`${inputClass} resize-none`}
-            placeholder="Optional description..."
+            placeholder={TRANSACTIONS.optionalDescription}
           />
         </div>
 
         {/* Line Items */}
         <div>
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">Line Items</h2>
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">{TRANSACTIONS.lineItemsLabel}</h2>
           <LineItemBuilder
             items={items}
             onChange={setItems}
@@ -162,7 +164,7 @@ export default function NewTransactionPage() {
 
         {/* Initial Payment */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-3 block">Initial Payment</label>
+          <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.initialPaymentLabel}</label>
           <input
             type="number"
             min="0"
@@ -176,33 +178,33 @@ export default function NewTransactionPage() {
 
         {/* Client Notes */}
         <div>
-          <label className="text-sm font-semibold text-gray-700 mb-3 block">Client Notes</label>
+          <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.clientNotesLabel}</label>
           <textarea
             rows={3}
             value={clientNotes}
             onChange={(e) => setClientNotes(e.target.value)}
             className={`${inputClass} resize-none`}
-            placeholder="Notes visible to the client..."
+            placeholder={TRANSACTIONS.clientNotesPlaceholder}
           />
         </div>
 
         {/* Internal Notes (owner/collaborator only) */}
         {canSeeInternalNotes && (
           <div>
-            <label className="text-sm font-semibold text-gray-700 mb-3 block">Internal Notes</label>
+            <label className="text-sm font-semibold text-gray-700 mb-3 block">{TRANSACTIONS.internalNotesLabel}</label>
             <textarea
               rows={3}
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
               className={`${inputClass} resize-none`}
-              placeholder="Notes visible only to your team..."
+              placeholder={TRANSACTIONS.internalNotesPlaceholder}
             />
           </div>
         )}
 
         {/* Attachments */}
         <div>
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">Attachments</h2>
+          <h2 className="text-sm font-semibold text-gray-700 mb-3">{TRANSACTIONS.attachmentsLabel}</h2>
           <FileAttachmentSection files={files} onChange={setFiles} />
         </div>
       </form>
@@ -221,7 +223,7 @@ export default function NewTransactionPage() {
           onClick={() => navigate('/transactions')}
           className="text-sm text-gray-600 hover:text-gray-900"
         >
-          Discard Changes
+          {TRANSACTIONS.discardChanges}
         </button>
         <button
           type="submit"
@@ -229,7 +231,7 @@ export default function NewTransactionPage() {
           onClick={handleSubmit}
           className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Saving...' : 'Save Transaction'}
+          {isSubmitting ? COMMON.saving : TRANSACTIONS.saveTransaction}
         </button>
       </div>
     </div>

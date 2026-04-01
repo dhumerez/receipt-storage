@@ -1,6 +1,7 @@
 import type PDFDocument from 'pdfkit';
 import { addCompanyHeader, drawTable } from './pdf-base.js';
 import type { TableColumn } from './pdf-base.js';
+import { PDF } from '../../constants/strings/pdf.js';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -34,16 +35,16 @@ export async function buildCompanyReportPdf(
     doc,
     companyName,
     logoPath,
-    'Company Report',
+    PDF.companyReportTitle,
     dateRange,
   );
 
   // Define table columns per UI-SPEC
   const columns: TableColumn[] = [
-    { header: 'Client Name', width: 180, align: 'left', getValue: (r: CompanyReportRow) => r.clientName },
-    { header: 'Total Debts', width: 100, align: 'right', getValue: (r: CompanyReportRow) => `$${r.totalDebts}` },
-    { header: 'Total Paid', width: 100, align: 'right', getValue: (r: CompanyReportRow) => `$${r.totalPaid}` },
-    { header: 'Outstanding Balance', width: 120, align: 'right', getValue: (r: CompanyReportRow) => `$${r.outstandingBalance}` },
+    { header: PDF.thClientName, width: 180, align: 'left', getValue: (r: CompanyReportRow) => r.clientName },
+    { header: PDF.thTotalDebts, width: 100, align: 'right', getValue: (r: CompanyReportRow) => `$${r.totalDebts}` },
+    { header: PDF.thTotalPaid, width: 100, align: 'right', getValue: (r: CompanyReportRow) => `$${r.totalPaid}` },
+    { header: PDF.thOutstandingBalance, width: 120, align: 'right', getValue: (r: CompanyReportRow) => `$${r.outstandingBalance}` },
   ];
 
   drawTable(doc, columns, data, headerEndY);

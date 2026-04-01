@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DEBTS, COMMON } from '../../constants/strings/index.ts';
 
 interface WriteOffDialogProps {
   isOpen: boolean;
@@ -36,7 +37,7 @@ export default function WriteOffDialog({ isOpen, onClose, onConfirm, isSubmittin
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!reason.trim()) {
-      setError('A reason is required to write off this debt.');
+      setError(DEBTS.writeOffReasonRequired);
       return;
     }
     setError(null);
@@ -51,15 +52,15 @@ export default function WriteOffDialog({ isOpen, onClose, onConfirm, isSubmittin
       }}
     >
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-        <h2 className="text-xl font-semibold text-gray-900">Write Off Debt</h2>
+        <h2 className="text-xl font-semibold text-gray-900">{DEBTS.writeOffDebt}</h2>
         <p className="text-sm text-gray-500 mt-1 mb-4">
-          This will mark the debt as uncollectible. You can reopen it later if needed.
+          {DEBTS.writeOffBody}
         </p>
 
         <form onSubmit={handleSubmit}>
           <textarea
             rows={3}
-            placeholder="Describe why this debt is being written off"
+            placeholder={DEBTS.writeOffPlaceholder}
             maxLength={500}
             required
             value={reason}
@@ -79,14 +80,14 @@ export default function WriteOffDialog({ isOpen, onClose, onConfirm, isSubmittin
               onClick={onClose}
               className="text-sm text-gray-600 hover:text-gray-900"
             >
-              Cancel
+              {COMMON.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Processing...' : 'Write Off Debt'}
+              {isSubmitting ? COMMON.processing : DEBTS.writeOffDebt}
             </button>
           </div>
         </form>

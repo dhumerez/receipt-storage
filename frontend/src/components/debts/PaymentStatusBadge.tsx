@@ -1,9 +1,11 @@
+import { DEBTS } from '../../constants/strings/debts.ts';
+
 type PaymentStatus = 'confirmed' | 'pending_approval' | 'rejected';
 
 const STATUS_LABELS: Record<PaymentStatus, string> = {
-  confirmed: 'Confirmed',
-  pending_approval: 'Pending Approval',
-  rejected: 'Rejected',
+  confirmed: DEBTS.paymentConfirmed,
+  pending_approval: DEBTS.paymentPendingApproval,
+  rejected: DEBTS.paymentRejected,
 };
 
 const STATUS_CLASSES: Record<PaymentStatus, string> = {

@@ -1,0 +1,17 @@
+export const DEBTS = {
+  invalidDebtIdFormat: 'Formato de ID de deuda inválido',
+  notFound: 'Deuda no encontrada',
+  cannotRecordPaymentOnStatus: (status: string) => `No se puede registrar un pago en una deuda ${status}`,
+  paymentExceedsBalance: 'El pago excedería el saldo restante de la deuda',
+  validationError: 'Error de validación',
+  onlyOwnersCanApprovePayments: 'Solo los propietarios pueden aprobar pagos',
+  paymentNotPendingApproval: 'El pago no está pendiente de aprobación',
+  paymentNotFound: 'Pago no encontrado',
+  approvingWouldExceedTotal: 'Aprobar este pago excedería el total de la deuda',
+  onlyOwnersCanRejectPayments: 'Solo los propietarios pueden rechazar pagos',
+  onlyOwnersCanWriteOff: 'Solo los propietarios pueden cancelar deudas',
+  cannotWriteOffStatus: (status: string) => `No se puede cancelar una deuda ${status}`,
+  onlyWrittenOffCanReopen: 'Solo las deudas canceladas pueden ser reabiertas',
+  onlyOwnersCanReopen: 'Solo los propietarios pueden reabrir deudas',
+  invalidAmount: 'Debe ser un monto válido',
+} as const;

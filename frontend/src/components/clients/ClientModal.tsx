@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient, updateClient } from '../../api/clients.ts';
 import type { Client, CreateClientInput } from '../../api/clients.ts';
+import { CLIENTS } from '../../constants/strings/clients.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 interface ClientModalProps {
   isOpen: boolean;
@@ -58,7 +60,7 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       onClose();
     },
-    onError: () => setError("Couldn't save changes. Check your connection and try again."),
+    onError: () => setError(CLIENTS.couldntSaveChanges),
   });
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -84,7 +86,7 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
       <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">
-            {editData ? 'Edit Client' : 'Add Client'}
+            {editData ? CLIENTS.editClient : CLIENTS.addClient}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
         </div>
@@ -93,38 +95,38 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.fullNameRequired}</label>
             <input ref={firstInputRef} type="text" required value={form.fullName} onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-gray-400 font-normal">(optional)</span></label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.emailOptional} <span className="text-gray-400 font-normal">{CLIENTS.emailOptionalHint}</span></label>
             <input type="email" value={form.email ?? ''} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.phoneLabel}</label>
             <input type="tel" value={form.phone ?? ''} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.addressLabel}</label>
             <input type="text" value={form.address ?? ''} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">References</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.referencesLabel}</label>
             <textarea value={form.referencesText ?? ''} onChange={(e) => setForm((f) => ({ ...f, referencesText: e.target.value }))} rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
           </div>
           <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
             <button type="button" onClick={onClose}
               className="px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-              Cancel
+              {COMMON.cancel}
             </button>
             <button type="submit" disabled={mutation.isPending}
               className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-              {mutation.isPending ? 'Saving...' : (editData ? 'Save Changes' : 'Create Client')}
+              {mutation.isPending ? COMMON.saving : (editData ? CLIENTS.saveChanges : CLIENTS.createClient)}
             </button>
           </div>
         </form>

@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
+import { ERRORS } from '../constants/strings/errors.js';
 
 type Role = 'owner' | 'collaborator' | 'viewer' | 'client';
 
@@ -11,7 +12,7 @@ type Role = 'owner' | 'collaborator' | 'viewer' | 'client';
 export function requireRole(...allowedRoles: Role[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({ error: 'Unauthenticated' });
+      res.status(401).json({ error: ERRORS.unauthenticated });
       return;
     }
     if (req.user.isSuperAdmin) {
@@ -19,7 +20,7 @@ export function requireRole(...allowedRoles: Role[]) {
       return;
     }
     if (!allowedRoles.includes(req.user.role as Role)) {
-      res.status(403).json({ error: 'Insufficient permissions' });
+      res.status(403).json({ error: ERRORS.insufficientPermissions });
       return;
     }
     next();
@@ -39,11 +40,11 @@ export function requireSuperAdmin(
   next: NextFunction,
 ): void {
   if (!req.user) {
-    res.status(401).json({ error: 'Unauthenticated' });
+    res.status(401).json({ error: ERRORS.unauthenticated });
     return;
   }
   if (!req.user.isSuperAdmin) {
-    res.status(403).json({ error: 'Super admin access required' });
+    res.status(403).json({ error: ERRORS.superAdminRequired });
     return;
   }
   next();

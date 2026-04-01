@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { REPORTS } from '../../constants/strings/reports.ts';
 
 interface ReportFilterBarProps {
   dateFrom: string;
@@ -24,7 +25,7 @@ export default function ReportFilterBar({
       {children}
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs uppercase tracking-wider text-gray-500">From</label>
+        <label className="text-xs uppercase tracking-wider text-gray-500">{REPORTS.fromLabel}</label>
         <input
           type="date"
           value={dateFrom}
@@ -34,7 +35,7 @@ export default function ReportFilterBar({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs uppercase tracking-wider text-gray-500">To</label>
+        <label className="text-xs uppercase tracking-wider text-gray-500">{REPORTS.toLabel}</label>
         <input
           type="date"
           value={dateTo}
@@ -52,7 +53,7 @@ export default function ReportFilterBar({
           className="rounded border-gray-300"
         />
         <label htmlFor="show-settled" className="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">
-          Show settled clients
+          {REPORTS.showSettledClients}
         </label>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { createPayment } from '../../api/debts.ts';
 import type { CreatePaymentInput } from '../../api/debts.ts';
 import FileAttachmentSection from '../transactions/FileAttachmentSection.tsx';
+import { DEBTS, COMMON } from '../../constants/strings/index.ts';
 
 interface PaymentFormProps {
   debtId: string;
@@ -11,7 +12,7 @@ interface PaymentFormProps {
   onCancel: () => void;
 }
 
-const PAYMENT_METHODS = ['', 'Cash', 'Transfer', 'Mobile Payment', 'Other'] as const;
+const PAYMENT_METHODS = ['', DEBTS.methodCash, DEBTS.methodTransfer, DEBTS.methodMobilePayment, DEBTS.methodOther] as const;
 
 export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: PaymentFormProps) {
   const [amount, setAmount] = useState('');
@@ -32,7 +33,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
       onSuccess();
     },
     onError: () => {
-      setValidationError("Couldn't save payment. Check your connection and try again.");
+      setValidationError(DEBTS.couldntSavePayment);
     },
   });
 
@@ -42,27 +43,27 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
 
     const amountNum = parseFloat(amount);
     if (isNaN(amountNum) || amountNum <= 0) {
-      setValidationError('Amount is required and must be greater than 0.');
+      setValidationError(DEBTS.amountRequiredError);
       return;
     }
     if (amountNum > maxAmountNum) {
-      setValidationError(`Payment amount exceeds the remaining balance of $${maxAmountNum.toFixed(2)}.`);
+      setValidationError(DEBTS.paymentExceedsBalance(maxAmountNum.toFixed(2)));
       return;
     }
     if (!paidAt) {
-      setValidationError('Payment date is required.');
+      setValidationError(DEBTS.paymentDateRequiredError);
       return;
     }
     if (!paymentMethod) {
-      setValidationError('Payment method is required.');
+      setValidationError(DEBTS.paymentMethodRequiredError);
       return;
     }
-    if (paymentMethod === 'Other' && !customMethod.trim()) {
-      setValidationError('Please enter a payment method.');
+    if (paymentMethod === DEBTS.methodOther && !customMethod.trim()) {
+      setValidationError(DEBTS.enterPaymentMethodError);
       return;
     }
 
-    const methodValue = paymentMethod === 'Other' ? customMethod.trim() : paymentMethod;
+    const methodValue = paymentMethod === DEBTS.methodOther ? customMethod.trim() : paymentMethod;
 
     const input: CreatePaymentInput = {
       amount: amountNum.toFixed(2),
@@ -85,7 +86,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         )}
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Amount *</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.amountRequired}</label>
           <input
             type="number"
             min="0.01"
@@ -99,7 +100,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         </div>
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Payment Date *</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.paymentDateRequired}</label>
           <input
             type="date"
             required
@@ -110,7 +111,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         </div>
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Payment Method *</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.paymentMethodRequired}</label>
           <select
             required
             value={paymentMethod}
@@ -119,15 +120,15 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
           >
             {PAYMENT_METHODS.map((method) => (
               <option key={method} value={method}>
-                {method || 'Select a method'}
+                {method || DEBTS.selectMethod}
               </option>
             ))}
           </select>
-          {paymentMethod === 'Other' && (
+          {paymentMethod === DEBTS.methodOther && (
             <input
               type="text"
               required
-              placeholder="Enter payment method"
+              placeholder={DEBTS.enterPaymentMethod}
               value={customMethod}
               onChange={(e) => setCustomMethod(e.target.value)}
               className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
@@ -136,7 +137,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         </div>
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Reference Number</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.referenceNumber}</label>
           <input
             type="text"
             value={reference}
@@ -146,7 +147,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         </div>
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Notes</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.notesLabel}</label>
           <textarea
             rows={2}
             value={notes}
@@ -156,7 +157,7 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
         </div>
 
         <div>
-          <label className="block text-sm font-normal text-gray-700 mb-1">Proof Documents</label>
+          <label className="block text-sm font-normal text-gray-700 mb-1">{DEBTS.proofDocuments}</label>
           <FileAttachmentSection files={files} onChange={setFiles} />
         </div>
 
@@ -166,14 +167,14 @@ export default function PaymentForm({ debtId, maxAmount, onSuccess, onCancel }: 
             onClick={onCancel}
             className="text-sm text-gray-600 hover:text-gray-900"
           >
-            Cancel
+            {COMMON.cancel}
           </button>
           <button
             type="submit"
             disabled={mutation.isPending}
             className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {mutation.isPending ? 'Saving...' : 'Save Payment'}
+            {mutation.isPending ? COMMON.saving : DEBTS.savePayment}
           </button>
         </div>
       </form>

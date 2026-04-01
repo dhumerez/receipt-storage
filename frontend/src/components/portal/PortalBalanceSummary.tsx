@@ -1,4 +1,5 @@
 import type { PortalSummary } from '../../api/portal.ts';
+import { PORTAL } from '../../constants/strings/portal.ts';
 
 // D-13 + FR-03.5 + FR-03.6 + FR-10.4:
 // - "Total outstanding as of [date]" — confirmed balance (from debtBalances view, confirmed only)
@@ -22,7 +23,7 @@ export default function PortalBalanceSummary({ summary, totalPaid }: PortalBalan
     <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
       {/* Confirmed balance — primary display (FR-03.5) */}
       <p className="text-sm text-gray-500 mb-1">
-        Total outstanding as of{' '}
+        {PORTAL.totalOutstandingAsOf}{' '}
         <time dateTime={summary.asOf} className="font-medium text-gray-700">{formattedDate}</time>
       </p>
       <p className="text-2xl font-semibold text-gray-900 mb-4">${confirmedFormatted}</p>
@@ -31,7 +32,7 @@ export default function PortalBalanceSummary({ summary, totalPaid }: PortalBalan
       {totalPaidFormatted && (
         <div className="pb-4 border-b border-gray-100 mb-4">
           <p className="text-sm text-gray-500">
-            Total paid:{' '}
+            {PORTAL.totalPaidLabel}{' '}
             <span className="font-medium text-green-700">${totalPaidFormatted}</span>
           </p>
         </div>
@@ -41,11 +42,11 @@ export default function PortalBalanceSummary({ summary, totalPaid }: PortalBalan
       {hasPending && (
         <div className="pt-4 border-t border-gray-100">
           <p className="text-sm text-gray-500">
-            Awaiting confirmation:{' '}
+            {PORTAL.awaitingConfirmation}{' '}
             <span className="font-medium text-yellow-700">${pendingFormatted}</span>
           </p>
           <p className="text-xs text-gray-400 mt-0.5">
-            These payments are pending review by your account manager.
+            {PORTAL.pendingReviewMessage}
           </p>
         </div>
       )}

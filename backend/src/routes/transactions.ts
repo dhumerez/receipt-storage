@@ -15,6 +15,7 @@ import {
 } from '../db/schema.js';
 import { uploadMiddleware } from '../middleware/upload.js';
 import { processFile } from '../services/upload.service.js';
+import { TRANSACTIONS } from '../constants/strings/transactions.js';
 
 export const transactionsRouter = Router();
 
@@ -70,7 +71,7 @@ const CreateTransactionSchema = z.object({
   deliveredAt: z.string().optional(), // ISO string
   initialPayment: z
     .string()
-    .regex(/^\d+(\.\d{1,2})?$/, 'Must be a valid amount')
+    .regex(/^\d+(\.\d{1,2})?$/, TRANSACTIONS.invalidAmount)
     .default('0'),
   clientNotes: z.string().optional(),
   internalNotes: z.string().optional(),
@@ -79,11 +80,11 @@ const CreateTransactionSchema = z.object({
       z.object({
         productId: z.string().uuid().optional(),
         description: z.string().min(1).max(255),
-        quantity: z.string().regex(/^\d+(\.\d{1,3})?$/, 'Must be a valid quantity'),
-        unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Must be a valid price'),
+        quantity: z.string().regex(/^\d+(\.\d{1,3})?$/, TRANSACTIONS.invalidQuantity),
+        unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, TRANSACTIONS.invalidPrice),
       }),
     )
-    .min(1, 'At least one line item is required'),
+    .min(1, TRANSACTIONS.atLeastOneLineItem),
 });
 
 const RejectSchema = z.object({
@@ -104,7 +105,7 @@ transactionsRouter.post('/', uploadMiddleware, async (req, res) => {
     : req.body;
   const parsed = CreateTransactionSchema.safeParse(rawData);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: TRANSACTIONS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -122,7 +123,7 @@ transactionsRouter.post('/', uploadMiddleware, async (req, res) => {
     .limit(1);
 
   if (!client) {
-    res.status(404).json({ error: 'Client not found' });
+    res.status(404).json({ error: TRANSACTIONS.clientNotFound });
     return;
   }
 
@@ -360,7 +361,7 @@ transactionsRouter.get('/:id', async (req, res) => {
     .limit(1);
 
   if (!txn) {
-    res.status(404).json({ error: 'Transaction not found' });
+    res.status(404).json({ error: TRANSACTIONS.notFound });
     return;
   }
 
@@ -405,7 +406,7 @@ transactionsRouter.post('/:id/approve', async (req, res) => {
 
   // Owner-only guard
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can approve transactions' });
+    res.status(403).json({ error: TRANSACTIONS.onlyOwnersCanApprove });
     return;
   }
 
@@ -418,7 +419,7 @@ transactionsRouter.post('/:id/approve', async (req, res) => {
       .for('update');
 
     if (!txn || txn.status !== 'pending_approval') {
-      return { error: 'Transaction is not pending approval' };
+      return { error: TRANSACTIONS.notPendingApproval };
     }
 
     // Update to active
@@ -486,13 +487,13 @@ transactionsRouter.post('/:id/reject', async (req, res) => {
 
   // Owner-only guard
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can reject transactions' });
+    res.status(403).json({ error: TRANSACTIONS.onlyOwnersCanReject });
     return;
   }
 
   const parsed = RejectSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: TRANSACTIONS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -507,7 +508,7 @@ transactionsRouter.post('/:id/reject', async (req, res) => {
       .for('update');
 
     if (!txn || txn.status !== 'pending_approval') {
-      return { error: 'Transaction is not pending approval' };
+      return { error: TRANSACTIONS.notPendingApproval };
     }
 
     // Set back to draft
@@ -560,13 +561,13 @@ transactionsRouter.post('/:id/void', async (req, res) => {
 
   // Owner-only guard
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can void transactions' });
+    res.status(403).json({ error: TRANSACTIONS.onlyOwnersCanVoid });
     return;
   }
 
   const parsed = VoidSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: TRANSACTIONS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -579,7 +580,7 @@ transactionsRouter.post('/:id/void', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Transaction not found' });
+    res.status(404).json({ error: TRANSACTIONS.notFound });
     return;
   }
 

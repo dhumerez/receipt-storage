@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { eq, and } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { documents } from '../db/schema.js';
+import { ERRORS } from '../constants/strings/errors.js';
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || '/var/receipts/uploads';
 
@@ -17,13 +18,13 @@ filesRouter.get('/:companyId/:type/:entityId/:filename', async (req, res) => {
 
   // Tenant check — user can only access their company's files
   if (companyId !== req.companyId) {
-    res.status(403).json({ error: 'Forbidden' });
+    res.status(403).json({ error: ERRORS.forbidden });
     return;
   }
 
   // Sanitize filename to prevent path traversal
   if (!FILENAME_RE.test(filename)) {
-    res.status(400).json({ error: 'Invalid filename' });
+    res.status(400).json({ error: ERRORS.invalidFilename });
     return;
   }
 
@@ -40,7 +41,7 @@ filesRouter.get('/:companyId/:type/:entityId/:filename', async (req, res) => {
     .limit(1);
 
   if (!doc) {
-    res.status(404).json({ error: 'Document not found' });
+    res.status(404).json({ error: ERRORS.documentNotFound });
     return;
   }
 
@@ -49,7 +50,7 @@ filesRouter.get('/:companyId/:type/:entityId/:filename', async (req, res) => {
 
   // Check file exists on disk
   if (!fs.existsSync(fullPath)) {
-    res.status(404).json({ error: 'File not found' });
+    res.status(404).json({ error: ERRORS.fileNotFound });
     return;
   }
 

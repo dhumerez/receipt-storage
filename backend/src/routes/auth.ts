@@ -18,6 +18,7 @@ import {
 import { authenticate } from '../middleware/auth.js';
 import type { JWTPayload } from '../middleware/auth.js';
 import { sendPasswordResetEmail } from '../services/email.service.js';
+import { AUTH } from '../constants/strings/auth.js';
 
 export const authRouter = Router();
 
@@ -36,7 +37,7 @@ const LoginSchema = z.object({
 authRouter.post('/login', async (req, res) => {
   const parsed = LoginSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: AUTH.validationError, details: parsed.error.flatten() });
     return;
   }
   const { email, password } = parsed.data;
@@ -56,7 +57,7 @@ authRouter.post('/login', async (req, res) => {
   const passwordValid = await verifyPassword(password, passwordHash);
 
   if (!user || !user.isActive || !passwordValid) {
-    res.status(401).json({ error: 'Invalid credentials' });
+    res.status(401).json({ error: AUTH.invalidCredentials });
     return;
   }
 
@@ -91,7 +92,7 @@ authRouter.post('/login', async (req, res) => {
 authRouter.post('/refresh', async (req, res) => {
   const rawToken: string | undefined = req.cookies?.refresh_token;
   if (!rawToken) {
-    res.status(401).json({ error: 'No refresh token' });
+    res.status(401).json({ error: AUTH.noRefreshToken });
     return;
   }
 
@@ -111,7 +112,7 @@ authRouter.post('/refresh', async (req, res) => {
   if (!stored || stored.expiresAt < new Date()) {
     // Clear the stale cookie
     res.clearCookie('refresh_token', { ...REFRESH_COOKIE_OPTIONS, maxAge: 0 });
-    res.status(401).json({ error: 'Invalid refresh token' });
+    res.status(401).json({ error: AUTH.invalidRefreshToken });
     return;
   }
 
@@ -124,14 +125,14 @@ authRouter.post('/refresh', async (req, res) => {
 
   if (!user || !user.isActive) {
     res.clearCookie('refresh_token', { ...REFRESH_COOKIE_OPTIONS, maxAge: 0 });
-    res.status(401).json({ error: 'Invalid refresh token' });
+    res.status(401).json({ error: AUTH.invalidRefreshToken });
     return;
   }
 
   const newRawToken = await rotateRefreshToken(tokenHash, user.id);
   if (!newRawToken) {
     res.clearCookie('refresh_token', { ...REFRESH_COOKIE_OPTIONS, maxAge: 0 });
-    res.status(401).json({ error: 'Invalid refresh token' });
+    res.status(401).json({ error: AUTH.invalidRefreshToken });
     return;
   }
 
@@ -179,7 +180,7 @@ const ForgotPasswordSchema = z.object({
 authRouter.post('/forgot-password', async (req, res) => {
   const parsed = ForgotPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: AUTH.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -206,7 +207,7 @@ authRouter.post('/forgot-password', async (req, res) => {
     sendPasswordResetEmail({ to: user.email, rawToken }).catch(console.error);
   }
 
-  res.json({ message: 'If that email is registered, a reset link has been sent.' });
+  res.json({ message: AUTH.resetLinkSent });
 });
 
 // ── POST /api/auth/reset-password ─────────────────────────────────────────────
@@ -220,7 +221,7 @@ const ResetPasswordSchema = z.object({
 authRouter.post('/reset-password', async (req, res) => {
   const parsed = ResetPasswordSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: AUTH.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -238,7 +239,7 @@ authRouter.post('/reset-password', async (req, res) => {
 
   const now = new Date();
   if (!tokenRow || tokenRow.usedAt !== null || tokenRow.expiresAt < now) {
-    res.status(400).json({ error: 'Token invalid or expired' });
+    res.status(400).json({ error: AUTH.tokenInvalidOrExpired });
     return;
   }
 
@@ -250,7 +251,7 @@ authRouter.post('/reset-password', async (req, res) => {
     .limit(1);
 
   if (!user) {
-    res.status(400).json({ error: 'Token invalid or expired' });
+    res.status(400).json({ error: AUTH.tokenInvalidOrExpired });
     return;
   }
 
@@ -272,7 +273,7 @@ authRouter.post('/reset-password', async (req, res) => {
   // Revoke all refresh tokens — account may have been compromised
   await revokeAllUserRefreshTokens(user.id);
 
-  res.json({ message: 'Password reset successful' });
+  res.json({ message: AUTH.passwordResetSuccessful });
 });
 
 // ── POST /api/auth/accept-invite ──────────────────────────────────────────────
@@ -287,7 +288,7 @@ const AcceptInviteSchema = z.object({
 authRouter.post('/accept-invite', async (req, res) => {
   const parsed = AcceptInviteSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: AUTH.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -305,7 +306,7 @@ authRouter.post('/accept-invite', async (req, res) => {
 
   const now = new Date();
   if (!tokenRow || tokenRow.usedAt !== null || tokenRow.expiresAt < now) {
-    res.status(400).json({ error: 'Token invalid or expired' });
+    res.status(400).json({ error: AUTH.tokenInvalidOrExpired });
     return;
   }
 

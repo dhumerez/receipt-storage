@@ -29,6 +29,8 @@ function computeRunningTotal(items: LineItemRow[]): string {
     .toFixed(2);
 }
 
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+
 const inputClass =
   'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm';
 
@@ -59,15 +61,15 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
   return (
     <div>
       {items.length === 0 ? (
-        <p className="text-sm text-gray-500">Add line items using the buttons below.</p>
+        <p className="text-sm text-gray-500">{TRANSACTIONS.addLineItemsBelow}</p>
       ) : (
         <>
           {/* Desktop header */}
           <div className="hidden sm:grid grid-cols-[1fr_80px_100px_100px_32px] gap-2 mb-2">
-            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">Name</span>
-            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">Qty</span>
-            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">Unit Price</span>
-            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider text-right">Total</span>
+            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thName}</span>
+            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thQty}</span>
+            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider">{TRANSACTIONS.thUnitPrice}</span>
+            <span className="text-xs font-normal text-gray-500 uppercase tracking-wider text-right">{TRANSACTIONS.thTotal}</span>
             <span />
           </div>
 
@@ -84,7 +86,7 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
                     type="text"
                     value={item.description}
                     onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                    placeholder="Item name"
+                    placeholder={TRANSACTIONS.itemNamePlaceholder}
                     className={inputClass}
                   />
                 )}
@@ -120,7 +122,7 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
               {/* Mobile row (stacked) */}
               <div className="sm:hidden mb-4 p-3 border border-gray-200 rounded-md space-y-2">
                 <div className="flex justify-between items-start">
-                  <span className="text-xs text-gray-500 uppercase">Name</span>
+                  <span className="text-xs text-gray-500 uppercase">{TRANSACTIONS.thName}</span>
                   <button
                     type="button"
                     onClick={() => removeItem(item.id)}
@@ -139,13 +141,13 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
                     type="text"
                     value={item.description}
                     onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                    placeholder="Item name"
+                    placeholder={TRANSACTIONS.itemNamePlaceholder}
                     className={inputClass}
                   />
                 )}
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <span className="text-xs text-gray-500 uppercase block mb-1">Qty</span>
+                    <span className="text-xs text-gray-500 uppercase block mb-1">{TRANSACTIONS.thQty}</span>
                     <input
                       type="number"
                       min="0.001"
@@ -156,7 +158,7 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
                     />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-500 uppercase block mb-1">Price</span>
+                    <span className="text-xs text-gray-500 uppercase block mb-1">{TRANSACTIONS.thPrice}</span>
                     <input
                       type="number"
                       min="0"
@@ -167,7 +169,7 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
                     />
                   </div>
                   <div>
-                    <span className="text-xs text-gray-500 uppercase block mb-1">Total</span>
+                    <span className="text-xs text-gray-500 uppercase block mb-1">{TRANSACTIONS.thTotal}</span>
                     <div className="text-sm text-gray-900 py-2 text-right">
                       ${computeLineTotal(item.quantity, item.unitPrice)}
                     </div>
@@ -180,7 +182,7 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
           {/* Running total */}
           <div className="text-right mt-2">
             <span className="text-sm font-semibold text-gray-900">
-              Total: ${computeRunningTotal(items)}
+              {TRANSACTIONS.runningTotal(computeRunningTotal(items))}
             </span>
           </div>
         </>
@@ -193,14 +195,14 @@ export default function LineItemBuilder({ items, onChange, onOpenCatalog }: Line
           onClick={onOpenCatalog}
           className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm"
         >
-          + Catalog
+          {TRANSACTIONS.catalogButton}
         </button>
         <button
           type="button"
           onClick={addFreeForm}
           className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-sm"
         >
-          + Free-form
+          {TRANSACTIONS.freeFormButton}
         </button>
       </div>
     </div>

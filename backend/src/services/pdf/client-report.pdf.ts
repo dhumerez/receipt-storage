@@ -1,6 +1,7 @@
 import type PDFDocument from 'pdfkit';
 import { addCompanyHeader, drawTable } from './pdf-base.js';
 import type { TableColumn } from './pdf-base.js';
+import { PDF } from '../../constants/strings/pdf.js';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -54,7 +55,7 @@ export async function buildClientReportPdf(
       ? `${dateFrom || 'Start'} - ${dateTo || 'Present'}`
       : undefined;
 
-  let y = await addCompanyHeader(doc, companyName, logoPath, 'Client Report', dateRange);
+  let y = await addCompanyHeader(doc, companyName, logoPath, PDF.clientReportTitle, dateRange);
 
   // Client info block
   const { client } = reportData;
@@ -75,10 +76,10 @@ export async function buildClientReportPdf(
 
   // Transactions table
   const txColumns: TableColumn[] = [
-    { header: 'Ref #', width: 100, align: 'left', getValue: (r) => r.referenceNumber || '-' },
-    { header: 'Date', width: 100, align: 'left', getValue: (r) => formatDate(r.deliveredAt) },
-    { header: 'Description', width: 200, align: 'left', getValue: (r) => r.description || '-' },
-    { header: 'Total Amount', width: 100, align: 'right', getValue: (r) => `$${r.totalAmount}` },
+    { header: PDF.thRef, width: 100, align: 'left', getValue: (r) => r.referenceNumber || '-' },
+    { header: PDF.thDate, width: 100, align: 'left', getValue: (r) => formatDate(r.deliveredAt) },
+    { header: PDF.thDescription, width: 200, align: 'left', getValue: (r) => r.description || '-' },
+    { header: PDF.thTotalAmount, width: 100, align: 'right', getValue: (r) => `$${r.totalAmount}` },
   ];
 
   y = drawTable(doc, txColumns, reportData.transactions, y);
@@ -97,13 +98,13 @@ export async function buildClientReportPdf(
     // Debt summary line
     doc.font('Helvetica-Bold').fontSize(9).fillColor('#374151');
     const refLabel = tx.referenceNumber || tx.id.slice(0, 8);
-    const statusLabel = tx.debt.status === 'fully_paid' ? 'Fully Paid' : `Outstanding: $${tx.debt.remainingBalance}`;
-    doc.text(`Debt for ${refLabel}: ${statusLabel}`, 50, y);
+    const statusLabel = tx.debt.status === 'fully_paid' ? PDF.fullyPaid : PDF.outstanding(tx.debt.remainingBalance);
+    doc.text(`Deuda de ${refLabel}: ${statusLabel}`, 50, y);
     y += 14;
 
     doc.font('Helvetica').fontSize(9).fillColor('#6B7280');
     doc.text(
-      `Total: $${tx.debt.totalAmount}  |  Paid: $${tx.debt.amountPaid}  |  Remaining: $${tx.debt.remainingBalance}`,
+      `Total: $${tx.debt.totalAmount}  |  Pagado: $${tx.debt.amountPaid}  |  Restante: $${tx.debt.remainingBalance}`,
       50,
       y,
     );
@@ -112,10 +113,10 @@ export async function buildClientReportPdf(
     // Payments sub-table
     if (tx.debt.payments.length > 0) {
       const paymentColumns: TableColumn[] = [
-        { header: 'Amount', width: 100, align: 'right', getValue: (p) => `$${p.amount}` },
-        { header: 'Date', width: 100, align: 'left', getValue: (p) => formatDate(p.paidAt) },
-        { header: 'Method', width: 120, align: 'left', getValue: (p) => p.paymentMethod || '-' },
-        { header: 'Reference', width: 120, align: 'left', getValue: (p) => p.reference || '-' },
+        { header: PDF.thAmount, width: 100, align: 'right', getValue: (p) => `$${p.amount}` },
+        { header: PDF.thDate, width: 100, align: 'left', getValue: (p) => formatDate(p.paidAt) },
+        { header: PDF.thMethod, width: 120, align: 'left', getValue: (p) => p.paymentMethod || '-' },
+        { header: PDF.thRef, width: 120, align: 'left', getValue: (p) => p.reference || '-' },
       ];
 
       y = drawTable(doc, paymentColumns, tx.debt.payments, y);

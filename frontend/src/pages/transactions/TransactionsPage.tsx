@@ -7,14 +7,16 @@ import { useAuth } from '../../contexts/AuthContext.tsx';
 import TransactionTable from '../../components/transactions/TransactionTable.tsx';
 import SearchBar from '../../components/common/SearchBar.tsx';
 import EmptyState from '../../components/common/EmptyState.tsx';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 type StatusFilter = 'all' | 'pending_approval' | 'active' | 'voided';
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'pending_approval', label: 'Pending' },
-  { value: 'active', label: 'Active' },
-  { value: 'voided', label: 'Voided' },
+  { value: 'all', label: TRANSACTIONS.statusAll },
+  { value: 'pending_approval', label: TRANSACTIONS.statusPending },
+  { value: 'active', label: TRANSACTIONS.statusActive },
+  { value: 'voided', label: TRANSACTIONS.statusVoided },
 ];
 
 export default function TransactionsPage() {
@@ -69,7 +71,7 @@ export default function TransactionsPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading transactions...</div>
+        <div className="text-sm text-gray-400">{TRANSACTIONS.loadingTransactions}</div>
       </div>
     );
   }
@@ -78,14 +80,14 @@ export default function TransactionsPage() {
     <div className="p-8">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Transactions</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">{TRANSACTIONS.pageTitle}</h1>
         {canCreate && (
           <button
             type="button"
             onClick={() => navigate('/transactions/new')}
             className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-semibold"
           >
-            New Transaction
+            {TRANSACTIONS.newTransaction}
           </button>
         )}
       </div>
@@ -93,7 +95,7 @@ export default function TransactionsPage() {
       {/* Error banner */}
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load transactions. Please refresh the page.
+          {TRANSACTIONS.errorLoadingTransactions}
         </div>
       )}
 
@@ -103,7 +105,7 @@ export default function TransactionsPage() {
           <SearchBar
             value={searchInput}
             onChange={setSearchInput}
-            placeholder="Search by reference or description"
+            placeholder={TRANSACTIONS.searchPlaceholder}
           />
         </div>
 
@@ -131,7 +133,7 @@ export default function TransactionsPage() {
           onChange={(e) => setClientFilter(e.target.value)}
           className="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
         >
-          <option value="">All Clients</option>
+          <option value="">{TRANSACTIONS.allClients}</option>
           {clients.map((c) => (
             <option key={c.id} value={c.id}>
               {c.fullName}
@@ -141,7 +143,7 @@ export default function TransactionsPage() {
 
         {/* Date range */}
         <div className="flex items-center gap-1">
-          <label className="text-sm text-gray-500">From</label>
+          <label className="text-sm text-gray-500">{COMMON.from}</label>
           <input
             type="date"
             value={dateFrom}
@@ -150,7 +152,7 @@ export default function TransactionsPage() {
           />
         </div>
         <div className="flex items-center gap-1">
-          <label className="text-sm text-gray-500">To</label>
+          <label className="text-sm text-gray-500">{COMMON.to}</label>
           <input
             type="date"
             value={dateTo}
@@ -164,19 +166,19 @@ export default function TransactionsPage() {
       {transactions.length === 0 ? (
         search ? (
           <EmptyState
-            heading="No transactions match your search"
-            body="Try different filters or clear the search to see all transactions."
+            heading={TRANSACTIONS.noTransactionsMatchSearch}
+            body={TRANSACTIONS.tryDifferentFilters}
           />
         ) : statusFilter !== 'all' ? (
           <EmptyState
-            heading={`No ${statusLabel} transactions`}
-            body="Transactions with this status will appear here."
+            heading={TRANSACTIONS.noStatusTransactions(statusLabel)}
+            body={TRANSACTIONS.transactionsWithStatusAppearHere}
           />
         ) : (
           <EmptyState
-            heading="No transactions yet"
-            body="Create your first transaction to start tracking receipts and debts."
-            ctaLabel={canCreate ? 'New Transaction' : undefined}
+            heading={TRANSACTIONS.noTransactionsYet}
+            body={TRANSACTIONS.createFirstTransaction}
+            ctaLabel={canCreate ? TRANSACTIONS.newTransaction : undefined}
             onCta={canCreate ? () => navigate('/transactions/new') : undefined}
           />
         )

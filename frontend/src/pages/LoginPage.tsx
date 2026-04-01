@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
 import { useNavigate, Navigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext.tsx';
+import { AUTH } from '../constants/strings/auth.ts';
 
 const DEMO_USERS = [
-  { label: 'Super Admin', email: 'admin@demo.com', password: 'Admin1234!' },
-  { label: 'Owner', email: 'owner@demo.com', password: 'Owner1234!' },
+  { label: AUTH.demoSuperAdmin, email: 'admin@demo.com', password: 'Admin1234!' },
+  { label: AUTH.demoOwner, email: 'owner@demo.com', password: 'Owner1234!' },
 ];
 
 export default function LoginPage() {
@@ -34,7 +35,7 @@ export default function LoginPage() {
         navigate('/', { replace: true });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : AUTH.loginFailed);
     } finally {
       setSubmitting(false);
     }
@@ -43,7 +44,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{AUTH.signIn}</h2>
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
             {error}
@@ -52,7 +53,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
+              {AUTH.emailLabel}
             </label>
             <input
               id="email"
@@ -66,7 +67,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              {AUTH.passwordLabel}
             </label>
             <input
               id="password"
@@ -83,16 +84,16 @@ export default function LoginPage() {
             disabled={submitting}
             className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 font-medium"
           >
-            {submitting ? 'Signing in...' : 'Sign In'}
+            {submitting ? AUTH.signingIn : AUTH.signIn}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-500">
           <a href="/forgot-password" className="text-blue-600 hover:underline">
-            Forgot your password?
+            {AUTH.forgotPasswordLink}
           </a>
         </p>
         <div className="mt-6 border-t border-gray-200 pt-4">
-          <p className="text-xs text-gray-400 text-center mb-2">Demo accounts</p>
+          <p className="text-xs text-gray-400 text-center mb-2">{AUTH.demoAccounts}</p>
           <div className="flex gap-2">
             {DEMO_USERS.map((u) => (
               <button

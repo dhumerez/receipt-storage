@@ -3,6 +3,7 @@ import { getPortalSummary, getPortalDebts } from '../../api/portal.ts';
 import PortalBalanceSummary from '../../components/portal/PortalBalanceSummary.tsx';
 import PortalDebtGroup from '../../components/portal/PortalDebtGroup.tsx';
 import EmptyState from '../../components/common/EmptyState.tsx';
+import { PORTAL } from '../../constants/strings/portal.ts';
 
 // Client portal page — renders inside PortalLayout (top bar + centered max-w-2xl)
 // FR-03.4: Only shows data for the logged-in client (clientId from JWT on backend)
@@ -23,7 +24,7 @@ export default function PortalPage() {
 
   if (summaryLoading || debtsLoading) {
     return (
-      <div className="py-8 text-center text-sm text-gray-400">Loading your account...</div>
+      <div className="py-8 text-center text-sm text-gray-400">{PORTAL.loadingAccount}</div>
     );
   }
 
@@ -31,7 +32,7 @@ export default function PortalPage() {
     return (
       <div className="py-8">
         <div className="p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load your account. Please refresh the page.
+          {PORTAL.errorLoadingAccount}
         </div>
       </div>
     );
@@ -48,8 +49,8 @@ export default function PortalPage() {
 
       {debts.length === 0 ? (
         <EmptyState
-          heading="No transactions yet"
-          body="Your account is up to date. Transactions will appear here once recorded."
+          heading={PORTAL.noTransactionsYet}
+          body={PORTAL.accountUpToDate}
         />
       ) : (
         <PortalDebtGroup debts={debts} />

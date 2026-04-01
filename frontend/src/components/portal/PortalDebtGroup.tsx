@@ -1,5 +1,6 @@
 import type { PortalDebt } from '../../api/portal.ts';
 import PortalTransactionRow from './PortalTransactionRow.tsx';
+import { PORTAL } from '../../constants/strings/portal.ts';
 
 interface PortalDebtGroupProps {
   debts: PortalDebt[];
@@ -9,9 +10,9 @@ interface PortalDebtGroupProps {
 // FR-03.7: internalNotes never passed through — components only receive PortalDebt shape
 
 const GROUPS: { status: PortalDebt['status']; label: string; badgeClass: string }[] = [
-  { status: 'open', label: 'Open', badgeClass: 'bg-green-100 text-green-800' },
-  { status: 'partially_paid', label: 'Partially Paid', badgeClass: 'bg-blue-100 text-blue-700' },
-  { status: 'fully_paid', label: 'Fully Paid', badgeClass: 'bg-green-100 text-green-800' },
+  { status: 'open', label: PORTAL.groupOpen, badgeClass: 'bg-green-100 text-green-800' },
+  { status: 'partially_paid', label: PORTAL.groupPartiallyPaid, badgeClass: 'bg-blue-100 text-blue-700' },
+  { status: 'fully_paid', label: PORTAL.groupFullyPaid, badgeClass: 'bg-green-100 text-green-800' },
 ];
 
 export default function PortalDebtGroup({ debts }: PortalDebtGroupProps) {

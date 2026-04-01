@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { PaymentItem } from '../../api/debts.ts';
 import { getPaymentFileUrl } from '../../api/debts.ts';
 import PaymentStatusBadge from './PaymentStatusBadge.tsx';
+import { DEBTS, COMMON } from '../../constants/strings/index.ts';
 
 interface PaymentHistoryListProps {
   payments: PaymentItem[];
@@ -27,7 +28,7 @@ export default function PaymentHistoryList({
 
   const handleRejectSubmit = (paymentId: string) => {
     if (!rejectReason.trim()) {
-      setRejectError('A reason is required to reject a payment.');
+      setRejectError(DEBTS.rejectReasonRequired);
       return;
     }
     setRejectError(null);
@@ -45,9 +46,9 @@ export default function PaymentHistoryList({
   if (payments.length === 0) {
     return (
       <div className="text-center py-8">
-        <h3 className="text-sm font-semibold text-gray-900">No payments recorded</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{DEBTS.noPaymentsRecorded}</h3>
         <p className="text-sm text-gray-500 mt-1">
-          Record the first payment to start tracking this debt.
+          {DEBTS.recordFirstPayment}
         </p>
       </div>
     );
@@ -77,22 +78,22 @@ export default function PaymentHistoryList({
                 {(payment.paymentMethod || payment.reference) && (
                   <p className="text-sm text-gray-500">
                     {payment.paymentMethod}
-                    {payment.reference && ` \u00B7 Ref ${payment.reference}`}
+                    {payment.reference && ` \u00B7 ${DEBTS.ref(payment.reference)}`}
                   </p>
                 )}
                 <div className="mt-1">
                   <PaymentStatusBadge status={payment.status} />
                 </div>
                 {payment.status === 'pending_approval' && (
-                  <p className="text-xs text-gray-500 mt-0.5">Does not affect balance</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{DEBTS.doesNotAffectBalance}</p>
                 )}
                 {payment.status === 'rejected' && payment.rejectionReason && (
                   <p className="text-xs text-red-600 mt-0.5">
-                    Reason: {payment.rejectionReason}
+                    {DEBTS.reason} {payment.rejectionReason}
                   </p>
                 )}
                 <p className="text-xs text-gray-400 mt-1">
-                  Recorded by {payment.recordedByName}
+                  {DEBTS.recordedBy(payment.recordedByName)}
                 </p>
               </div>
               <div className="text-sm font-semibold text-gray-900">
@@ -156,7 +157,7 @@ export default function PaymentHistoryList({
                   onClick={() => onApprove(payment.id)}
                   className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-1.5 rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isApprovingId === payment.id ? 'Approving...' : 'Approve Payment'}
+                  {isApprovingId === payment.id ? DEBTS.approving : DEBTS.approvePayment}
                 </button>
                 <button
                   type="button"
@@ -164,7 +165,7 @@ export default function PaymentHistoryList({
                   onClick={() => setRejectingPaymentId(payment.id)}
                   className="border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-1.5 rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Reject Payment
+                  {DEBTS.rejectPayment}
                 </button>
               </div>
             )}
@@ -174,7 +175,7 @@ export default function PaymentHistoryList({
               <div className="mt-2 space-y-2">
                 <textarea
                   rows={2}
-                  placeholder="Describe why this payment is being rejected"
+                  placeholder={DEBTS.rejectReasonPlaceholder}
                   maxLength={500}
                   required
                   value={rejectReason}
@@ -194,14 +195,14 @@ export default function PaymentHistoryList({
                     onClick={() => handleRejectSubmit(payment.id)}
                     className="bg-red-600 text-white hover:bg-red-700 px-3 py-1.5 rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isRejectingId === payment.id ? 'Rejecting...' : 'Confirm Reject'}
+                    {isRejectingId === payment.id ? DEBTS.rejecting : DEBTS.confirmReject}
                   </button>
                   <button
                     type="button"
                     onClick={cancelReject}
                     className="text-xs text-gray-500 hover:text-gray-700 ml-2"
                   >
-                    Cancel
+                    {COMMON.cancel}
                   </button>
                 </div>
               </div>

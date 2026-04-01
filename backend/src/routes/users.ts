@@ -5,6 +5,7 @@ import { db } from '../db/client.js';
 import { users, tokens, companies, transactions, payments } from '../db/schema.js';
 import { generateRawToken, hashToken } from '../services/auth.service.js';
 import { sendInviteEmail } from '../services/email.service.js';
+import { ERRORS } from '../constants/strings/errors.js';
 
 export const usersRouter = Router();
 
@@ -55,7 +56,7 @@ const InviteSchema = z.object({
 usersRouter.post('/invite', async (req, res) => {
   const parsed = InviteSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: ERRORS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -65,7 +66,7 @@ usersRouter.post('/invite', async (req, res) => {
   // NFR-01.5: re-validate from DB
   const callerValid = await validateCallerOwner(callerId, companyId);
   if (!callerValid) {
-    res.status(403).json({ error: 'Insufficient permissions' });
+    res.status(403).json({ error: ERRORS.insufficientPermissions });
     return;
   }
 
@@ -106,7 +107,7 @@ usersRouter.post('/invite', async (req, res) => {
     role: parsed.data.role,
   }).catch(console.error);
 
-  res.status(201).json({ message: 'Invitation sent' });
+  res.status(201).json({ message: ERRORS.invitationSent });
 });
 
 // ─── PATCH /api/v1/users/:id/role ─────────────────────────────────────────────
@@ -118,7 +119,7 @@ const ChangeRoleSchema = z.object({
 usersRouter.patch('/:id/role', async (req, res) => {
   const parsed = ChangeRoleSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: ERRORS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -127,14 +128,14 @@ usersRouter.patch('/:id/role', async (req, res) => {
   const targetId = req.params.id;
 
   if (targetId === callerId) {
-    res.status(400).json({ error: 'Cannot change your own role' });
+    res.status(400).json({ error: ERRORS.cannotChangeOwnRole });
     return;
   }
 
   // NFR-01.5: re-validate from DB
   const callerValid = await validateCallerOwner(callerId, companyId);
   if (!callerValid) {
-    res.status(403).json({ error: 'Insufficient permissions' });
+    res.status(403).json({ error: ERRORS.insufficientPermissions });
     return;
   }
 
@@ -145,7 +146,7 @@ usersRouter.patch('/:id/role', async (req, res) => {
     .returning({ id: users.id, email: users.email, role: users.role });
 
   if (!updated) {
-    res.status(404).json({ error: 'User not found' });
+    res.status(404).json({ error: ERRORS.userNotFound });
     return;
   }
 
@@ -160,14 +161,14 @@ usersRouter.patch('/:id/deactivate', async (req, res) => {
   const targetId = req.params.id;
 
   if (targetId === callerId) {
-    res.status(400).json({ error: 'Cannot deactivate yourself' });
+    res.status(400).json({ error: ERRORS.cannotDeactivateYourself });
     return;
   }
 
   // NFR-01.5: re-validate from DB
   const callerValid = await validateCallerOwner(callerId, companyId);
   if (!callerValid) {
-    res.status(403).json({ error: 'Insufficient permissions' });
+    res.status(403).json({ error: ERRORS.insufficientPermissions });
     return;
   }
 
@@ -179,7 +180,7 @@ usersRouter.patch('/:id/deactivate', async (req, res) => {
     .limit(1);
 
   if (!targetUser) {
-    res.status(404).json({ error: 'User not found' });
+    res.status(404).json({ error: ERRORS.userNotFound });
     return;
   }
 
@@ -214,7 +215,7 @@ usersRouter.patch('/:id/deactivate', async (req, res) => {
       .update(payments)
       .set({
         status: 'rejected',
-        rejectionReason: 'User removed from company',
+        rejectionReason: ERRORS.userRemovedFromCompany,
         updatedAt: now,
       })
       .where(
@@ -229,7 +230,7 @@ usersRouter.patch('/:id/deactivate', async (req, res) => {
   });
 
   res.json({
-    message: 'User deactivated',
+    message: ERRORS.userDeactivated,
     pendingTransactionsReverted,
     pendingPaymentsRejected,
   });

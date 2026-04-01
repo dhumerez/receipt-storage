@@ -16,13 +16,14 @@ import {
 import { toCents, fromCents } from '../routes/transactions.js';
 import { uploadMiddleware } from '../middleware/upload.js';
 import { processFile } from '../services/upload.service.js';
+import { DEBTS } from '../constants/strings/debts.js';
 
 export const debtsRouter = Router();
 
 // ─── Zod schemas ─────────────────────────────────────────────────────────────
 
 const CreatePaymentSchema = z.object({
-  amount: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Must be a valid amount'),
+  amount: z.string().regex(/^\d+(\.\d{1,2})?$/, DEBTS.invalidAmount),
   paidAt: z.string().min(1),
   paymentMethod: z.string().min(1).max(100),
   reference: z.string().max(100).optional(),
@@ -43,7 +44,7 @@ debtsRouter.get('/:id', async (req, res) => {
   // Validate UUID format
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(id)) {
-    res.status(400).json({ error: 'Invalid debt ID format' });
+    res.status(400).json({ error: DEBTS.invalidDebtIdFormat });
     return;
   }
 
@@ -71,7 +72,7 @@ debtsRouter.get('/:id', async (req, res) => {
     .limit(1);
 
   if (!debtRow) {
-    res.status(404).json({ error: 'Debt not found' });
+    res.status(404).json({ error: DEBTS.notFound });
     return;
   }
 
@@ -182,7 +183,7 @@ debtsRouter.post('/:debtId/payments', uploadMiddleware, async (req, res) => {
     : req.body;
   const parsed = CreatePaymentSchema.safeParse(rawData);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: DEBTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -197,11 +198,11 @@ debtsRouter.post('/:debtId/payments', uploadMiddleware, async (req, res) => {
       .limit(1);
 
     if (!debt) {
-      return { error: 'Debt not found', status: 404 };
+      return { error: DEBTS.notFound, status: 404 };
     }
 
     if (debt.status === 'fully_paid' || debt.status === 'written_off') {
-      return { error: `Cannot record payment on a ${debt.status} debt`, status: 400 };
+      return { error: DEBTS.cannotRecordPaymentOnStatus(debt.status), status: 400 };
     }
 
     // Overpayment prevention (FR-08.6)
@@ -218,7 +219,7 @@ debtsRouter.post('/:debtId/payments', uploadMiddleware, async (req, res) => {
 
     if (existingCents + newPaymentCents > totalDebtCents) {
       return {
-        error: 'Payment would exceed remaining debt balance',
+        error: DEBTS.paymentExceedsBalance,
         maxAmount: fromCents(totalDebtCents - existingCents),
         status: 400,
       };
@@ -345,7 +346,7 @@ debtsRouter.post('/:debtId/payments/:paymentId/approve', async (req, res) => {
   const paymentId = req.params.paymentId as string;
 
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can approve payments' });
+    res.status(403).json({ error: DEBTS.onlyOwnersCanApprovePayments });
     return;
   }
 
@@ -358,7 +359,7 @@ debtsRouter.post('/:debtId/payments/:paymentId/approve', async (req, res) => {
       .for('update');
 
     if (!debt) {
-      return { error: 'Debt not found', status: 404 };
+      return { error: DEBTS.notFound, status: 404 };
     }
 
     // SELECT FOR UPDATE on payment row
@@ -369,11 +370,11 @@ debtsRouter.post('/:debtId/payments/:paymentId/approve', async (req, res) => {
       .for('update');
 
     if (!payment) {
-      return { error: 'Payment not found', status: 404 };
+      return { error: DEBTS.paymentNotFound, status: 404 };
     }
 
     if (payment.status !== 'pending_approval') {
-      return { error: 'Payment is not pending approval', status: 400 };
+      return { error: DEBTS.paymentNotPendingApproval, status: 400 };
     }
 
     // Re-validate overpayment (concurrent safety)
@@ -389,7 +390,7 @@ debtsRouter.post('/:debtId/payments/:paymentId/approve', async (req, res) => {
     const totalDebtCents = toCents(debt.totalAmount);
 
     if (confirmedCents + thisPaymentCents > totalDebtCents) {
-      return { error: 'Approving this payment would exceed the debt total', status: 400 };
+      return { error: DEBTS.approvingWouldExceedTotal, status: 400 };
     }
 
     // Update payment status
@@ -451,13 +452,13 @@ debtsRouter.post('/:debtId/payments/:paymentId/reject', async (req, res) => {
   const paymentId = req.params.paymentId as string;
 
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can reject payments' });
+    res.status(403).json({ error: DEBTS.onlyOwnersCanRejectPayments });
     return;
   }
 
   const parsed = ReasonSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: DEBTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -472,11 +473,11 @@ debtsRouter.post('/:debtId/payments/:paymentId/reject', async (req, res) => {
       .for('update');
 
     if (!payment) {
-      return { error: 'Payment not found', status: 404 };
+      return { error: DEBTS.paymentNotFound, status: 404 };
     }
 
     if (payment.status !== 'pending_approval') {
-      return { error: 'Payment is not pending approval', status: 400 };
+      return { error: DEBTS.paymentNotPendingApproval, status: 400 };
     }
 
     // Update payment
@@ -530,13 +531,13 @@ debtsRouter.post('/:id/write-off', async (req, res) => {
   const { id } = req.params;
 
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can write off debts' });
+    res.status(403).json({ error: DEBTS.onlyOwnersCanWriteOff });
     return;
   }
 
   const parsed = ReasonSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: DEBTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -550,11 +551,11 @@ debtsRouter.post('/:id/write-off', async (req, res) => {
       .limit(1);
 
     if (!debt) {
-      return { error: 'Debt not found', status: 404 };
+      return { error: DEBTS.notFound, status: 404 };
     }
 
     if (debt.status === 'fully_paid' || debt.status === 'written_off') {
-      return { error: `Cannot write off a ${debt.status} debt`, status: 400 };
+      return { error: DEBTS.cannotWriteOffStatus(debt.status), status: 400 };
     }
 
     const [updated] = await tx
@@ -600,7 +601,7 @@ debtsRouter.post('/:id/reopen', async (req, res) => {
   const { id } = req.params;
 
   if (req.user!.role !== 'owner') {
-    res.status(403).json({ error: 'Only owners can reopen debts' });
+    res.status(403).json({ error: DEBTS.onlyOwnersCanReopen });
     return;
   }
 
@@ -612,11 +613,11 @@ debtsRouter.post('/:id/reopen', async (req, res) => {
       .limit(1);
 
     if (!debt) {
-      return { error: 'Debt not found', status: 404 };
+      return { error: DEBTS.notFound, status: 404 };
     }
 
     if (debt.status !== 'written_off') {
-      return { error: 'Only written-off debts can be reopened', status: 400 };
+      return { error: DEBTS.onlyWrittenOffCanReopen, status: 400 };
     }
 
     // Compute correct status based on confirmed payments

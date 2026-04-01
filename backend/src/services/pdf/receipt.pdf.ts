@@ -1,6 +1,7 @@
 import type PDFDocument from 'pdfkit';
 import { addCompanyHeader, drawTable } from './pdf-base.js';
 import type { TableColumn } from './pdf-base.js';
+import { PDF } from '../../constants/strings/pdf.js';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -44,7 +45,7 @@ export async function buildReceiptPdf(
 ): Promise<void> {
   const { company, client, transaction, debt } = receiptData;
 
-  let y = await addCompanyHeader(doc, company.name, company.logoPath, 'Receipt');
+  let y = await addCompanyHeader(doc, company.name, company.logoPath, 'Recibo');
 
   // Client info
   doc.font('Helvetica-Bold').fontSize(10).fillColor('#111827');
@@ -65,7 +66,7 @@ export async function buildReceiptPdf(
   // Transaction info
   doc.font('Helvetica').fontSize(10).fillColor('#111827');
   if (transaction.referenceNumber) {
-    doc.text(`Reference: ${transaction.referenceNumber}`, 50, y);
+    doc.text(PDF.reference(transaction.referenceNumber), 50, y);
     y += 14;
   }
   if (transaction.deliveredAt) {
@@ -73,21 +74,21 @@ export async function buildReceiptPdf(
       transaction.deliveredAt instanceof Date
         ? transaction.deliveredAt.toISOString().slice(0, 10)
         : new Date(transaction.deliveredAt).toISOString().slice(0, 10);
-    doc.text(`Date: ${deliveredDate}`, 50, y);
+    doc.text(PDF.date(deliveredDate), 50, y);
     y += 14;
   }
   if (transaction.description) {
-    doc.text(`Description: ${transaction.description}`, 50, y);
+    doc.text(PDF.description(transaction.description), 50, y);
     y += 14;
   }
   y += 10;
 
   // Line items table: Item (200), Qty (60), Unit Price (100), Total (100)
   const itemColumns: TableColumn[] = [
-    { header: 'Item', width: 200, align: 'left', getValue: (r) => r.description },
-    { header: 'Qty', width: 60, align: 'right', getValue: (r) => r.quantity },
-    { header: 'Unit Price', width: 100, align: 'right', getValue: (r) => `$${r.unitPrice}` },
-    { header: 'Total', width: 100, align: 'right', getValue: (r) => r.lineTotal ? `$${r.lineTotal}` : '-' },
+    { header: PDF.thItem, width: 200, align: 'left', getValue: (r) => r.description },
+    { header: PDF.thQty, width: 60, align: 'right', getValue: (r) => r.quantity },
+    { header: PDF.thUnitPrice, width: 100, align: 'right', getValue: (r) => `$${r.unitPrice}` },
+    { header: PDF.thTotal, width: 100, align: 'right', getValue: (r) => r.lineTotal ? `$${r.lineTotal}` : '-' },
   ];
 
   y = drawTable(doc, itemColumns, transaction.items, y);
@@ -95,7 +96,7 @@ export async function buildReceiptPdf(
 
   // Bold total line right-aligned
   doc.font('Helvetica-Bold').fontSize(11).fillColor('#111827');
-  doc.text(`Total: $${transaction.totalAmount}`, 50, y, {
+  doc.text(PDF.total(transaction.totalAmount), 50, y, {
     width: 460, // 200 + 60 + 100 + 100 = 460
     align: 'right',
   });
@@ -107,21 +108,21 @@ export async function buildReceiptPdf(
     doc.font('Helvetica-Bold').fontSize(11);
 
     if (isFullyPaid) {
-      doc.fillColor('#059669').text('Fully Paid', 50, y);
+      doc.fillColor('#059669').text(PDF.fullyPaid, 50, y);
     } else {
-      doc.fillColor('#DC2626').text(`Outstanding: $${debt.remainingBalance}`, 50, y);
+      doc.fillColor('#DC2626').text(PDF.outstanding(debt.remainingBalance), 50, y);
     }
     y += 20;
 
     // Payment history table (if payments exist)
     if (debt.payments.length > 0) {
       doc.font('Helvetica-Bold').fontSize(10).fillColor('#374151');
-      doc.text('Payment History', 50, y);
+      doc.text(PDF.paymentHistory, 50, y);
       y += 16;
 
       const paymentColumns: TableColumn[] = [
         {
-          header: 'Date',
+          header: PDF.thDate,
           width: 100,
           align: 'left',
           getValue: (p) => {
@@ -129,9 +130,9 @@ export async function buildReceiptPdf(
             return d.toISOString().slice(0, 10);
           },
         },
-        { header: 'Amount', width: 100, align: 'right', getValue: (p) => `$${p.amount}` },
-        { header: 'Method', width: 120, align: 'left', getValue: (p) => p.paymentMethod || '-' },
-        { header: 'Ref #', width: 120, align: 'left', getValue: (p) => p.reference || '-' },
+        { header: PDF.thAmount, width: 100, align: 'right', getValue: (p) => `$${p.amount}` },
+        { header: PDF.thMethod, width: 120, align: 'left', getValue: (p) => p.paymentMethod || '-' },
+        { header: PDF.thRef, width: 120, align: 'left', getValue: (p) => p.reference || '-' },
       ];
 
       y = drawTable(doc, paymentColumns, debt.payments, y);

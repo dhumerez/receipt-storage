@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getClients } from '../../api/clients.ts';
+import { CLIENTS } from '../../constants/strings/clients.ts';
 import ClientTable from '../../components/clients/ClientTable.tsx';
 import ClientModal from '../../components/clients/ClientModal.tsx';
 import DeactivateConfirmModal from '../../components/clients/DeactivateConfirmModal.tsx';
@@ -36,7 +37,7 @@ export default function ClientsPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading clients...</div>
+        <div className="text-sm text-gray-400">{CLIENTS.loadingClients}</div>
       </div>
     );
   }
@@ -45,20 +46,20 @@ export default function ClientsPage() {
     <div className="p-8">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Clients</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">{CLIENTS.pageTitle}</h1>
         <button
           type="button"
           onClick={() => { setEditClient(null); setModalOpen(true); }}
           className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
         >
-          Add Client
+          {CLIENTS.addClient}
         </button>
       </div>
 
       {/* Error banner */}
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load clients. Please refresh the page.
+          {CLIENTS.errorLoadingClients}
         </div>
       )}
 
@@ -68,7 +69,7 @@ export default function ClientsPage() {
           <SearchBar
             value={searchInput}
             onChange={setSearchInput}
-            placeholder="Search by name, email, or phone"
+            placeholder={CLIENTS.searchPlaceholder}
           />
         </div>
         <StatusFilterToggle value={status} onChange={setStatus} />
@@ -77,13 +78,13 @@ export default function ClientsPage() {
       {/* Table or empty state */}
       {clients.length === 0 ? (
         <EmptyState
-          heading={status === 'inactive' ? 'No inactive clients' : 'No clients yet'}
+          heading={status === 'inactive' ? CLIENTS.noInactiveClients : CLIENTS.noClientsYet}
           body={
             status === 'inactive'
-              ? 'Deactivated clients will appear here.'
-              : 'Add your first client to start tracking debts and payments.'
+              ? CLIENTS.deactivatedClientsAppearHere
+              : CLIENTS.addFirstClient
           }
-          ctaLabel={status !== 'inactive' ? 'Add Client' : undefined}
+          ctaLabel={status !== 'inactive' ? CLIENTS.addClient : undefined}
           onCta={status !== 'inactive' ? () => { setEditClient(null); setModalOpen(true); } : undefined}
         />
       ) : (

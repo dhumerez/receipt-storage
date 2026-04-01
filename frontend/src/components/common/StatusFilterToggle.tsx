@@ -1,3 +1,5 @@
+import { COMMON } from '../../constants/strings/common.ts';
+
 type Status = 'all' | 'active' | 'inactive';
 
 interface StatusFilterToggleProps {
@@ -6,9 +8,9 @@ interface StatusFilterToggleProps {
 }
 
 const OPTIONS: { value: Status; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
+  { value: 'all', label: COMMON.filterAll },
+  { value: 'active', label: COMMON.filterActive },
+  { value: 'inactive', label: COMMON.filterInactive },
 ];
 
 export default function StatusFilterToggle({ value, onChange }: StatusFilterToggleProps) {

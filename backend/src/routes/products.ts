@@ -3,6 +3,7 @@ import { eq, and, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/client.js';
 import { products } from '../db/schema.js';
+import { PRODUCTS } from '../constants/strings/products.js';
 
 export const productsRouter = Router();
 
@@ -11,7 +12,7 @@ export const productsRouter = Router();
 const CreateProductSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().optional(),
-  unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Must be a valid price (e.g. "12.50")'),
+  unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, PRODUCTS.invalidPrice),
   unit: z.string().max(50).optional(),
 });
 
@@ -54,7 +55,7 @@ productsRouter.get('/', async (req, res) => {
 productsRouter.post('/', async (req, res) => {
   const parsed = CreateProductSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: PRODUCTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -82,7 +83,7 @@ productsRouter.post('/', async (req, res) => {
 productsRouter.patch('/:id', async (req, res) => {
   const parsed = UpdateProductSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: PRODUCTS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -98,7 +99,7 @@ productsRouter.patch('/:id', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Product not found' });
+    res.status(404).json({ error: PRODUCTS.notFound });
     return;
   }
 
@@ -127,7 +128,7 @@ productsRouter.patch('/:id/deactivate', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Product not found' });
+    res.status(404).json({ error: PRODUCTS.notFound });
     return;
   }
 
@@ -155,7 +156,7 @@ productsRouter.patch('/:id/reactivate', async (req, res) => {
     .limit(1);
 
   if (!existing) {
-    res.status(404).json({ error: 'Product not found' });
+    res.status(404).json({ error: PRODUCTS.notFound });
     return;
   }
 

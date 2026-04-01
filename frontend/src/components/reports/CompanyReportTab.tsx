@@ -4,6 +4,7 @@ import { fetchCompanyReport } from '../../api/reports.ts';
 import type { CompanyReportRow } from '../../api/reports.ts';
 import SortableHeader from './SortableHeader.tsx';
 import EmptyState from '../common/EmptyState.tsx';
+import { REPORTS } from '../../constants/strings/reports.ts';
 
 interface CompanyReportTabProps {
   dateFrom: string;
@@ -53,13 +54,13 @@ export default function CompanyReportTab({ dateFrom, dateTo, showSettled }: Comp
   }, [data, sortKey, sortDir, showSettled]);
 
   if (isLoading) {
-    return <p className="text-sm text-gray-500 py-8 text-center">Loading report...</p>;
+    return <p className="text-sm text-gray-500 py-8 text-center">{REPORTS.loadingReport}</p>;
   }
 
   if (isError) {
     return (
       <p className="text-sm text-red-600 py-8 text-center">
-        Failed to load report data. Check your connection and try again.
+        {REPORTS.failedToLoadReport}
       </p>
     );
   }
@@ -67,8 +68,8 @@ export default function CompanyReportTab({ dateFrom, dateTo, showSettled }: Comp
   if (sortedData.length === 0) {
     return (
       <EmptyState
-        heading="No outstanding balances"
-        body="No clients have outstanding balances in the selected date range. Try adjusting the date range or enabling settled clients."
+        heading={REPORTS.noOutstandingBalances}
+        body={REPORTS.noOutstandingBalancesBody}
       />
     );
   }
@@ -79,10 +80,10 @@ export default function CompanyReportTab({ dateFrom, dateTo, showSettled }: Comp
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50">
-              <SortableHeader label="Client Name" sortKey="clientName" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-              <SortableHeader label="Total Debts" sortKey="totalDebts" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-              <SortableHeader label="Total Paid" sortKey="totalPaid" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-              <SortableHeader label="Outstanding Balance" sortKey="outstandingBalance" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+              <SortableHeader label={REPORTS.thClientName} sortKey="clientName" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+              <SortableHeader label={REPORTS.thTotalDebts} sortKey="totalDebts" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+              <SortableHeader label={REPORTS.thTotalPaid} sortKey="totalPaid" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+              <SortableHeader label={REPORTS.thOutstandingBalance} sortKey="outstandingBalance" activeSortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
             </tr>
           </thead>
           <tbody>

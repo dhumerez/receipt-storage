@@ -3,13 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getPortalDebt } from '../../api/portal.ts';
 import type { PortalPaymentItem } from '../../api/portal.ts';
 import { getFileUrl } from '../../api/transactions.ts';
+import { PORTAL } from '../../constants/strings/portal.ts';
 
 // Status badge labels and classes — same as DebtCard pattern
 const STATUS_LABELS: Record<string, string> = {
-  open: 'Open',
-  partially_paid: 'Partially Paid',
-  fully_paid: 'Fully Paid',
-  written_off: 'Written Off',
+  open: PORTAL.statusOpen,
+  partially_paid: PORTAL.statusPartiallyPaid,
+  fully_paid: PORTAL.statusFullyPaid,
+  written_off: PORTAL.statusWrittenOff,
 };
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -81,17 +82,17 @@ function PaymentRow({ payment }: { payment: PortalPaymentItem }) {
           </span>
           {payment.status === 'confirmed' && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Confirmed
+              {PORTAL.confirmed}
             </span>
           )}
           {payment.status === 'pending_approval' && (
             <span className="text-xs text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded">
-              Awaiting confirmation
+              {PORTAL.awaitingConfirmationBadge}
             </span>
           )}
           {payment.status === 'rejected' && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-              Rejected
+              {PORTAL.rejected}
             </span>
           )}
         </div>
@@ -122,7 +123,7 @@ export default function PortalDebtDetailPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading debt details...</div>
+        <div className="text-sm text-gray-400">{PORTAL.loadingDebtDetails}</div>
       </div>
     );
   }
@@ -131,10 +132,10 @@ export default function PortalDebtDetailPage() {
     return (
       <div className="p-8">
         <Link to="/portal" className="text-sm text-blue-600 hover:text-blue-700">
-          &larr; Back to Dashboard
+          {PORTAL.backToDashboard}
         </Link>
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load this debt. Please refresh the page.
+          {PORTAL.errorLoadingDebt}
         </div>
       </div>
     );
@@ -145,13 +146,13 @@ export default function PortalDebtDetailPage() {
   return (
     <div className="p-8">
       <Link to="/portal" className="text-sm text-blue-600 hover:text-blue-700">
-        &larr; Back to Dashboard
+        {PORTAL.backToDashboard}
       </Link>
 
       {/* Section 1: Header */}
       <div className="mt-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold text-gray-900">Debt Details</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">{PORTAL.debtDetails}</h1>
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_CLASSES[debt.status] ?? 'bg-gray-100 text-gray-600'}`}>
             {STATUS_LABELS[debt.status] ?? debt.status}
           </span>
@@ -163,19 +164,19 @@ export default function PortalDebtDetailPage() {
 
         <div className="grid grid-cols-3 gap-4 mt-4">
           <div>
-            <div className="text-xs text-gray-500 uppercase tracking-wider">Original Amount</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider">{PORTAL.originalAmount}</div>
             <div className="text-lg font-semibold text-gray-900">
               ${parseFloat(debt.totalAmount).toFixed(2)}
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500 uppercase tracking-wider">Total Paid</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider">{PORTAL.totalPaid}</div>
             <div className="text-lg font-semibold text-gray-900">
               ${parseFloat(debt.amountPaid).toFixed(2)}
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500 uppercase tracking-wider">Remaining Balance</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider">{PORTAL.remainingBalance}</div>
             <div className={`text-lg font-semibold ${remainingZero ? 'text-green-700' : 'text-gray-900'}`}>
               ${parseFloat(debt.remainingBalance).toFixed(2)}
             </div>
@@ -185,7 +186,7 @@ export default function PortalDebtDetailPage() {
 
       {/* Section 2: Payment History */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Payment History</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{PORTAL.paymentHistory}</h2>
 
         {debt.payments.length > 0 ? (
           <div>
@@ -195,9 +196,9 @@ export default function PortalDebtDetailPage() {
           </div>
         ) : (
           <div className="text-center py-8">
-            <h3 className="text-sm font-medium text-gray-900">No payments yet</h3>
+            <h3 className="text-sm font-medium text-gray-900">{PORTAL.noPaymentsYet}</h3>
             <p className="mt-1 text-sm text-gray-500">
-              Payments will appear here once they are recorded.
+              {PORTAL.paymentsWillAppearHere}
             </p>
           </div>
         )}
@@ -205,7 +206,7 @@ export default function PortalDebtDetailPage() {
 
       {/* Section 3: Original Transaction */}
       <div className="border-t border-gray-200 mt-8 pt-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">Original Transaction</h2>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3">{PORTAL.originalTransaction}</h2>
         <span className="text-sm text-gray-900">{debt.transactionRef}</span>
       </div>
     </div>

@@ -8,6 +8,7 @@ import DeactivateProductModal from '../../components/products/DeactivateProductM
 import SearchBar from '../../components/common/SearchBar.tsx';
 import StatusFilterToggle from '../../components/common/StatusFilterToggle.tsx';
 import EmptyState from '../../components/common/EmptyState.tsx';
+import { PRODUCTS } from '../../constants/strings/products.ts';
 
 export default function ProductsPage() {
   const queryClient = useQueryClient();
@@ -40,7 +41,7 @@ export default function ProductsPage() {
   if (isLoading) {
     return (
       <div className="p-8">
-        <div className="text-sm text-gray-400">Loading products...</div>
+        <div className="text-sm text-gray-400">{PRODUCTS.loadingProducts}</div>
       </div>
     );
   }
@@ -49,20 +50,20 @@ export default function ProductsPage() {
     <div className="p-8">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">{PRODUCTS.pageTitle}</h1>
         <button
           type="button"
           onClick={() => { setEditProduct(null); setModalOpen(true); }}
           className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
         >
-          Add Product
+          {PRODUCTS.addProduct}
         </button>
       </div>
 
       {/* Error banner */}
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-          Could not load products. Please refresh the page.
+          {PRODUCTS.errorLoadingProducts}
         </div>
       )}
 
@@ -72,7 +73,7 @@ export default function ProductsPage() {
           <SearchBar
             value={searchInput}
             onChange={setSearchInput}
-            placeholder="Search by name or unit"
+            placeholder={PRODUCTS.searchPlaceholder}
           />
         </div>
         <StatusFilterToggle value={status} onChange={setStatus} />
@@ -83,19 +84,19 @@ export default function ProductsPage() {
         <EmptyState
           heading={
             search
-              ? 'No products match your search'
+              ? PRODUCTS.noProductsMatchSearch
               : status === 'inactive'
-              ? 'No inactive products'
-              : 'No products yet'
+              ? PRODUCTS.noInactiveProducts
+              : PRODUCTS.noProductsYet
           }
           body={
             search
-              ? 'Try a different name or unit, or clear the search.'
+              ? PRODUCTS.tryDifferentSearch
               : status === 'inactive'
-              ? 'Deactivated products will appear here.'
-              : 'Add your first product to start building your catalog.'
+              ? PRODUCTS.deactivatedProductsAppearHere
+              : PRODUCTS.addFirstProduct
           }
-          ctaLabel={!search && status !== 'inactive' ? 'Add Product' : undefined}
+          ctaLabel={!search && status !== 'inactive' ? PRODUCTS.addProduct : undefined}
           onCta={!search && status !== 'inactive' ? () => { setEditProduct(null); setModalOpen(true); } : undefined}
         />
       ) : (

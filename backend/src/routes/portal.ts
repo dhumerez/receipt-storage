@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { eq, and, sql, desc, inArray } from 'drizzle-orm';
 import { db } from '../db/client.js';
 import { debtBalances, payments, debts, documents, users, transactions } from '../db/schema.js';
+import { PORTAL } from '../constants/strings/portal.js';
 
 export const portalRouter = Router();
 
@@ -15,7 +16,7 @@ portalRouter.get('/summary', async (req, res) => {
 
   // Guard: clientId must exist (client role always has it after portal invite accepted)
   if (!clientId || !companyId) {
-    res.status(403).json({ error: 'Client identity not found in token' });
+    res.status(403).json({ error: PORTAL.clientIdentityNotFound });
     return;
   }
 
@@ -65,7 +66,7 @@ portalRouter.get('/debts', async (req, res) => {
   const companyId = req.user!.companyId;
 
   if (!clientId || !companyId) {
-    res.status(403).json({ error: 'Client identity not found in token' });
+    res.status(403).json({ error: PORTAL.clientIdentityNotFound });
     return;
   }
 
@@ -101,7 +102,7 @@ portalRouter.get('/debts/:id', async (req, res) => {
   const { id } = req.params;
 
   if (!clientId || !companyId) {
-    res.status(403).json({ error: 'Client identity not found in token' });
+    res.status(403).json({ error: PORTAL.clientIdentityNotFound });
     return;
   }
 
@@ -133,7 +134,7 @@ portalRouter.get('/debts/:id', async (req, res) => {
     .limit(1);
 
   if (!debtRow) {
-    res.status(404).json({ error: 'Debt not found' });
+    res.status(404).json({ error: PORTAL.debtNotFound });
     return;
   }
 

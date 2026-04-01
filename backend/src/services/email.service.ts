@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { EMAIL } from '../constants/strings/email.js';
 
 // Environment variables required (not yet in .env — add before deploying):
 // RESEND_API_KEY  — from Resend dashboard (https://resend.com/api-keys)
@@ -35,17 +36,17 @@ export async function sendInviteEmail({
   const { error } = await getResend().emails.send({
     from: FROM_ADDRESS,
     to: [to],
-    subject: `You have been invited to ${companyName}`,
+    subject: EMAIL.inviteSubject(companyName),
     html: `
-      <p>Hello,</p>
-      <p><strong>${invitedByName}</strong> has invited you to join <strong>${companyName}</strong> as a <strong>${role}</strong>.</p>
-      <p><a href="${inviteUrl}">Accept Invitation</a></p>
-      <p>This link expires in 48 hours.</p>
-      <p>If you did not expect this invitation, you can safely ignore this email.</p>
+      <p>${EMAIL.greeting}</p>
+      <p>${EMAIL.inviteBody(invitedByName, companyName, role)}</p>
+      <p>${EMAIL.acceptInviteCta(inviteUrl)}</p>
+      <p>${EMAIL.inviteExpires}</p>
+      <p>${EMAIL.inviteSafetyNotice}</p>
     `,
   });
   if (error) {
-    throw new Error(`Email send failed: ${error.message}`);
+    throw new Error(EMAIL.sendFailed(error.message));
   }
 }
 
@@ -65,15 +66,15 @@ export async function sendPasswordResetEmail({
   const { error } = await getResend().emails.send({
     from: FROM_ADDRESS,
     to: [to],
-    subject: 'Reset your password — Receipts Tracker',
+    subject: EMAIL.resetSubject,
     html: `
-      <p>Hello,</p>
-      <p>You requested a password reset for your Receipts Tracker account.</p>
-      <p><a href="${resetUrl}">Reset Password</a></p>
-      <p>This link expires in 1 hour. If you did not request a reset, you can safely ignore this email.</p>
+      <p>${EMAIL.greeting}</p>
+      <p>${EMAIL.resetBody}</p>
+      <p>${EMAIL.resetCta(resetUrl)}</p>
+      <p>${EMAIL.resetSafetyNotice}</p>
     `,
   });
   if (error) {
-    throw new Error(`Email send failed: ${error.message}`);
+    throw new Error(EMAIL.sendFailed(error.message));
   }
 }

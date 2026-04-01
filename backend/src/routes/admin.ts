@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { db } from '../db/client.js';
 import { companies, users } from '../db/schema.js';
 import { hashPassword } from '../services/auth.service.js';
+import { ERRORS } from '../constants/strings/errors.js';
 
 export const adminRouter = Router();
 // Note: authenticate + requireSuperAdmin applied in app.ts, not here
@@ -35,7 +36,7 @@ adminRouter.get('/companies', async (_req, res) => {
 adminRouter.post('/companies', async (req, res) => {
   const parsed = CreateCompanySchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: ERRORS.validationError, details: parsed.error.flatten() });
     return;
   }
   const [company] = await db
@@ -49,7 +50,7 @@ adminRouter.post('/companies', async (req, res) => {
 adminRouter.patch('/companies/:id', async (req, res) => {
   const parsed = UpdateCompanySchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: ERRORS.validationError, details: parsed.error.flatten() });
     return;
   }
   const [updated] = await db
@@ -58,7 +59,7 @@ adminRouter.patch('/companies/:id', async (req, res) => {
     .where(eq(companies.id, req.params.id))
     .returning();
   if (!updated) {
-    res.status(404).json({ error: 'Company not found' });
+    res.status(404).json({ error: ERRORS.companyNotFound });
     return;
   }
   res.json(updated);
@@ -68,7 +69,7 @@ adminRouter.patch('/companies/:id', async (req, res) => {
 adminRouter.post('/companies/:id/owner', async (req, res) => {
   const parsed = CreateOwnerSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Validation error', details: parsed.error.flatten() });
+    res.status(400).json({ error: ERRORS.validationError, details: parsed.error.flatten() });
     return;
   }
 
@@ -79,7 +80,7 @@ adminRouter.post('/companies/:id/owner', async (req, res) => {
     .where(eq(companies.id, req.params.id))
     .limit(1);
   if (!company) {
-    res.status(404).json({ error: 'Company not found' });
+    res.status(404).json({ error: ERRORS.companyNotFound });
     return;
   }
 
@@ -90,7 +91,7 @@ adminRouter.post('/companies/:id/owner', async (req, res) => {
     .where(eq(users.email, parsed.data.email.toLowerCase()))
     .limit(1);
   if (existing) {
-    res.status(409).json({ error: 'Email already in use' });
+    res.status(409).json({ error: ERRORS.emailAlreadyInUse });
     return;
   }
 

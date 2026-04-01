@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { TRANSACTIONS } from '../../constants/strings/transactions.ts';
 
 interface FileAttachmentSectionProps {
   files: File[];
@@ -32,13 +33,13 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
     onDropRejected: (rejections) => {
       const firstCode = rejections[0]?.errors?.[0]?.code;
       if (firstCode === 'file-invalid-type') {
-        setError("That file type isn't supported. Upload JPEG, PNG, WebP, PDF, or HEIC files.");
+        setError(TRANSACTIONS.fileTypeNotSupported);
       } else if (firstCode === 'file-too-large') {
-        setError('That file is too large. Maximum file size is 10 MB.');
+        setError(TRANSACTIONS.fileTooLarge);
       } else if (firstCode === 'too-many-files') {
-        setError('Maximum 5 files per transaction. Remove a file to add another.');
+        setError(TRANSACTIONS.maxFilesReached);
       } else {
-        setError("That file type isn't supported. Upload JPEG, PNG, WebP, PDF, or HEIC files.");
+        setError(TRANSACTIONS.fileTypeNotSupported);
       }
     },
   });
@@ -63,7 +64,7 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
     const newFiles = Array.from(inputFiles);
     const total = [...files, ...newFiles].slice(0, MAX_FILES);
     if (files.length + newFiles.length > MAX_FILES) {
-      setError('Maximum 5 files per transaction. Remove a file to add another.');
+      setError(TRANSACTIONS.maxFilesReached);
     }
     onChange(total);
   };
@@ -89,7 +90,7 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
       >
         <input {...getInputProps()} />
         <p className="text-sm text-gray-500 text-center">
-          Drag files here, or use the buttons below to take a photo or choose from your gallery.
+          {TRANSACTIONS.dragFilesHere}
         </p>
       </div>
 
@@ -116,7 +117,7 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
           onClick={() => cameraRef.current?.click()}
           className="border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
-          Take Photo
+          {TRANSACTIONS.takePhoto}
         </button>
 
         <input
@@ -135,7 +136,7 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
           onClick={() => galleryRef.current?.click()}
           className="border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
-          Choose from Gallery
+          {TRANSACTIONS.chooseFromGallery}
         </button>
       </div>
 
@@ -183,7 +184,7 @@ export default function FileAttachmentSection({ files, onChange }: FileAttachmen
             ))}
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            {files.length} / {MAX_FILES} files
+            {TRANSACTIONS.filesCount(files.length, MAX_FILES)}
           </p>
         </>
       )}

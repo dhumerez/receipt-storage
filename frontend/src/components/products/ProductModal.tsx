@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createProduct, updateProduct } from '../../api/products.ts';
 import type { ProductListItem, CreateProductInput } from '../../api/products.ts';
+import { PRODUCTS } from '../../constants/strings/products.ts';
+import { COMMON } from '../../constants/strings/common.ts';
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -55,7 +57,7 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
       queryClient.invalidateQueries({ queryKey: ['products'] });
       onClose();
     },
-    onError: () => setError("Couldn't save changes. Check your connection and try again."),
+    onError: () => setError(PRODUCTS.couldntSaveChanges),
   });
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -81,7 +83,7 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
       <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">
-            {editData ? 'Edit Product' : 'Add Product'}
+            {editData ? PRODUCTS.editProduct : PRODUCTS.addProduct}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
         </div>
@@ -90,7 +92,7 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-normal text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-normal text-gray-700 mb-1">{PRODUCTS.nameLabel}</label>
             <input
               ref={firstInputRef}
               type="text"
@@ -101,7 +103,7 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
             />
           </div>
           <div>
-            <label className="block text-sm font-normal text-gray-700 mb-1">Unit Price</label>
+            <label className="block text-sm font-normal text-gray-700 mb-1">{PRODUCTS.unitPriceLabel}</label>
             <input
               type="number"
               min="0"
@@ -114,10 +116,10 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
             />
           </div>
           <div>
-            <label className="block text-sm font-normal text-gray-700 mb-1">Unit of Measure <span className="text-gray-400">(optional)</span></label>
+            <label className="block text-sm font-normal text-gray-700 mb-1">{PRODUCTS.unitOfMeasureLabel} <span className="text-gray-400">{PRODUCTS.unitOfMeasureOptional}</span></label>
             <input
               type="text"
-              placeholder="e.g., box, unit, kg"
+              placeholder={PRODUCTS.unitOfMeasurePlaceholder}
               maxLength={50}
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
@@ -125,7 +127,7 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
             />
           </div>
           <div>
-            <label className="block text-sm font-normal text-gray-700 mb-1">Description <span className="text-gray-400">(optional)</span></label>
+            <label className="block text-sm font-normal text-gray-700 mb-1">{PRODUCTS.descriptionLabel} <span className="text-gray-400">{PRODUCTS.descriptionOptional}</span></label>
             <textarea
               rows={3}
               value={description}
@@ -136,11 +138,11 @@ export default function ProductModal({ isOpen, onClose, editData }: ProductModal
           <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
             <button type="button" onClick={onClose}
               className="px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-              Discard Changes
+              {PRODUCTS.discardChanges}
             </button>
             <button type="submit" disabled={mutation.isPending}
               className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-              {mutation.isPending ? 'Saving...' : (editData ? 'Save Changes' : 'Create Product')}
+              {mutation.isPending ? COMMON.saving : (editData ? PRODUCTS.saveChanges : PRODUCTS.createProduct)}
             </button>
           </div>
         </form>

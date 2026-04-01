@@ -1,5 +1,6 @@
 import type { ProductListItem } from '../../api/products.ts';
 import ProductTableRow from './ProductTableRow.tsx';
+import { PRODUCTS } from '../../constants/strings/products.ts';
 
 interface ProductTableProps {
   products: ProductListItem[];
@@ -14,11 +15,11 @@ export default function ProductTable({ products, onEdit, onDeactivate, onReactiv
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50">
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Unit Price</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Unit</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{PRODUCTS.thName}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{PRODUCTS.thUnitPrice}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{PRODUCTS.thUnit}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{PRODUCTS.thStatus}</th>
+            <th className="px-4 py-3 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">{PRODUCTS.thActions}</th>
           </tr>
         </thead>
         <tbody>

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
+import { AUTH } from '../constants/strings/auth.js';
 
 export interface JWTPayload {
   sub: string;
@@ -18,7 +19,7 @@ export function authenticate(
 ): void {
   const auth = req.headers.authorization;
   if (!auth?.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'No token' });
+    res.status(401).json({ error: AUTH.noToken });
     return;
   }
   try {
@@ -28,6 +29,6 @@ export function authenticate(
     req.user = payload;
     next();
   } catch {
-    res.status(401).json({ error: 'Invalid token' });
+    res.status(401).json({ error: AUTH.invalidToken });
   }
 }

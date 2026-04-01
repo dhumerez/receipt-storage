@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext.tsx';
 import { getNotifications, markAllNotificationsRead } from '../../api/notifications.ts';
 import NotificationPanelItem from './NotificationPanelItem.tsx';
+import { COMMON } from '../../constants/strings/common.ts';
 
 interface NotificationPanelProps {
   isOpen: boolean;
@@ -52,14 +53,14 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{COMMON.notifications}</h2>
           <div className="flex items-center gap-3">
             <button
               type="button"
               className="text-sm text-blue-600 hover:text-blue-700"
               onClick={() => markAllRead.mutate()}
             >
-              Mark all read
+              {COMMON.markAllRead}
             </button>
             <button
               type="button"
@@ -87,16 +88,16 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
             <div className="flex flex-col items-center justify-center h-full text-center px-6 py-12">
               {isOwner ? (
                 <>
-                  <p className="text-base font-medium text-gray-900">You're all caught up</p>
+                  <p className="text-base font-medium text-gray-900">{COMMON.allCaughtUp}</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    No transactions waiting for your approval.
+                    {COMMON.noTransactionsWaiting}
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-base font-medium text-gray-900">No submissions yet</p>
+                  <p className="text-base font-medium text-gray-900">{COMMON.noSubmissionsYet}</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Your submitted transactions will appear here.
+                    {COMMON.submittedTransactionsWillAppear}
                   </p>
                 </>
               )}

@@ -1,11 +1,13 @@
 import { Link } from 'react-router';
 import type { DebtItem } from '../../api/clients.ts';
+import { CLIENTS } from '../../constants/strings/clients.ts';
+import { DEBTS } from '../../constants/strings/debts.ts';
 
 const STATUS_LABELS: Record<DebtItem['status'], string> = {
-  open: 'Open',
-  partially_paid: 'Partially Paid',
-  fully_paid: 'Fully Paid',
-  written_off: 'Written Off',
+  open: DEBTS.statusOpen,
+  partially_paid: DEBTS.statusPartiallyPaid,
+  fully_paid: DEBTS.statusFullyPaid,
+  written_off: DEBTS.statusWrittenOff,
 };
 
 const STATUS_CLASSES: Record<DebtItem['status'], string> = {
@@ -35,15 +37,15 @@ export default function DebtCard({ debt }: DebtCardProps) {
       </div>
       <div className="grid grid-cols-3 gap-4 text-sm">
         <div>
-          <p className="text-gray-500 text-xs mb-0.5">Original</p>
+          <p className="text-gray-500 text-xs mb-0.5">{CLIENTS.original}</p>
           <p className="font-medium text-gray-900">${parseFloat(debt.totalAmount).toFixed(2)}</p>
         </div>
         <div>
-          <p className="text-gray-500 text-xs mb-0.5">Paid</p>
+          <p className="text-gray-500 text-xs mb-0.5">{CLIENTS.paid}</p>
           <p className="font-medium text-gray-900">${parseFloat(debt.amountPaid).toFixed(2)}</p>
         </div>
         <div>
-          <p className="text-gray-500 text-xs mb-0.5">Remaining</p>
+          <p className="text-gray-500 text-xs mb-0.5">{CLIENTS.remaining}</p>
           <p className={`font-medium ${remainingBalance > 0 ? 'text-gray-900' : 'text-green-700'}`}>
             ${remainingBalance.toFixed(2)}
           </p>

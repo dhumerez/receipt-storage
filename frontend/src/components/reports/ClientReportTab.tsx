@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchClientReport } from '../../api/reports.ts';
 import EmptyState from '../common/EmptyState.tsx';
+import { REPORTS } from '../../constants/strings/reports.ts';
 
 interface ClientReportTabProps {
   dateFrom: string;
@@ -23,20 +24,20 @@ export default function ClientReportTab({
   if (!selectedClientId) {
     return (
       <EmptyState
-        heading="Select a client"
-        body="Choose a client from the dropdown above to view their transaction and payment history."
+        heading={REPORTS.selectClientPrompt}
+        body={REPORTS.selectClientBody}
       />
     );
   }
 
   if (isLoading) {
-    return <p className="text-sm text-gray-500 py-8 text-center">Loading report...</p>;
+    return <p className="text-sm text-gray-500 py-8 text-center">{REPORTS.loadingReport}</p>;
   }
 
   if (isError) {
     return (
       <p className="text-sm text-red-600 py-8 text-center">
-        Failed to load report data. Check your connection and try again.
+        {REPORTS.failedToLoadReport}
       </p>
     );
   }
@@ -44,8 +45,8 @@ export default function ClientReportTab({
   if (!data || data.transactions.length === 0) {
     return (
       <EmptyState
-        heading="No transactions found"
-        body="This client has no transactions in the selected date range. Try adjusting the dates."
+        heading={REPORTS.noTransactionsFound}
+        body={REPORTS.noTransactionsFoundBody}
       />
     );
   }
@@ -65,10 +66,10 @@ export default function ClientReportTab({
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">Ref #</th>
-                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">Date</th>
-                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">Description</th>
-                <th className="px-4 py-3 text-right text-xs uppercase tracking-wider text-gray-500">Total</th>
+                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thRef}</th>
+                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thDate}</th>
+                <th className="px-4 py-3 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thDescription}</th>
+                <th className="px-4 py-3 text-right text-xs uppercase tracking-wider text-gray-500">{REPORTS.thTotal}</th>
               </tr>
             </thead>
             <tbody>
@@ -94,7 +95,7 @@ export default function ClientReportTab({
           <div key={`debt-${txn.id}`} className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
             <div className="flex flex-wrap justify-between items-center gap-2">
               <h4 className="text-sm font-semibold text-gray-900">
-                Debt for {txn.referenceNumber}
+                {REPORTS.debtFor(txn.referenceNumber ?? '')}
               </h4>
               <span className="text-xs uppercase tracking-wider text-gray-500">
                 {txn.debt!.status.replace('_', ' ')}
@@ -102,13 +103,13 @@ export default function ClientReportTab({
             </div>
             <div className="flex flex-wrap gap-4 text-sm">
               <span className="text-gray-500">
-                Total: <span className="text-gray-900">${txn.debt!.totalAmount}</span>
+                {REPORTS.totalLabel} <span className="text-gray-900">${txn.debt!.totalAmount}</span>
               </span>
               <span className="text-gray-500">
-                Paid: <span className="text-gray-900">${txn.debt!.amountPaid}</span>
+                {REPORTS.paidLabel} <span className="text-gray-900">${txn.debt!.amountPaid}</span>
               </span>
               <span className="text-gray-500">
-                Remaining: <span className="text-gray-900 font-semibold">${txn.debt!.remainingBalance}</span>
+                {REPORTS.remainingLabel} <span className="text-gray-900 font-semibold">${txn.debt!.remainingBalance}</span>
               </span>
             </div>
 
@@ -117,11 +118,11 @@ export default function ClientReportTab({
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">Amount</th>
-                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">Date</th>
-                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">Method</th>
-                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">Reference</th>
-                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">Status</th>
+                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thAmount}</th>
+                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thDate}</th>
+                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thMethod}</th>
+                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thReference}</th>
+                      <th className="px-3 py-2 text-left text-xs uppercase tracking-wider text-gray-500">{REPORTS.thStatus}</th>
                     </tr>
                   </thead>
                   <tbody>

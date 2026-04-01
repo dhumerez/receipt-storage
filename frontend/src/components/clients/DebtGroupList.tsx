@@ -1,21 +1,22 @@
 import type { DebtItem } from '../../api/clients.ts';
 import DebtCard from './DebtCard.tsx';
+import { CLIENTS } from '../../constants/strings/clients.ts';
 
 interface DebtGroupListProps {
   debts: DebtItem[];
 }
 
 const GROUPS: { status: DebtItem['status']; label: string }[] = [
-  { status: 'open', label: 'Open Debts' },
-  { status: 'partially_paid', label: 'Partially Paid' },
-  { status: 'fully_paid', label: 'Fully Paid' },
+  { status: 'open', label: CLIENTS.openDebts },
+  { status: 'partially_paid', label: CLIENTS.partiallyPaid },
+  { status: 'fully_paid', label: CLIENTS.fullyPaid },
 ];
 
 export default function DebtGroupList({ debts }: DebtGroupListProps) {
   if (debts.length === 0) {
     return (
       <div className="text-center py-12 text-sm text-gray-400">
-        No debts recorded for this client yet.
+        {CLIENTS.noDebtsRecorded}
       </div>
     );
   }

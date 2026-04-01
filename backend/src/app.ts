@@ -18,6 +18,7 @@ import { portalRouter } from './routes/portal.js';
 import { authenticate } from './middleware/auth.js';
 import { requireSuperAdmin, requireRole } from './middleware/rbac.js';
 import { requireTenant } from './middleware/tenant.js';
+import { ERRORS } from './constants/strings/errors.js';
 
 export const app = express();
 
@@ -63,7 +64,7 @@ app.use('/api/v1/portal', authenticate, requireRole('client'), portalRouter);
 // ── 404 handler ───────────────────────────────────────────────────────────────
 
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: 'Not found' });
+  res.status(404).json({ error: ERRORS.notFound });
 });
 
 // ── Global error handler ──────────────────────────────────────────────────────
@@ -72,5 +73,5 @@ app.use((_req: Request, res: Response) => {
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Internal server error' });
+  res.status(500).json({ error: ERRORS.internalServerError });
 });
