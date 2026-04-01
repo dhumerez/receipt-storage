@@ -10,6 +10,7 @@ import {
   reopenDebt,
 } from '../../api/debts.ts';
 import { getFileUrl } from '../../api/transactions.ts';
+import { downloadPdf } from '../../api/reports.ts';
 import type { DocumentInfo } from '../../api/debts.ts';
 import PaymentForm from '../../components/debts/PaymentForm.tsx';
 import PaymentHistoryList from '../../components/debts/PaymentHistoryList.tsx';
@@ -76,6 +77,7 @@ export default function DebtDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [pdfLoading, setPdfLoading] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [showWriteOff, setShowWriteOff] = useState(false);
   const [approvingId, setApprovingId] = useState<string | null>(null);
@@ -151,6 +153,21 @@ export default function DebtDetailPage() {
   const isPayable = debt.status === 'open' || debt.status === 'partially_paid';
   const remainingBalance = parseFloat(debt.remainingBalance);
 
+  async function handleDownloadStatement() {
+    if (!debt) return;
+    setPdfLoading(true);
+    try {
+      await downloadPdf(
+        `/api/v1/reports/receipt/${debt.transactionId}/pdf`,
+        `statement-${debt.transactionId.slice(0, 8)}.pdf`,
+      );
+    } catch {
+      // Reset loading state on error
+    } finally {
+      setPdfLoading(false);
+    }
+  }
+
   return (
     <div className="p-8">
       {/* Back link */}
@@ -175,6 +192,14 @@ export default function DebtDetailPage() {
           >
             {STATUS_LABELS[debt.status] ?? debt.status}
           </span>
+          <button
+            onClick={handleDownloadStatement}
+            disabled={pdfLoading}
+            aria-busy={pdfLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm"
+          >
+            {pdfLoading ? 'Generating...' : 'Download Statement'}
+          </button>
         </div>
 
         {debt.status === 'written_off' && debt.writeOffReason && (

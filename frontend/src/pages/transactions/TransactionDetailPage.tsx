@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getTransaction, getFileUrl } from '../../api/transactions.ts';
 import type { DocumentInfo } from '../../api/transactions.ts';
+import { downloadPdf } from '../../api/reports.ts';
 import TransactionStatusBadge from '../../components/transactions/TransactionStatusBadge.tsx';
 import { useAuth } from '../../contexts/AuthContext.tsx';
 
@@ -52,6 +54,7 @@ function AttachmentThumbnail({ doc }: { doc: DocumentInfo }) {
 export default function TransactionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['transaction', id],
@@ -95,6 +98,21 @@ export default function TransactionDetailPage() {
   const hasInternalNotes = data.internalNotes && data.internalNotes.trim().length > 0;
   const hasAnyNotes = hasClientNotes || (canSeeInternalNotes && hasInternalNotes);
 
+  async function handleDownloadReceipt() {
+    if (!data) return;
+    setPdfLoading(true);
+    try {
+      await downloadPdf(
+        `/api/v1/reports/receipt/${data.id}/pdf`,
+        `receipt-${data.referenceNumber}.pdf`,
+      );
+    } catch {
+      // Reset loading state on error
+    } finally {
+      setPdfLoading(false);
+    }
+  }
+
   return (
     <div className="p-8">
       <Link to="/transactions" className="text-sm text-blue-600 hover:text-blue-700">
@@ -106,6 +124,14 @@ export default function TransactionDetailPage() {
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold text-gray-900">{data.referenceNumber}</h1>
           <TransactionStatusBadge status={data.status} />
+          <button
+            onClick={handleDownloadReceipt}
+            disabled={pdfLoading}
+            aria-busy={pdfLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm"
+          >
+            {pdfLoading ? 'Generating...' : 'Download Receipt PDF'}
+          </button>
         </div>
         <Link
           to={`/clients/${data.clientId}`}
