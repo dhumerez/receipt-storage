@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 7
-current_plan: 3
+current_plan: 4
 status: In progress
-last_updated: "2026-04-01T07:00:53.525Z"
+last_updated: "2026-04-01T07:07:11.853Z"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 32
-  completed_plans: 30
+  completed_plans: 32
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 **Current milestone:** 1.0 — Core SaaS MVP
 **Current phase:** 7
 **Current plan:** 3
-**Last session stopped at:** Completed 07-03-PLAN.md
+**Last session stopped at:** Completed 07-04-PLAN.md
 
 ## Status
 
@@ -31,7 +31,7 @@ progress:
 | Phase 4: Product Catalog | In progress | Plans 01-02 complete |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
-| Phase 7: Reports & PDF | In progress | Plans 01, 03 complete |
+| Phase 7: Reports & PDF | In progress | Plans 01, 03, 04 complete |
 
 ## Active Decisions
 
@@ -116,6 +116,9 @@ progress:
 
 - **07-03 (Reports UI):** downloadPdf uses getAccessToken() from client.ts for authenticated blob fetch rather than adding apiClientRaw
 - **07-03 (Reports UI):** BottomTabBar not modified — Settings accessible via sidebar on desktop or direct URL on mobile (too many tabs for mobile)
+
+- **07-04 (PDF Buttons):** Download Statement on DebtDetailPage uses receipt PDF endpoint with transactionId (not client report) since receipt includes debt status and payment history per D-13
+- **07-04 (FR-10.4):** Total Paid added to portal PortalBalanceSummary by summing amountPaid from debts list — no new backend endpoint needed
 
 ## Blockers
 

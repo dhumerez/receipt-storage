@@ -205,7 +205,7 @@ Plans:
 
 ### Plans
 
-**Plans:** 2/4 plans executed
+**Plans:** 4/4 plans complete
 
 | # | Plan | Deliverable |
 |---|------|-------------|
@@ -216,9 +216,9 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — Schema migration + report service + logo upload + API endpoints (wave 1)
-- [ ] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
+- [x] 07-02-PLAN.md — PDFKit PDF generation: shared utilities + 3 PDF builders + streaming endpoints (wave 2)
 - [x] 07-03-PLAN.md — Reports page UI + Settings page + navigation + routes + print CSS (wave 2)
-- [ ] 07-04-PLAN.md — PDF download buttons on transaction detail and debt detail pages (wave 3)
+- [x] 07-04-PLAN.md — PDF download buttons on transaction detail and debt detail pages (wave 3)
 
 **Verification:** Company report totals match sum of open debts; PDF renders correctly for multi-page report; report respects `company_id` scoping; client-scoped PDF contains only that client's data.
 
