@@ -16,12 +16,7 @@ export interface ClientReportData {
     deliveredAt: string;
     description: string;
     totalAmount: string;
-    items: Array<{
-      name: string;
-      quantity: number;
-      unitPrice: string;
-      total: string;
-    }>;
+    items: Array<{ name: string; quantity: number; unitPrice: string; total: string }>;
     debt?: {
       totalAmount: string;
       amountPaid: string;
@@ -38,21 +33,13 @@ export interface ClientReportData {
   }>;
 }
 
-export function fetchCompanyReport(
-  dateFrom: string,
-  dateTo: string,
-  showSettled: boolean,
-) {
+export function fetchCompanyReport(dateFrom: string, dateTo: string, showSettled: boolean) {
   return apiClient<CompanyReportRow[]>(
     `/api/v1/reports/company?dateFrom=${dateFrom}&dateTo=${dateTo}&showSettled=${showSettled}`,
   );
 }
 
-export function fetchClientReport(
-  clientId: string,
-  dateFrom: string,
-  dateTo: string,
-) {
+export function fetchClientReport(clientId: string, dateFrom: string, dateTo: string) {
   return apiClient<ClientReportData>(
     `/api/v1/reports/client/${clientId}?dateFrom=${dateFrom}&dateTo=${dateTo}`,
   );

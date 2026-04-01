@@ -21,41 +21,40 @@ export default function ReportFilterBar({
 }: ReportFilterBarProps) {
   return (
     <div className="flex flex-wrap gap-4 items-end p-4 bg-white rounded-lg border border-gray-200">
+      {children}
+
       <div className="flex flex-col gap-1">
-        <label className="text-xs uppercase tracking-wider text-gray-500">
-          From
-        </label>
+        <label className="text-xs uppercase tracking-wider text-gray-500">From</label>
         <input
           type="date"
           value={dateFrom}
           onChange={(e) => onDateFromChange(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs uppercase tracking-wider text-gray-500">
-          To
-        </label>
+        <label className="text-xs uppercase tracking-wider text-gray-500">To</label>
         <input
           type="date"
           value={dateTo}
           onChange={(e) => onDateToChange(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+      <div className="flex items-center gap-2 pb-1">
         <input
           type="checkbox"
+          id="show-settled"
           checked={showSettled}
           onChange={(e) => onShowSettledChange(e.target.checked)}
           className="rounded border-gray-300"
         />
-        Show settled clients
-      </label>
-
-      {children}
+        <label htmlFor="show-settled" className="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">
+          Show settled clients
+        </label>
+      </div>
     </div>
   );
 }
