@@ -6,17 +6,48 @@
     <title>Rastreador de Recibos</title>
     <meta name="description" content="Gestiona y rastrea tus recibos y deudas" />
     <meta name="theme-color" content="#2563eb" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><p style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      // Diagnostic: show JS errors visibly on screen (critical for mobile debugging)
+      window.addEventListener('error', function(e) {
+        var root = document.getElementById('root');
+        if (root) {
+          root.innerHTML =
+            '<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">' +
+            'JS Error: ' + e.message + '\nFile: ' + (e.filename || 'unknown') +
+            '\nLine: ' + (e.lineno || '?') + '\nUA: ' + navigator.userAgent +
+            '</pre>';
+        }
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var root = document.getElementById('root');
+        if (root && root.querySelector('pre')) return; // already showing an error
+        if (root) {
+          root.innerHTML =
+            '<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">' +
+            'Unhandled Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)) +
+            '\nUA: ' + navigator.userAgent +
+            '</pre>';
+        }
+      });
+      // Service worker: use base path from Vite (injected at build time)
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js');
+          // Derive base path from the current script's location
+          var base = document.querySelector('script[type="module"][src]');
+          var basePath = '/';
+          if (base && base.src) {
+            var url = new URL(base.src);
+            var idx = url.pathname.indexOf('/assets/');
+            if (idx > 0) basePath = url.pathname.substring(0, idx + 1);
+          }
+          navigator.serviceWorker.register(basePath + 'sw.js').catch(function() {});
         });
       }
     </script>
