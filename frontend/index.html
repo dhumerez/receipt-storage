@@ -73,10 +73,9 @@
         }
       }, 8000);
 
-      // Service worker: unregister any stale SW at wrong scope, then register correctly
+      // Service worker: one-time purge of stale SWs/caches, then re-register
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          // Derive base path from the module script's URL
           var base = document.querySelector('script[type="module"][src]');
           var basePath = '/';
           if (base && base.src) {
@@ -84,14 +83,24 @@
             var idx = url.pathname.indexOf('/assets/');
             if (idx > 0) basePath = url.pathname.substring(0, idx + 1);
           }
-          // Unregister any SW registered at wrong scopes (e.g. old /sw.js at root)
-          navigator.serviceWorker.getRegistrations().then(function(regs) {
-            regs.forEach(function(reg) {
-              if (reg.scope !== location.origin + basePath) {
-                reg.unregister();
-              }
+          // One-time cache bust: nuke everything and reload once
+          var SW_VERSION = 'v3';
+          if (localStorage.getItem('sw-version') !== SW_VERSION) {
+            localStorage.setItem('sw-version', SW_VERSION);
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+              regs.forEach(function(reg) { reg.unregister(); });
             });
-          });
+            if (typeof caches !== 'undefined') {
+              caches.keys().then(function(keys) {
+                Promise.all(keys.map(function(k) { return caches.delete(k); })).then(function() {
+                  location.reload();
+                });
+              });
+            } else {
+              location.reload();
+            }
+            return;
+          }
           navigator.serviceWorker.register(basePath + 'sw.js').catch(function() {});
         });
       }
