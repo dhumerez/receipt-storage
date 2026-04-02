@@ -11,10 +11,10 @@
     <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
-    <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
+    <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip; <small style="color:#999">(d6)</small></p></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Collect all errors for diagnostics
+      // Collect all errors for diagnostics — deploy marker d6
       var _diag = { errors: [], resources: [] };
 
       // Capture-phase listener: catches resource loading failures (script 404, CORS)
@@ -51,6 +51,26 @@
           '<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">' +
           lines.join('\n') + '</pre>';
       }
+
+      // Detect white screen: if React mounts but root becomes empty/invisible
+      var _mountedAt = 0;
+      new MutationObserver(function() {
+        var root = document.getElementById('root');
+        if (!root) return;
+        // React mounted = placeholder gone
+        if (!root.querySelector('p[data-placeholder]') && !_mountedAt) {
+          _mountedAt = Date.now();
+        }
+        // If React mounted but root has no visible content, show debug info
+        if (_mountedAt && root.innerText.trim().length === 0) {
+          _diag.errors.push('WHITE SCREEN detected ' + (Date.now() - _mountedAt) + 'ms after mount');
+          _diag.errors.push('root.innerHTML length: ' + root.innerHTML.length);
+          _diag.errors.push('root.children: ' + root.children.length);
+          if (root.innerHTML.length < 500) _diag.errors.push('root.innerHTML: ' + root.innerHTML);
+          _diag.errors.push('SW controller: ' + (navigator.serviceWorker && navigator.serviceWorker.controller ? navigator.serviceWorker.controller.scriptURL : 'none'));
+          showDiag();
+        }
+      }).observe(document.getElementById('root'), { childList: true, subtree: true });
 
       // Timeout: if React hasn't mounted after 8s, show diagnostics
       setTimeout(function() {
