@@ -6,6 +6,15 @@ import { AuthProvider } from './contexts/AuthContext.tsx';
 import App from './App.tsx';
 import './index.css';
 
+// Debug: validate critical imports
+const imports: Record<string, unknown> = { React, ReactDOM, BrowserRouter, QueryClient, QueryClientProvider, AuthProvider, App };
+const bad = Object.entries(imports).filter(([, v]) => v == null);
+if (bad.length > 0) {
+  const root = document.getElementById('root');
+  if (root) root.innerHTML = `<pre style="padding:1rem;color:red">Undefined imports: ${bad.map(([k]) => k).join(', ')}</pre>`;
+  throw new Error('Bad imports: ' + bad.map(([k]) => k).join(', '));
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

@@ -1,3 +1,4 @@
+import { Component, type ReactNode } from 'react';
 import { Routes, Route } from 'react-router';          // react-router, NOT react-router-dom
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import ClientRoute from './components/ClientRoute.tsx';
@@ -20,9 +21,38 @@ import DebtDetailPage from './pages/debts/DebtDetailPage.tsx';
 import ReportsPage from './pages/reports/ReportsPage.tsx';
 import SettingsPage from './pages/settings/SettingsPage.tsx';
 
+// Debug: validate page/component imports
+const pageImports: Record<string, unknown> = {
+  ProtectedRoute, ClientRoute, AppLayout, PortalLayout,
+  LoginPage, DashboardPage, AcceptInvitePage, ResetPasswordPage, ForgotPasswordPage,
+  ClientsPage, ClientDetailPage, PortalPage, PortalDebtDetailPage,
+  ProductsPage, TransactionsPage, NewTransactionPage, TransactionDetailPage,
+  DebtDetailPage, ReportsPage, SettingsPage, Routes, Route,
+};
+const badPages = Object.entries(pageImports).filter(([, v]) => v == null);
+if (badPages.length > 0) {
+  const msg = 'Undefined page imports: ' + badPages.map(([k]) => k).join(', ');
+  document.getElementById('root')!.innerHTML = `<pre style="padding:1rem;color:red">${msg}</pre>`;
+  throw new Error(msg);
+}
+
+// Error boundary to catch render errors with detail
+class ErrorBoundary extends Component<{children: ReactNode}, {error: Error | null}> {
+  state: {error: Error | null} = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return <pre style={{padding:'1rem',color:'red',fontSize:'12px',whiteSpace:'pre-wrap'}}>
+        Render error: {this.state.error.message}{'\n'}{this.state.error.stack}
+      </pre>;
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <Routes>
+    <ErrorBoundary><Routes>
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -52,6 +82,6 @@ export default function App() {
           <Route path="/portal/debts/:id" element={<PortalDebtDetailPage />} />
         </Route>
       </Route>
-    </Routes>
+    </Routes></ErrorBoundary>
   );
 }

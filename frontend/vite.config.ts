@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   build: {
     target: ['es2020', 'safari14', 'chrome87', 'firefox78', 'edge88'],
+    minify: false,
   },
   server: {
     port: 4001,
