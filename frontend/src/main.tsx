@@ -35,19 +35,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 }
 
-function showError(label: string, error: unknown) {
-  const root = document.getElementById('root');
-  if (!root) return;
-  const msg = error instanceof Error ? `${error.message}\n${error.stack}` : String(error);
-  root.innerHTML = `<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">${label}: ${msg}\nUA: ${navigator.userAgent}</pre>`;
-}
-
 try {
-  ReactDOM.createRoot(document.getElementById('root')!, {
-    onUncaughtError: (error) => showError('Uncaught', error),
-    onCaughtError: (error) => showError('Caught', error),
-    onRecoverableError: (error) => showError('Recoverable', error),
-  }).render(
+  ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
@@ -59,5 +48,5 @@ try {
     </ErrorBoundary>,
   );
 } catch (err) {
-  showError('Sync mount', err);
+  console.error('Sync mount error:', err);
 }
