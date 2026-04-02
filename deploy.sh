@@ -104,27 +104,75 @@ cmd_backup() {
   info "Backup saved: ${backup_file}"
 }
 
+# ── Webhook install ─────────────────────────────────────────────────────────
+cmd_webhook_install() {
+  check_env
+  source .env
+  [[ -z "${WEBHOOK_SECRET:-}" || "${WEBHOOK_SECRET}" == *"change"* ]] \
+    && error "Set WEBHOOK_SECRET in .env first (openssl rand -hex 32)"
+
+  local project_dir
+  project_dir=$(pwd)
+  local service_file="webhook/webhook.service"
+
+  # Patch the service file with the actual project path and user
+  local current_user
+  current_user=$(whoami)
+  sed "s|/opt/receipts-storage|${project_dir}|g; s|User=deploy|User=${current_user}|g" \
+    "${service_file}" > /tmp/receipts-webhook.service
+
+  info "Installing systemd service..."
+  sudo cp /tmp/receipts-webhook.service /etc/systemd/system/receipts-webhook.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable receipts-webhook
+  sudo systemctl start receipts-webhook
+
+  info "Webhook listener installed and running on port ${WEBHOOK_PORT:-9000}"
+  info ""
+  info "Configure GitHub webhook:"
+  info "  URL:          http://<server-ip>:${WEBHOOK_PORT:-9000}/webhook"
+  info "  Content type: application/json"
+  info "  Secret:       (your WEBHOOK_SECRET from .env)"
+  info "  Events:       Just the push event"
+  info ""
+  info "Check status: sudo systemctl status receipts-webhook"
+  info "View logs:    sudo journalctl -u receipts-webhook -f"
+}
+
+cmd_webhook_uninstall() {
+  info "Stopping and removing webhook service..."
+  sudo systemctl stop receipts-webhook 2>/dev/null || true
+  sudo systemctl disable receipts-webhook 2>/dev/null || true
+  sudo rm -f /etc/systemd/system/receipts-webhook.service
+  sudo systemctl daemon-reload
+  info "Webhook listener removed."
+}
+
 # ── Dispatch ─────────────────────────────────────────────────────────────────
 case "${1:-help}" in
-  setup)  cmd_setup  ;;
-  update) cmd_update ;;
-  logs)   cmd_logs   "${2:-}" ;;
-  status) cmd_status ;;
-  stop)   cmd_stop   ;;
-  down)   cmd_down   ;;
-  backup) cmd_backup ;;
+  setup)             cmd_setup  ;;
+  update)            cmd_update ;;
+  logs)              cmd_logs   "${2:-}" ;;
+  status)            cmd_status ;;
+  stop)              cmd_stop   ;;
+  down)              cmd_down   ;;
+  backup)            cmd_backup ;;
+  webhook-install)   cmd_webhook_install ;;
+  webhook-uninstall) cmd_webhook_uninstall ;;
   *)
     echo "Receipts Storage — Deploy Script"
     echo ""
     echo "Usage: ./deploy.sh <command>"
     echo ""
     echo "Commands:"
-    echo "  setup     First-time deploy: build, start, configure"
-    echo "  update    Pull latest code, rebuild, and restart"
-    echo "  logs      Tail logs (optional: service name)"
-    echo "  status    Show container status"
-    echo "  stop      Stop all containers (data preserved)"
-    echo "  down      Remove containers (data preserved)"
-    echo "  backup    Dump PostgreSQL database to file"
+    echo "  setup              First-time deploy: build, start, configure"
+    echo "  update             Pull latest code, rebuild, and restart"
+    echo "  logs               Tail logs (optional: service name)"
+    echo "  status             Show container status"
+    echo "  stop               Stop all containers (data preserved)"
+    echo "  down               Remove containers (data preserved)"
+    echo "  backup             Dump PostgreSQL database to file"
+    echo "  webhook-install    Install GitHub webhook listener (auto-deploy on push)"
+    echo "  webhook-uninstall  Remove webhook listener"
     ;;
 esac

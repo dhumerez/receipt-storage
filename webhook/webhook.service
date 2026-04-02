@@ -1,0 +1,19 @@
+[Unit]
+Description=GitHub Webhook Listener — Receipts Storage
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/opt/receipts-storage
+EnvironmentFile=/opt/receipts-storage/.env
+ExecStart=/usr/bin/node /opt/receipts-storage/webhook/listener.js
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=receipts-webhook
+
+[Install]
+WantedBy=multi-user.target
