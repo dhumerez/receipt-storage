@@ -12,67 +12,15 @@
   </head>
   <body>
     <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
-    <div id="diag" style="position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;font-size:11px;padding:4px 8px;z-index:99999;font-family:monospace;max-height:30vh;overflow:auto;"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // ── Diagnostics v15 — visible on-screen log ──
-      // Global dlog: always APPENDS (never replaces). Shared by index.html and main.tsx.
-      window._dlog = function dlog(msg) {
-        var line = (Date.now() % 100000) + ' ' + msg;
-        var el = document.getElementById('diag');
-        if (el) {
-          if (el.textContent) el.textContent += '\n' + line;
-          else el.textContent = line;
-        }
-      };
-      _dlog('HTML loaded, v15');
-      _dlog('URL: ' + location.href);
-      _dlog('SW controller: ' + (navigator.serviceWorker ? (navigator.serviceWorker.controller ? 'YES' : 'no') : 'n/a'));
-
-      // Capture errors
-      window.addEventListener('error', function(e) {
-        if (e.target && e.target.tagName) {
-          _dlog('RES_ERR: ' + e.target.tagName + ' ' + (e.target.src || e.target.href || '?'));
-        }
-      }, true);
-      window.addEventListener('error', function(e) {
-        _dlog('JS_ERR: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
-      });
-      window.addEventListener('unhandledrejection', function(e) {
-        _dlog('PROMISE_ERR: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
-      });
-
-      // Track React mount — placeholder disappears when React takes over #root
-      var _mountCheck = setInterval(function() {
-        var root = document.getElementById('root');
-        if (!root) return;
-        if (!root.querySelector('p[data-placeholder]')) {
-          _dlog('React MOUNTED (placeholder gone)');
-          _dlog('#root children: ' + root.childNodes.length + ', innerHTML len: ' + root.innerHTML.length);
-          clearInterval(_mountCheck);
-        }
-      }, 200);
-
-      // After 10s if placeholder still there, React never mounted
-      setTimeout(function() {
-        var root = document.getElementById('root');
-        if (root && root.querySelector('p[data-placeholder]')) {
-          _dlog('TIMEOUT: React did NOT mount in 10s');
-        }
-        clearInterval(_mountCheck);
-      }, 10000);
-
-      // ── Service worker cleanup ──
-      // nginx sends Clear-Site-Data header to nuke SW registrations server-side.
-      // This client-side cleanup is belt-and-suspenders.
+      // Service worker cleanup — unregister all SWs and clear caches
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
-          if (regs.length) _dlog('Cleanup: unregistering ' + regs.length + ' SW(s)');
           regs.forEach(function(r) { r.unregister(); });
         });
         if (typeof caches !== 'undefined') {
           caches.keys().then(function(keys) {
-            if (keys.length) _dlog('Cleanup: deleting ' + keys.length + ' cache(s)');
             keys.forEach(function(k) { caches.delete(k); });
           });
         }

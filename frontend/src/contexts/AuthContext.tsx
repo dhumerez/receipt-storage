@@ -13,30 +13,22 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// Use the global diagnostic logger from index.html
-const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog
-  ?? ((msg: string) => console.log('[diag]', msg));
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // On mount: attempt silent session recovery via refresh cookie
   useEffect(() => {
-    dlog('AuthProvider: refreshing token...');
     apiRefreshToken()
       .then(({ accessToken, user }) => {
-        dlog('AuthProvider: refresh OK, role=' + user.role);
         setAccessToken(accessToken);
         setUser(user);
       })
-      .catch((err) => {
-        dlog('AuthProvider: refresh FAILED — ' + (err instanceof Error ? err.message : String(err)));
+      .catch(() => {
         // No valid refresh cookie — user must log in
         setUser(null);
       })
       .finally(() => {
-        dlog('AuthProvider: isLoading=false');
         setIsLoading(false);
       });
   }, []);

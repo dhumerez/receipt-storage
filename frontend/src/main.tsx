@@ -35,33 +35,19 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 }
 
-// Use the global diagnostic logger from index.html
-const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog
-  ?? ((msg: string) => console.log('[diag]', msg));
+// React Router v7 BrowserRouter returns null (blank page) if basename has a
+// trailing slash and the URL matches without one (e.g. basename="/app/" vs
+// URL "/app"). Always strip trailing slashes before passing to BrowserRouter.
+const basename = (import.meta.env.VITE_BASE_PATH || '/').replace(/\/+$/, '') || '/';
 
-// Normalize basename: strip trailing slashes, ensure leading slash
-const rawBase = import.meta.env.VITE_BASE_PATH || '/';
-const basename = rawBase.replace(/\/+$/, '') || '/';
-
-dlog('main.tsx executing, pathname=' + window.location.pathname);
-dlog('BASE_PATH raw="' + rawBase + '" normalized="' + basename + '"');
-dlog('API_URL="' + (import.meta.env.VITE_API_URL ?? '') + '"');
-
-try {
-  dlog('createRoot starting');
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename={basename}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ErrorBoundary>,
-  );
-  dlog('render() called');
-} catch (err) {
-  dlog('SYNC_MOUNT_ERROR: ' + (err instanceof Error ? err.message : String(err)));
-  console.error('Sync mount error:', err);
-}
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter basename={basename}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </ErrorBoundary>,
+);
