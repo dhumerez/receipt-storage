@@ -1,52 +1,18 @@
-const CACHE_NAME = 'recibos-v3';
-const SHELL_ASSETS = [
-  './',
-  './index.html',
-  './favicon.svg',
-  './pwa-192x192.png',
-];
+// Self-destructing service worker — clears all caches and unregisters itself.
+// Once all clients have picked this up, replace with a real SW if needed.
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS))
-  );
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // Never cache API calls (path may be prefixed, e.g. /receipts-app/api/...)
-  if (url.pathname.includes('/api/')) {
-    return;
-  }
-
-  // Network-first for navigation (HTML), cache-first for assets
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
-    return;
-  }
-
-  // Cache-first for static assets
-  event.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request))
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+      .then(() => self.registration.unregister())
+      .then(() => self.clients.matchAll())
+      .then((clients) => {
+        clients.forEach((client) => client.navigate(client.url));
+      })
   );
 });

@@ -73,36 +73,18 @@
         }
       }, 8000);
 
-      // Service worker: one-time purge of stale SWs/caches, then re-register
+      // Service worker cleanup — unregister any stale SWs and clear caches
+      // The sw.js file is now a self-destructing no-op that handles its own removal.
+      // This block handles the case where new HTML loads but old SW is still active.
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          var base = document.querySelector('script[type="module"][src]');
-          var basePath = '/';
-          if (base && base.src) {
-            var url = new URL(base.src);
-            var idx = url.pathname.indexOf('/assets/');
-            if (idx > 0) basePath = url.pathname.substring(0, idx + 1);
-          }
-          // One-time cache bust: nuke everything and reload once
-          var SW_VERSION = 'v3';
-          if (localStorage.getItem('sw-version') !== SW_VERSION) {
-            localStorage.setItem('sw-version', SW_VERSION);
-            navigator.serviceWorker.getRegistrations().then(function(regs) {
-              regs.forEach(function(reg) { reg.unregister(); });
-            });
-            if (typeof caches !== 'undefined') {
-              caches.keys().then(function(keys) {
-                Promise.all(keys.map(function(k) { return caches.delete(k); })).then(function() {
-                  location.reload();
-                });
-              });
-            } else {
-              location.reload();
-            }
-            return;
-          }
-          navigator.serviceWorker.register(basePath + 'sw.js').catch(function() {});
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(reg) { reg.unregister(); });
         });
+        if (typeof caches !== 'undefined') {
+          caches.keys().then(function(keys) {
+            keys.forEach(function(k) { caches.delete(k); });
+          });
+        }
       }
     </script>
   </body>
