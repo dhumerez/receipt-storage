@@ -15,6 +15,7 @@ export const COMMON = {
   filterInactive: 'Inactivos',
 
   // Common actions
+  logout: 'Cerrar Sesión',
   cancel: 'Cancelar',
   save: 'Guardar',
   saving: 'Guardando...',
