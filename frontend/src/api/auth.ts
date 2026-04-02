@@ -34,6 +34,7 @@ export function refreshToken(): Promise<{ accessToken: string; user: AuthUser }>
   if (!_refreshing) {
     _refreshing = apiClient<{ accessToken: string }>('/api/auth/refresh', {
       method: 'POST',
+      _isRetry: true, // skip apiClient's own 401→refresh interceptor
     })
       .then(data => ({ accessToken: data.accessToken, user: decodeJwt(data.accessToken) }))
       .finally(() => { _refreshing = null; });

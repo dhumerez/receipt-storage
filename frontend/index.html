@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
-    <div id="root"><p style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
+    <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
       // Collect all errors for diagnostics
@@ -57,7 +57,7 @@
         var root = document.getElementById('root');
         if (!root) return;
         // React replaces inner content on mount — check if placeholder still there
-        if (root.querySelector('p') || root.innerHTML.indexOf('Cargando') > -1) {
+        if (root.querySelector('p[data-placeholder]')) {
           _diag.errors.push('TIMEOUT: React did not mount within 8 seconds');
           // Check which scripts loaded
           var scripts = document.querySelectorAll('script[src]');
