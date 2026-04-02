@@ -20,6 +20,11 @@ const ROLE_BADGE: Record<string, string> = {
   client: 'bg-purple-100 text-purple-800',
 };
 
+const ROLE_TIPS: Record<string, string> = {
+  collaborator: SETTINGS.roleCollaboratorTip,
+  viewer: SETTINGS.roleViewerTip,
+};
+
 export default function TeamManagement() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -114,9 +119,10 @@ export default function TeamManagement() {
               onChange={(e) => setRole(e.target.value as InviteRole)}
               className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
             >
-              <option value="collaborator">{SETTINGS.roleCollaborator}</option>
-              <option value="viewer">{SETTINGS.roleViewer}</option>
+              <option value="collaborator" title={SETTINGS.roleCollaboratorTip}>{SETTINGS.roleCollaborator}</option>
+              <option value="viewer" title={SETTINGS.roleViewerTip}>{SETTINGS.roleViewer}</option>
             </select>
+            <p className="text-xs text-gray-400 sm:col-span-3">{ROLE_TIPS[role]}</p>
           </div>
           {inviteMut.isError && (
             <p className="text-sm text-red-600">
@@ -185,7 +191,10 @@ export default function TeamManagement() {
                     </td>
                     <td className="px-4 py-3">
                       {isSelf || !member.isActive ? (
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${ROLE_BADGE[member.role] ?? ROLE_BADGE.viewer}`}>
+                        <span
+                          title={ROLE_TIPS[member.role] ?? ''}
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold cursor-help ${ROLE_BADGE[member.role] ?? ROLE_BADGE.viewer}`}
+                        >
                           {ROLE_LABELS[member.role] ?? member.role}
                         </span>
                       ) : (
@@ -196,8 +205,8 @@ export default function TeamManagement() {
                           className="text-xs border border-gray-300 rounded-md px-2 py-1 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         >
                           <option value="owner">{SETTINGS.roleOwner}</option>
-                          <option value="collaborator">{SETTINGS.roleCollaborator}</option>
-                          <option value="viewer">{SETTINGS.roleViewer}</option>
+                          <option value="collaborator" title={SETTINGS.roleCollaboratorTip}>{SETTINGS.roleCollaborator}</option>
+                          <option value="viewer" title={SETTINGS.roleViewerTip}>{SETTINGS.roleViewer}</option>
                         </select>
                       )}
                     </td>

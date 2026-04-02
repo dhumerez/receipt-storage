@@ -34,6 +34,10 @@ export const SETTINGS = {
   roleViewer: 'Visor',
   roleClient: 'Cliente',
 
+  // Role tooltips
+  roleCollaboratorTip: 'Puede ver clientes, productos, transacciones y reportes. Puede crear transacciones que requieren aprobaci\u00f3n del propietario.',
+  roleViewerTip: 'Solo lectura. Puede ver clientes, productos, transacciones y reportes, pero no puede crear ni modificar nada.',
+
   // Status
   statusActive: 'Activo',
   statusInactive: 'Inactivo',
