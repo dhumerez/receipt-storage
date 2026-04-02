@@ -13,12 +13,9 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// Diagnostic logger — writes to the on-screen #diag panel from index.html
-function dlog(msg: string) {
-  const el = document.getElementById('diag');
-  if (el) el.textContent += '\n' + (Date.now() % 100000) + ' ' + msg;
-  console.log('[diag]', msg);
-}
+// Use the global diagnostic logger from index.html
+const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog
+  ?? ((msg: string) => console.log('[diag]', msg));
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);

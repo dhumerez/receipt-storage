@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router';          // react-router, NOT react-router-dom
+import { Routes, Route, useLocation } from 'react-router';          // react-router, NOT react-router-dom
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import ClientRoute from './components/ClientRoute.tsx';
 import AppLayout from './components/layout/AppLayout.tsx';
@@ -19,6 +19,20 @@ import TransactionDetailPage from './pages/transactions/TransactionDetailPage.ts
 import DebtDetailPage from './pages/debts/DebtDetailPage.tsx';
 import ReportsPage from './pages/reports/ReportsPage.tsx';
 import SettingsPage from './pages/settings/SettingsPage.tsx';
+
+function NoMatch() {
+  const location = useLocation();
+  const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog;
+  if (dlog) dlog('NO_ROUTE_MATCH: pathname="' + location.pathname + '" search="' + location.search + '"');
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'monospace', color: 'red' }}>
+      <h2>404 — No route matched</h2>
+      <p>location.pathname: {location.pathname}</p>
+      <p>window.location.pathname: {window.location.pathname}</p>
+      <p>window.location.href: {window.location.href}</p>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -52,6 +66,9 @@ export default function App() {
           <Route path="/portal/debts/:id" element={<PortalDebtDetailPage />} />
         </Route>
       </Route>
+
+      {/* Catch-all for debugging route mismatches */}
+      <Route path="*" element={<NoMatch />} />
     </Routes>
   );
 }
