@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    target: ['es2020', 'safari14', 'chrome87', 'firefox78', 'edge88'],
+  },
   server: {
     port: 4001,
     proxy: {
