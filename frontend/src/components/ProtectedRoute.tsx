@@ -16,7 +16,7 @@ export default function ProtectedRoute({ redirectTo = '/login' }: ProtectedRoute
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-400 text-sm">Loading...</div>
+        <div className="text-gray-600 text-base font-medium animate-pulse">Cargando...</div>
       </div>
     );
   }

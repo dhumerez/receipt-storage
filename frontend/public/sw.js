@@ -1,5 +1,6 @@
 // Self-destructing service worker — clears all caches and unregisters itself.
-// Once all clients have picked this up, replace with a real SW if needed.
+// Does NOT call client.navigate() to avoid reloading pages mid-render.
+// The index.html cleanup script handles the reload when needed.
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -10,9 +11,10 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
       .then(() => self.registration.unregister())
-      .then(() => self.clients.matchAll())
-      .then((clients) => {
-        clients.forEach((client) => client.navigate(client.url));
-      })
   );
+});
+
+// Pass through all fetch requests to the network — never serve from cache
+self.addEventListener('fetch', (event) => {
+  event.respondWith(fetch(event.request));
 });

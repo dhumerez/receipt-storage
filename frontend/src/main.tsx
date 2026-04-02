@@ -35,7 +35,19 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 }
 
+// Diagnostic logger — writes to the on-screen #diag panel from index.html
+function dlog(msg: string) {
+  const el = document.getElementById('diag');
+  if (el) el.textContent += '\n' + (Date.now() % 100000) + ' ' + msg;
+  console.log('[diag]', msg);
+}
+
+dlog('main.tsx executing');
+dlog('BASE_PATH=' + (import.meta.env.VITE_BASE_PATH || '/'));
+dlog('API_URL=' + (import.meta.env.VITE_API_URL || '(empty)'));
+
 try {
+  dlog('createRoot starting');
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -47,6 +59,8 @@ try {
       </QueryClientProvider>
     </ErrorBoundary>,
   );
+  dlog('render() called');
 } catch (err) {
+  dlog('SYNC_MOUNT_ERROR: ' + (err instanceof Error ? err.message : String(err)));
   console.error('Sync mount error:', err);
 }

@@ -12,48 +12,64 @@
   </head>
   <body>
     <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
-    <div id="diag" style="display:none"></div>
+    <div id="diag" style="position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;font-size:11px;padding:4px 8px;z-index:99999;font-family:monospace;max-height:30vh;overflow:auto;"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Diagnostics — NEVER touches #root (React owns it).
-      // Errors render in a separate #diag element below #root.
-      var _diag = { errors: [], resources: [] };
+      // ── Diagnostics v14 — visible on-screen log ──
+      var _dlog = [];
+      function dlog(msg) {
+        _dlog.push(Date.now() % 100000 + ' ' + msg);
+        var el = document.getElementById('diag');
+        if (el) el.textContent = _dlog.join('\n');
+      }
+      dlog('HTML loaded, v14');
+      dlog('URL: ' + location.href);
+      dlog('SW controller: ' + (navigator.serviceWorker ? (navigator.serviceWorker.controller ? 'YES' : 'no') : 'n/a'));
 
+      // Capture errors
       window.addEventListener('error', function(e) {
         if (e.target && e.target.tagName) {
-          _diag.resources.push(e.target.tagName + ': ' + (e.target.src || e.target.href || '?'));
+          dlog('RES_ERR: ' + e.target.tagName + ' ' + (e.target.src || e.target.href || '?'));
         }
       }, true);
-
       window.addEventListener('error', function(e) {
-        _diag.errors.push('JS: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
+        dlog('JS_ERR: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
       });
-
       window.addEventListener('unhandledrejection', function(e) {
-        _diag.errors.push('Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+        dlog('PROMISE_ERR: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
       });
 
-      // Only show diagnostics if React never mounted (placeholder still present after 8s)
+      // Track React mount — placeholder disappears when React takes over #root
+      var _mountCheck = setInterval(function() {
+        var root = document.getElementById('root');
+        if (!root) return;
+        if (!root.querySelector('p[data-placeholder]')) {
+          dlog('React MOUNTED (placeholder gone)');
+          dlog('#root children: ' + root.childNodes.length + ', innerHTML len: ' + root.innerHTML.length);
+          clearInterval(_mountCheck);
+        }
+      }, 200);
+
+      // After 10s if placeholder still there, React never mounted
       setTimeout(function() {
         var root = document.getElementById('root');
-        if (!root || !root.querySelector('p[data-placeholder]')) return;
-        _diag.errors.push('TIMEOUT: React did not mount within 8 seconds');
-        var diag = document.getElementById('diag');
-        if (!diag) return;
-        var lines = ['UA: ' + navigator.userAgent, 'URL: ' + location.href, ''];
-        if (_diag.errors.length) lines.push('ERRORS:', _diag.errors.join('\n'), '');
-        if (_diag.resources.length) lines.push('FAILED RESOURCES:', _diag.resources.join('\n'), '');
-        diag.style.display = 'block';
-        diag.innerHTML = '<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">' + lines.join('\n') + '</pre>';
-      }, 8000);
+        if (root && root.querySelector('p[data-placeholder]')) {
+          dlog('TIMEOUT: React did NOT mount in 10s');
+        }
+        clearInterval(_mountCheck);
+      }, 10000);
 
-      // Service worker cleanup
+      // ── Service worker cleanup ──
+      // nginx sends Clear-Site-Data header to nuke SW registrations server-side.
+      // This client-side cleanup is belt-and-suspenders.
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
-          regs.forEach(function(reg) { reg.unregister(); });
+          if (regs.length) dlog('Cleanup: unregistering ' + regs.length + ' SW(s)');
+          regs.forEach(function(r) { r.unregister(); });
         });
         if (typeof caches !== 'undefined') {
           caches.keys().then(function(keys) {
+            if (keys.length) dlog('Cleanup: deleting ' + keys.length + ' cache(s)');
             keys.forEach(function(k) { caches.delete(k); });
           });
         }
