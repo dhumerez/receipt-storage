@@ -1,4 +1,4 @@
-const CACHE_NAME = 'recibos-v2';
+const CACHE_NAME = 'recibos-v3';
 const SHELL_ASSETS = [
   './',
   './index.html',
@@ -26,8 +26,8 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Never cache API calls
-  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/api')) {
+  // Never cache API calls (path may be prefixed, e.g. /receipts-app/api/...)
+  if (url.pathname.includes('/api/')) {
     return;
   }
 
