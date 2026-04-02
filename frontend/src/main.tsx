@@ -39,8 +39,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
 const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog
   ?? ((msg: string) => console.log('[diag]', msg));
 
+// Normalize basename: strip trailing slashes, ensure leading slash
+const rawBase = import.meta.env.VITE_BASE_PATH || '/';
+const basename = rawBase.replace(/\/+$/, '') || '/';
+
 dlog('main.tsx executing, pathname=' + window.location.pathname);
-dlog('BASE_PATH="' + (import.meta.env.VITE_BASE_PATH ?? '') + '"');
+dlog('BASE_PATH raw="' + rawBase + '" normalized="' + basename + '"');
 dlog('API_URL="' + (import.meta.env.VITE_API_URL ?? '') + '"');
 
 try {
@@ -48,7 +52,7 @@ try {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
+        <BrowserRouter basename={basename}>
           <AuthProvider>
             <App />
           </AuthProvider>

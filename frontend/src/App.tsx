@@ -1,4 +1,5 @@
-import { Routes, Route, useLocation } from 'react-router';          // react-router, NOT react-router-dom
+import { Routes, Route, useLocation } from 'react-router';
+import { useEffect } from 'react';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import ClientRoute from './components/ClientRoute.tsx';
 import AppLayout from './components/layout/AppLayout.tsx';
@@ -20,6 +21,15 @@ import DebtDetailPage from './pages/debts/DebtDetailPage.tsx';
 import ReportsPage from './pages/reports/ReportsPage.tsx';
 import SettingsPage from './pages/settings/SettingsPage.tsx';
 
+function LocationLogger() {
+  const location = useLocation();
+  const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog;
+  useEffect(() => {
+    if (dlog) dlog('RR location: pathname="' + location.pathname + '" search="' + location.search + '" hash="' + location.hash + '"');
+  }, [location, dlog]);
+  return null;
+}
+
 function NoMatch() {
   const location = useLocation();
   const dlog = (window as unknown as { _dlog: (msg: string) => void })._dlog;
@@ -36,6 +46,8 @@ function NoMatch() {
 
 export default function App() {
   return (
+    <>
+    <LocationLogger />
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
@@ -70,5 +82,6 @@ export default function App() {
       {/* Catch-all for debugging route mismatches */}
       <Route path="*" element={<NoMatch />} />
     </Routes>
+    </>
   );
 }
