@@ -12,70 +12,42 @@
   </head>
   <body>
     <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
+    <div id="diag" style="display:none"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Collect all errors for diagnostics
+      // Diagnostics — NEVER touches #root (React owns it).
+      // Errors render in a separate #diag element below #root.
       var _diag = { errors: [], resources: [] };
 
-      // Capture-phase listener: catches resource loading failures (script 404, CORS)
       window.addEventListener('error', function(e) {
         if (e.target && e.target.tagName) {
           _diag.resources.push(e.target.tagName + ': ' + (e.target.src || e.target.href || '?'));
         }
       }, true);
 
-      // Bubble-phase: JS runtime errors
       window.addEventListener('error', function(e) {
         _diag.errors.push('JS: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
-        showDiag();
       });
 
-      // Unhandled promise rejections
       window.addEventListener('unhandledrejection', function(e) {
         _diag.errors.push('Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
-        showDiag();
       });
 
-      function showDiag() {
-        var root = document.getElementById('root');
-        if (!root) return;
-        var lines = [
-          'UA: ' + navigator.userAgent,
-          'URL: ' + location.href,
-          'Proto: ' + location.protocol,
-          ''
-        ];
-        if (_diag.errors.length) lines.push('ERRORS:', _diag.errors.join('\n'), '');
-        if (_diag.resources.length) lines.push('FAILED RESOURCES:', _diag.resources.join('\n'), '');
-        root.innerHTML =
-          '<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">' +
-          lines.join('\n') + '</pre>';
-      }
-
-      // Timeout: if React hasn't mounted after 8s, show diagnostics
+      // Only show diagnostics if React never mounted (placeholder still present after 8s)
       setTimeout(function() {
         var root = document.getElementById('root');
-        if (!root) return;
-        // React replaces inner content on mount — check if placeholder still there
-        if (root.querySelector('p[data-placeholder]')) {
-          _diag.errors.push('TIMEOUT: React did not mount within 8 seconds');
-          // Check which scripts loaded
-          var scripts = document.querySelectorAll('script[src]');
-          for (var i = 0; i < scripts.length; i++) {
-            _diag.resources.push('script: ' + scripts[i].src + ' (in DOM)');
-          }
-          // Check if module script exists and its state
-          var moduleScript = document.querySelector('script[type="module"]');
-          if (moduleScript) {
-            _diag.resources.push('module src: ' + (moduleScript.src || 'inline'));
-          }
-          showDiag();
-        }
+        if (!root || !root.querySelector('p[data-placeholder]')) return;
+        _diag.errors.push('TIMEOUT: React did not mount within 8 seconds');
+        var diag = document.getElementById('diag');
+        if (!diag) return;
+        var lines = ['UA: ' + navigator.userAgent, 'URL: ' + location.href, ''];
+        if (_diag.errors.length) lines.push('ERRORS:', _diag.errors.join('\n'), '');
+        if (_diag.resources.length) lines.push('FAILED RESOURCES:', _diag.resources.join('\n'), '');
+        diag.style.display = 'block';
+        diag.innerHTML = '<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">' + lines.join('\n') + '</pre>';
       }, 8000);
 
-      // Service worker cleanup — unregister any stale SWs and clear caches
-      // The sw.js file is now a self-destructing no-op that handles its own removal.
-      // This block handles the case where new HTML loads but old SW is still active.
+      // Service worker cleanup
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
           regs.forEach(function(reg) { reg.unregister(); });
