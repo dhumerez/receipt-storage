@@ -14,32 +14,68 @@
     <div id="root"><p style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Diagnostic: show JS errors visibly on screen (critical for mobile debugging)
+      // Collect all errors for diagnostics
+      var _diag = { errors: [], resources: [] };
+
+      // Capture-phase listener: catches resource loading failures (script 404, CORS)
       window.addEventListener('error', function(e) {
-        var root = document.getElementById('root');
-        if (root) {
-          root.innerHTML =
-            '<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">' +
-            'JS Error: ' + e.message + '\nFile: ' + (e.filename || 'unknown') +
-            '\nLine: ' + (e.lineno || '?') + '\nUA: ' + navigator.userAgent +
-            '</pre>';
+        if (e.target && e.target.tagName) {
+          _diag.resources.push(e.target.tagName + ': ' + (e.target.src || e.target.href || '?'));
         }
+      }, true);
+
+      // Bubble-phase: JS runtime errors
+      window.addEventListener('error', function(e) {
+        _diag.errors.push('JS: ' + e.message + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
+        showDiag();
       });
+
+      // Unhandled promise rejections
       window.addEventListener('unhandledrejection', function(e) {
-        var root = document.getElementById('root');
-        if (root && root.querySelector('pre')) return; // already showing an error
-        if (root) {
-          root.innerHTML =
-            '<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">' +
-            'Unhandled Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)) +
-            '\nUA: ' + navigator.userAgent +
-            '</pre>';
-        }
+        _diag.errors.push('Promise: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+        showDiag();
       });
-      // Service worker: use base path from Vite (injected at build time)
+
+      function showDiag() {
+        var root = document.getElementById('root');
+        if (!root) return;
+        var lines = [
+          'UA: ' + navigator.userAgent,
+          'URL: ' + location.href,
+          'Proto: ' + location.protocol,
+          ''
+        ];
+        if (_diag.errors.length) lines.push('ERRORS:', _diag.errors.join('\n'), '');
+        if (_diag.resources.length) lines.push('FAILED RESOURCES:', _diag.resources.join('\n'), '');
+        root.innerHTML =
+          '<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">' +
+          lines.join('\n') + '</pre>';
+      }
+
+      // Timeout: if React hasn't mounted after 8s, show diagnostics
+      setTimeout(function() {
+        var root = document.getElementById('root');
+        if (!root) return;
+        // React replaces inner content on mount — check if placeholder still there
+        if (root.querySelector('p') || root.innerHTML.indexOf('Cargando') > -1) {
+          _diag.errors.push('TIMEOUT: React did not mount within 8 seconds');
+          // Check which scripts loaded
+          var scripts = document.querySelectorAll('script[src]');
+          for (var i = 0; i < scripts.length; i++) {
+            _diag.resources.push('script: ' + scripts[i].src + ' (in DOM)');
+          }
+          // Check if module script exists and its state
+          var moduleScript = document.querySelector('script[type="module"]');
+          if (moduleScript) {
+            _diag.resources.push('module src: ' + (moduleScript.src || 'inline'));
+          }
+          showDiag();
+        }
+      }, 8000);
+
+      // Service worker: derive base path dynamically
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          // Derive base path from the current script's location
           var base = document.querySelector('script[type="module"][src]');
           var basePath = '/';
           if (base && base.src) {
