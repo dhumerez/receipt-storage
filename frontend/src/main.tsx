@@ -15,8 +15,19 @@ const queryClient = new QueryClient({
   },
 });
 
+function showError(label: string, error: unknown) {
+  const root = document.getElementById('root');
+  if (!root) return;
+  const msg = error instanceof Error ? `${error.message}\n${error.stack}` : String(error);
+  root.innerHTML = `<pre style="padding:1rem;color:red;font-size:11px;white-space:pre-wrap;word-break:break-all">${label}: ${msg}\nUA: ${navigator.userAgent}</pre>`;
+}
+
 try {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+  ReactDOM.createRoot(document.getElementById('root')!, {
+    onUncaughtError: (error) => showError('Uncaught', error),
+    onCaughtError: (error) => showError('Caught', error),
+    onRecoverableError: (error) => showError('Recoverable', error),
+  }).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
@@ -28,8 +39,5 @@ try {
     </React.StrictMode>,
   );
 } catch (err) {
-  const root = document.getElementById('root');
-  if (root) {
-    root.innerHTML = `<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">React mount error: ${err}\nUA: ${navigator.userAgent}</pre>`;
-  }
+  showError('Sync mount', err);
 }
