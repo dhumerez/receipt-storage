@@ -27,7 +27,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.receipts.rule=PathPrefix(`/receipts-app`)"
-      - "traefik.http.routers.receipts.entrypoints=web"
+      - "traefik.http.routers.receipts.entrypoints=websecure"
+      - "traefik.http.routers.receipts.tls=true"
+      - "traefik.http.routers.receipts.tls.certresolver=letsencrypt"
       - "traefik.http.middlewares.receipts-strip.stripprefix.prefixes=/receipts-app"
       - "traefik.http.routers.receipts.middlewares=receipts-strip"
       - "traefik.http.services.receipts.loadbalancer.server.port=4001"

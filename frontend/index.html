@@ -14,16 +14,18 @@
     <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Service worker cleanup — unregister all SWs and clear caches
+      // Register service worker for PWA installability (requires HTTPS)
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(regs) {
-          regs.forEach(function(r) { r.unregister(); });
+        window.addEventListener('load', function() {
+          // Derive SW path from the module script's base (works with Vite base path)
+          var mod = document.querySelector('script[type="module"][src]');
+          var base = '/';
+          if (mod && mod.src) {
+            var idx = new URL(mod.src).pathname.indexOf('/assets/');
+            if (idx > 0) base = new URL(mod.src).pathname.substring(0, idx + 1);
+          }
+          navigator.serviceWorker.register(base + 'sw.js').catch(function() {});
         });
-        if (typeof caches !== 'undefined') {
-          caches.keys().then(function(keys) {
-            keys.forEach(function(k) { caches.delete(k); });
-          });
-        }
       }
     </script>
   </body>
