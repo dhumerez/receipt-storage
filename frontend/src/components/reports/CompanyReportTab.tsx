@@ -57,19 +57,11 @@ export default function CompanyReportTab({ dateFrom, dateTo, showSettled }: Comp
     return <p className="text-sm text-gray-500 py-8 text-center">{REPORTS.loadingReport}</p>;
   }
 
-  if (isError) {
-    return (
-      <p className="text-sm text-red-600 py-8 text-center">
-        {REPORTS.failedToLoadReport}
-      </p>
-    );
-  }
-
-  if (sortedData.length === 0) {
+  if (isError || sortedData.length === 0) {
     return (
       <EmptyState
-        heading={REPORTS.noOutstandingBalances}
-        body={REPORTS.noOutstandingBalancesBody}
+        heading={REPORTS.noRecordsYet}
+        body={REPORTS.noRecordsYetBody}
       />
     );
   }

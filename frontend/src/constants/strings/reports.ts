@@ -18,6 +18,8 @@ export const REPORTS = {
   // Company report
   loadingReport: 'Cargando reporte...',
   failedToLoadReport: 'Error al cargar los datos del reporte. Revisa tu conexión e intenta de nuevo.',
+  noRecordsYet: 'No hay registros aún',
+  noRecordsYetBody: 'Aún no hay datos para generar un reporte. Comienza creando clientes y registrando transacciones.',
   noOutstandingBalances: 'Sin saldos pendientes',
   noOutstandingBalancesBody: 'Ningún cliente tiene saldos pendientes en el rango de fechas seleccionado. Intenta ajustar las fechas o habilitar clientes saldados.',
 

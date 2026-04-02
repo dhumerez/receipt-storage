@@ -34,19 +34,11 @@ export default function ClientReportTab({
     return <p className="text-sm text-gray-500 py-8 text-center">{REPORTS.loadingReport}</p>;
   }
 
-  if (isError) {
-    return (
-      <p className="text-sm text-red-600 py-8 text-center">
-        {REPORTS.failedToLoadReport}
-      </p>
-    );
-  }
-
-  if (!data || data.transactions.length === 0) {
+  if (isError || !data || data.transactions.length === 0) {
     return (
       <EmptyState
-        heading={REPORTS.noTransactionsFound}
-        body={REPORTS.noTransactionsFoundBody}
+        heading={REPORTS.noRecordsYet}
+        body={REPORTS.noRecordsYetBody}
       />
     );
   }
