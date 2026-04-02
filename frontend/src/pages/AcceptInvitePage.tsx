@@ -14,20 +14,6 @@ export default function AcceptInvitePage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // No token in URL — invalid link
-  if (!token) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">{AUTH.invalidLink}</h2>
-          <p className="text-gray-500 text-sm">
-            {AUTH.inviteLinkMissingToken}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -55,6 +41,20 @@ export default function AcceptInvitePage() {
       setSubmitting(false);
     }
   }, [token, fullName, password, passwordConfirm, navigate]);
+
+  // No token in URL — invalid link
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">{AUTH.invalidLink}</h2>
+          <p className="text-gray-500 text-sm">
+            {AUTH.inviteLinkMissingToken}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

@@ -14,6 +14,33 @@ export default function ResetPasswordPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (password !== passwordConfirm) {
+      setError(AUTH.passwordsDoNotMatch);
+      return;
+    }
+    if (password.length < 8) {
+      setError(AUTH.passwordMinLength);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await apiClient('/api/auth/reset-password', {
+        method: 'POST',
+        json: { token, newPassword: password },
+      });
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : AUTH.failedToResetPassword);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [token, password, passwordConfirm]);
+
   // No token in URL — invalid link
   if (!token) {
     return (
@@ -49,33 +76,6 @@ export default function ResetPasswordPage() {
       </div>
     );
   }
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (password !== passwordConfirm) {
-      setError(AUTH.passwordsDoNotMatch);
-      return;
-    }
-    if (password.length < 8) {
-      setError(AUTH.passwordMinLength);
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      await apiClient('/api/auth/reset-password', {
-        method: 'POST',
-        json: { token, newPassword: password },
-      });
-      setSuccess(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : AUTH.failedToResetPassword);
-    } finally {
-      setSubmitting(false);
-    }
-  }, [token, password, passwordConfirm]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

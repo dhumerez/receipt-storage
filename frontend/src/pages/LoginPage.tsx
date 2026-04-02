@@ -16,11 +16,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Already logged in — redirect away from login page (role-aware)
-  if (!isLoading && user) {
-    return <Navigate to={user.role === 'client' ? '/portal' : '/'} replace />;
-  }
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -40,6 +35,11 @@ export default function LoginPage() {
       setSubmitting(false);
     }
   }, [email, password, login, navigate]);
+
+  // Already logged in — redirect away from login page (role-aware)
+  if (!isLoading && user) {
+    return <Navigate to={user.role === 'client' ? '/portal' : '/'} replace />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
