@@ -86,6 +86,6 @@ export const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.CORS_ORIGIN?.startsWith('https') ?? process.env.NODE_ENV === 'production',
   sameSite: 'strict' as const,
-  path: '/api/auth/refresh',
+  path: '/',
   maxAge: REFRESH_TOKEN_TTL_MS,
 };

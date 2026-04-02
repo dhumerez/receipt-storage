@@ -27,11 +27,18 @@ export async function login(email: string, password: string): Promise<{ accessTo
   return { accessToken: data.accessToken, user: decodeJwt(data.accessToken) };
 }
 
-export async function refreshToken(): Promise<{ accessToken: string; user: AuthUser }> {
-  const data = await apiClient<{ accessToken: string }>('/api/auth/refresh', {
-    method: 'POST',
-  });
-  return { accessToken: data.accessToken, user: decodeJwt(data.accessToken) };
+// Deduplicate concurrent refresh calls (React StrictMode double-mount, 401 races)
+let _refreshing: Promise<{ accessToken: string; user: AuthUser }> | null = null;
+
+export function refreshToken(): Promise<{ accessToken: string; user: AuthUser }> {
+  if (!_refreshing) {
+    _refreshing = apiClient<{ accessToken: string }>('/api/auth/refresh', {
+      method: 'POST',
+    })
+      .then(data => ({ accessToken: data.accessToken, user: decodeJwt(data.accessToken) }))
+      .finally(() => { _refreshing = null; });
+  }
+  return _refreshing;
 }
 
 export async function logout(): Promise<void> {
