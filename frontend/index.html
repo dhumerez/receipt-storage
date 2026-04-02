@@ -11,16 +11,9 @@
     <link rel="manifest" href="/manifest.webmanifest" />
   </head>
   <body>
-    <div id="root"><p style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicación…</p></div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Diagnostic: show errors visibly on screen
-      window.addEventListener('error', function(e) {
-        document.getElementById('root').innerHTML =
-          '<pre style="padding:1rem;color:red;font-size:12px;white-space:pre-wrap">' +
-          'JS Error: ' + e.message + '\nFile: ' + e.filename + '\nLine: ' + e.lineno +
-          '</pre>';
-      });
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/sw.js');

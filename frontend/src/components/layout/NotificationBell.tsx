@@ -8,17 +8,17 @@ export default function NotificationBell() {
   const { user } = useAuth();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-  // Only render for owner and collaborator roles (D-12)
-  if (!user || (user.role !== 'owner' && user.role !== 'collaborator')) {
-    return null;
-  }
+  const canView = !!user && (user.role === 'owner' || user.role === 'collaborator');
 
   const { data } = useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: getUnreadCount,
     staleTime: 30_000,
     refetchInterval: 60_000,
+    enabled: canView,
   });
+
+  if (!canView) return null;
 
   const count = data?.count ?? 0;
 
