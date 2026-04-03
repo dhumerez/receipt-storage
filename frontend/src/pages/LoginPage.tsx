@@ -24,7 +24,9 @@ export default function LoginPage() {
       const loggedInUser = await login(email, password);
       // D-11: Role-based redirect after login (per 03-CONTEXT.md)
       // Client role → portal; all other roles → owner dashboard
-      if (loggedInUser.role === 'client') {
+      if (loggedInUser.isSuperAdmin) {
+        navigate('/admin', { replace: true });
+      } else if (loggedInUser.role === 'client') {
         navigate('/portal', { replace: true });
       } else {
         navigate('/', { replace: true });
@@ -38,6 +40,7 @@ export default function LoginPage() {
 
   // Already logged in — redirect away from login page (role-aware)
   if (!isLoading && user) {
+    if (user.isSuperAdmin) return <Navigate to="/admin" replace />;
     return <Navigate to={user.role === 'client' ? '/portal' : '/'} replace />;
   }
 

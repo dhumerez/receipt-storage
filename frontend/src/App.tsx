@@ -19,6 +19,10 @@ import TransactionDetailPage from './pages/transactions/TransactionDetailPage.ts
 import DebtDetailPage from './pages/debts/DebtDetailPage.tsx';
 import ReportsPage from './pages/reports/ReportsPage.tsx';
 import SettingsPage from './pages/settings/SettingsPage.tsx';
+import AdminRoute from './components/AdminRoute.tsx';
+import AdminLayout from './components/AdminLayout.tsx';
+import AdminCompaniesPage from './pages/admin/AdminCompaniesPage.tsx';
+import AdminCompanyDetailPage from './pages/admin/AdminCompanyDetailPage.tsx';
 
 export default function App() {
   return (
@@ -28,6 +32,14 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/accept-invite" element={<AcceptInvitePage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+      {/* Admin routes — super admin only */}
+      <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminCompaniesPage />} />
+          <Route path="/admin/companies/:id" element={<AdminCompanyDetailPage />} />
+        </Route>
+      </Route>
 
       {/* Owner/collaborator/viewer routes — redirect clients to /portal */}
       <Route element={<ProtectedRoute />}>
