@@ -277,7 +277,7 @@ describe('PATCH /api/v1/products/:id', () => {
       .send({ name: 'Updated Battery' });
 
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ error: 'Product not found' });
+    expect(res.body).toEqual({ error: 'Producto no encontrado' });
   });
 });
 

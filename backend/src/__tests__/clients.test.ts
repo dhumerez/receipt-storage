@@ -289,7 +289,7 @@ describe('PATCH /api/v1/clients/:id', () => {
       .send({ fullName: 'Updated Name' });
 
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ error: 'Client not found' });
+    expect(res.body).toEqual({ error: 'Cliente no encontrado' });
   });
 });
 
@@ -374,7 +374,7 @@ describe('POST /api/v1/clients/:id/invite', () => {
       .set('Authorization', `Bearer ${makeOwnerToken()}`);
 
     expect(res.status).toBe(201);
-    expect(res.body).toEqual({ message: 'Invite sent' });
+    expect(res.body).toEqual({ message: 'Invitación enviada' });
   });
 
   it('returns 400 when client has no email address', async () => {

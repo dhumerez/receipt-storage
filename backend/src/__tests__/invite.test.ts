@@ -85,7 +85,7 @@ describe('invite flow', () => {
         .send({ token: 'bad-token', password: 'validpassword123', fullName: 'Test User' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('returns 400 when token is expired', async () => {
@@ -106,7 +106,7 @@ describe('invite flow', () => {
         .send({ token: 'some-token', password: 'validpassword123', fullName: 'Test User' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('returns 400 when token is already used', async () => {
@@ -127,7 +127,7 @@ describe('invite flow', () => {
         .send({ token: 'some-token', password: 'validpassword123', fullName: 'Test User' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('creates user and returns 201 with accessToken for valid token', async () => {

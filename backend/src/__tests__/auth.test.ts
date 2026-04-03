@@ -265,8 +265,8 @@ describe('REFRESH_COOKIE_OPTIONS', () => {
     expect(REFRESH_COOKIE_OPTIONS.httpOnly).toBe(true);
   });
 
-  it('has path /api/auth/refresh', () => {
-    expect(REFRESH_COOKIE_OPTIONS.path).toBe('/api/auth/refresh');
+  it('has path /', () => {
+    expect(REFRESH_COOKIE_OPTIONS.path).toBe('/');
   });
 
   it('has sameSite: strict', () => {
@@ -332,7 +332,7 @@ describe('POST /api/auth/login', () => {
       .send({ email: 'unknown@example.com', password: 'wrong' });
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Invalid credentials' });
+    expect(res.body).toEqual({ error: 'Credenciales inválidas' });
   });
 
   it('returns 401 for wrong password', async () => {
@@ -344,7 +344,7 @@ describe('POST /api/auth/login', () => {
       .send({ email: 'owner@example.com', password: 'wrongpassword' });
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Invalid credentials' });
+    expect(res.body).toEqual({ error: 'Credenciales inválidas' });
   });
 
   it('returns 401 for inactive user', async () => {
@@ -356,7 +356,7 @@ describe('POST /api/auth/login', () => {
       .send({ email: 'owner@example.com', password: 'correctpassword' });
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Invalid credentials' });
+    expect(res.body).toEqual({ error: 'Credenciales inválidas' });
   });
 
   it('returns 200 with accessToken for valid owner login', async () => {
@@ -463,7 +463,7 @@ describe('POST /api/auth/refresh', () => {
   it('returns 401 when no refresh_token cookie present', async () => {
     const res = await request(app).post('/api/auth/refresh');
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'No refresh token' });
+    expect(res.body).toEqual({ error: 'Sin token de actualización' });
   });
 
   it('returns 401 when token is not found in DB', async () => {
@@ -474,7 +474,7 @@ describe('POST /api/auth/refresh', () => {
       .set('Cookie', 'refresh_token=invalid-raw-token');
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Invalid refresh token' });
+    expect(res.body).toEqual({ error: 'Token de actualización inválido' });
   });
 
   it('returns 401 when token is revoked (rotateRefreshToken returns null)', async () => {
@@ -486,7 +486,7 @@ describe('POST /api/auth/refresh', () => {
       .set('Cookie', 'refresh_token=some-raw-token');
 
     expect(res.status).toBe(401);
-    expect(res.body).toEqual({ error: 'Invalid refresh token' });
+    expect(res.body).toEqual({ error: 'Token de actualización inválido' });
   });
 
   it('returns 200 with new accessToken and rotates cookie on valid refresh', async () => {

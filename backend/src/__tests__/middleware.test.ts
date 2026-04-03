@@ -30,7 +30,7 @@ describe('authenticate', () => {
     const next = mockNext();
     authenticate(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'No token' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Sin token' });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -40,7 +40,7 @@ describe('authenticate', () => {
     const next = mockNext();
     authenticate(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Invalid token' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Token inválido' });
   });
 
   it('sets req.user and calls next for a valid HS256 token', () => {
@@ -75,7 +75,7 @@ describe('requireTenant', () => {
     const next = mockNext();
     requireTenant(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'No tenant context' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Sin contexto de empresa' });
   });
 
   it('sets req.companyId from JWT and calls next', () => {
@@ -109,7 +109,7 @@ describe('requireRole', () => {
     const next = mockNext();
     requireRole('owner')(req, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Insufficient permissions' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Permisos insuficientes' });
   });
 
   it('calls next when role is in the allowed list', () => {

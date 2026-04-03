@@ -88,7 +88,7 @@ describe('password reset flow', () => {
         .send({ email: 'notfound@example.com' });
 
       expect(res.status).toBe(200);
-      expect(res.body.message).toContain('If that email');
+      expect(res.body.message).toContain('Si ese correo');
       expect(mockSendPasswordResetEmail).not.toHaveBeenCalled();
     });
 
@@ -102,7 +102,7 @@ describe('password reset flow', () => {
         .send({ email: 'user@example.com' });
 
       expect(res.status).toBe(200);
-      expect(res.body.message).toContain('If that email');
+      expect(res.body.message).toContain('Si ese correo');
       expect(mockDb.insert).toHaveBeenCalled();
     });
 
@@ -143,7 +143,7 @@ describe('password reset flow', () => {
         .send({ token: 'invalid-token', newPassword: 'newpassword123' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('returns 400 when token is expired', async () => {
@@ -162,7 +162,7 @@ describe('password reset flow', () => {
         .send({ token: 'invalid-token', newPassword: 'newpassword123' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('returns 400 when token is already used', async () => {
@@ -181,7 +181,7 @@ describe('password reset flow', () => {
         .send({ token: 'some-token', newPassword: 'newpassword123' });
 
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Token invalid or expired');
+      expect(res.body.error).toBe('Token inválido o expirado');
     });
 
     it('resets password and returns 200 for valid token', async () => {
@@ -216,7 +216,7 @@ describe('password reset flow', () => {
         .send({ token: 'good-token', newPassword: 'newpassword123' });
 
       expect(res.status).toBe(200);
-      expect(res.body.message).toBe('Password reset successful');
+      expect(res.body.message).toBe('Contraseña restablecida exitosamente');
     });
 
     it('revokes all refresh tokens after successful reset', async () => {

@@ -42,7 +42,7 @@ describe('requireSuperAdmin', () => {
     const next = mockNext();
     requireSuperAdmin(req, res, next);
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Unauthenticated' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'No autenticado' });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -54,7 +54,7 @@ describe('requireSuperAdmin', () => {
     const next = mockNext();
     requireSuperAdmin(req, res, next);
     expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Super admin access required' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Se requiere acceso de super administrador' });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -89,10 +89,19 @@ describe('GET /admin/companies', () => {
     const mockCompanies = [
       { id: 'c1', name: 'Acme', currencyCode: 'USD', isActive: true },
     ];
+    const mockOwners = [{ companyId: 'c1', email: 'owner@acme.com' }];
 
+    // First call: db.select().from(companies).orderBy(...)
     const orderByMock = vi.fn().mockResolvedValue(mockCompanies);
-    const fromMock = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    vi.mocked(db.select).mockReturnValue({ from: fromMock } as any);
+    const companiesFromMock = vi.fn().mockReturnValue({ orderBy: orderByMock });
+
+    // Second call: db.select({...}).from(users).where(...)
+    const whereMock = vi.fn().mockResolvedValue(mockOwners);
+    const usersFromMock = vi.fn().mockReturnValue({ where: whereMock });
+
+    vi.mocked(db.select)
+      .mockReturnValueOnce({ from: companiesFromMock } as any)
+      .mockReturnValueOnce({ from: usersFromMock } as any);
 
     const { adminRouter } = await import('../routes/admin.js');
 
@@ -106,7 +115,9 @@ describe('GET /admin/companies', () => {
     )?.route?.stack[0]?.handle;
     await handler(req, res, next);
 
-    expect(res.json).toHaveBeenCalledWith(mockCompanies);
+    expect(res.json).toHaveBeenCalledWith([
+      { id: 'c1', name: 'Acme', currencyCode: 'USD', isActive: true, ownerEmail: 'owner@acme.com' },
+    ]);
   });
 });
 
@@ -173,7 +184,7 @@ describe('PATCH /admin/companies/:id', () => {
     await handler(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Company not found' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'Empresa no encontrada' });
   });
 
   it('updates company name and returns updated record', async () => {
@@ -249,7 +260,7 @@ describe('POST /admin/companies/:id/owner', () => {
     await handler(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(409);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Email already in use' });
+    expect(res.json).toHaveBeenCalledWith({ error: 'El correo ya está en uso' });
   });
 
   it('creates owner user and returns 201', async () => {

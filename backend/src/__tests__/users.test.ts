@@ -241,7 +241,7 @@ describe('POST /api/v1/users/invite', () => {
       .send({ email: 'newmember@example.com', role: 'collaborator', fullName: 'New Member' });
 
     expect(res.status).toBe(403);
-    expect(res.body).toEqual({ error: 'Insufficient permissions' });
+    expect(res.body).toEqual({ error: 'Permisos insuficientes' });
   });
 
   it('returns 201 and inserts token row on valid invite', async () => {
@@ -257,7 +257,7 @@ describe('POST /api/v1/users/invite', () => {
       .send({ email: 'newmember@example.com', role: 'collaborator', fullName: 'New Member' });
 
     expect(res.status).toBe(201);
-    expect(res.body).toEqual({ message: 'Invitation sent' });
+    expect(res.body).toEqual({ message: 'Invitación enviada' });
 
     // Verify token was inserted with correct fields
     expect(mockValues).toHaveBeenCalledWith(
@@ -385,7 +385,7 @@ describe('PATCH /api/v1/users/:id/role', () => {
       .send({ role: 'viewer' });
 
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ error: 'User not found' });
+    expect(res.body).toEqual({ error: 'Usuario no encontrado' });
   });
 
   it('returns 200 with updated user on success', async () => {
@@ -445,7 +445,7 @@ describe('PATCH /api/v1/users/:id/deactivate', () => {
       .patch('/api/v1/users/owner-uuid/deactivate')
       .set('Authorization', `Bearer ${makeOwnerToken('owner-uuid')}`);
     expect(res.status).toBe(400);
-    expect(res.body).toEqual({ error: 'Cannot deactivate yourself' });
+    expect(res.body).toEqual({ error: 'No puedes desactivarte a ti mismo' });
   });
 
   it('returns 403 when caller is no longer owner in DB (NFR-01.5)', async () => {
@@ -467,7 +467,7 @@ describe('PATCH /api/v1/users/:id/deactivate', () => {
       .set('Authorization', `Bearer ${makeOwnerToken()}`);
 
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ error: 'User not found' });
+    expect(res.body).toEqual({ error: 'Usuario no encontrado' });
   });
 
   it('returns 200 with counts when deactivation succeeds (FR-02.9)', async () => {
@@ -493,7 +493,7 @@ describe('PATCH /api/v1/users/:id/deactivate', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({
-      message: 'User deactivated',
+      message: 'Usuario desactivado',
       pendingTransactionsReverted: expect.any(Number),
       pendingPaymentsRejected: expect.any(Number),
     });
