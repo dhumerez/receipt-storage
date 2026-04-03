@@ -36,7 +36,7 @@ describe('App routing', () => {
     // While session recovery is in flight, loading spinner is shown
     // After refresh fails, ProtectedRoute redirects to /login showing Sign In heading
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Sign In' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Iniciar Sesión' })).toBeInTheDocument();
     });
   });
 
@@ -47,7 +47,7 @@ describe('App routing', () => {
       </Wrapper>,
     );
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Sign In' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Iniciar Sesión' })).toBeInTheDocument();
     });
   });
 });
