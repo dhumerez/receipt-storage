@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/client.js';
 import { companies, users } from '../db/schema.js';
@@ -30,6 +30,25 @@ const CreateOwnerSchema = z.object({
 adminRouter.get('/companies', async (_req, res) => {
   const result = await db.select().from(companies).orderBy(companies.createdAt);
   res.json(result);
+});
+
+// GET /admin/companies/:id
+adminRouter.get('/companies/:id', async (req, res) => {
+  const [company] = await db
+    .select()
+    .from(companies)
+    .where(eq(companies.id, req.params.id))
+    .limit(1);
+  if (!company) {
+    res.status(404).json({ error: ERRORS.companyNotFound });
+    return;
+  }
+  const [owner] = await db
+    .select({ id: users.id, email: users.email, fullName: users.fullName, role: users.role })
+    .from(users)
+    .where(and(eq(users.companyId, company.id), eq(users.role, 'owner')))
+    .limit(1);
+  res.json({ ...company, owner: owner ?? null });
 });
 
 // POST /admin/companies
