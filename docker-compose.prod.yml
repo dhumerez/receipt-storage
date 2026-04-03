@@ -8,7 +8,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: /var/receipts/uploads
       PORT: "4000"
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://humerez.dev}
     volumes:
       - /var/receipts/uploads:/var/receipts/uploads
     depends_on:
@@ -21,18 +21,26 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: /receipts-app
-        VITE_BASE_PATH: ${VITE_BASE_PATH:-/receipts-app/}
+        VITE_API_URL: ""
+        VITE_BASE_PATH: /
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.receipts.rule=PathPrefix(`/receipts-app`)"
+      # Main router — humerez.dev with HTTPS
+      - "traefik.http.routers.receipts.rule=Host(`humerez.dev`)"
       - "traefik.http.routers.receipts.entrypoints=websecure"
       - "traefik.http.routers.receipts.tls=true"
       - "traefik.http.routers.receipts.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.receipts-strip.stripprefix.prefixes=/receipts-app"
-      - "traefik.http.routers.receipts.middlewares=receipts-strip"
       - "traefik.http.services.receipts.loadbalancer.server.port=4001"
+      # WWW redirect → naked domain
+      - "traefik.http.routers.receipts-www.rule=Host(`www.humerez.dev`)"
+      - "traefik.http.routers.receipts-www.entrypoints=websecure"
+      - "traefik.http.routers.receipts-www.tls=true"
+      - "traefik.http.routers.receipts-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.receipts-www.middlewares=receipts-www-redirect"
+      - "traefik.http.middlewares.receipts-www-redirect.redirectregex.regex=^https://www\\.humerez\\.dev/(.*)"
+      - "traefik.http.middlewares.receipts-www-redirect.redirectregex.replacement=https://humerez.dev/$${1}"
+      - "traefik.http.middlewares.receipts-www-redirect.redirectregex.permanent=true"
     depends_on:
       - receipts-api
     networks:
