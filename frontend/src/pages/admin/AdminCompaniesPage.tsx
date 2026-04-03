@@ -84,6 +84,7 @@ export default function AdminCompaniesPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{ADMIN.thName}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{ADMIN.thCurrency}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{ADMIN.thStatus}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{ADMIN.thOwner}</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{ADMIN.thCreated}</th>
               </tr>
             </thead>
@@ -104,6 +105,9 @@ export default function AdminCompaniesPage() {
                     }`}>
                       {company.isActive ? ADMIN.active : ADMIN.inactive}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {company.ownerEmail ?? ADMIN.noOwner}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(company.createdAt).toLocaleDateString()}

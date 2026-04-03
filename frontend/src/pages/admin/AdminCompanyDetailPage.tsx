@@ -253,7 +253,7 @@ function CreateOwnerModal({ onClose, onSubmit, isSubmitting, error }: CreateOwne
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
 
-  const displayError = error === 'Email already in use' ? ADMIN.emailInUse : error;
+  const displayError = error === 'El correo ya está en uso' ? ADMIN.emailInUse : error;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

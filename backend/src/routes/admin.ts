@@ -26,10 +26,15 @@ const CreateOwnerSchema = z.object({
   fullName: z.string().min(1).max(255),
 });
 
-// GET /admin/companies
+// GET /admin/companies (with owner email)
 adminRouter.get('/companies', async (_req, res) => {
   const result = await db.select().from(companies).orderBy(companies.createdAt);
-  res.json(result);
+  const owners = await db
+    .select({ companyId: users.companyId, email: users.email })
+    .from(users)
+    .where(eq(users.role, 'owner'));
+  const ownerMap = new Map(owners.map((o) => [o.companyId, o.email]));
+  res.json(result.map((c) => ({ ...c, ownerEmail: ownerMap.get(c.id) ?? null })));
 });
 
 // GET /admin/companies/:id

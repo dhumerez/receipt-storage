@@ -7,6 +7,7 @@ export interface Company {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  ownerEmail: string | null;
 }
 
 export interface CompanyOwner {
