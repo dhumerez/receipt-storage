@@ -41,6 +41,12 @@ services:
       - "traefik.http.middlewares.receipts-www-redirect.redirectregex.regex=^https://www\\.humerez\\.dev/(.*)"
       - "traefik.http.middlewares.receipts-www-redirect.redirectregex.replacement=https://humerez.dev/$${1}"
       - "traefik.http.middlewares.receipts-www-redirect.redirectregex.permanent=true"
+      # HTTP → HTTPS redirect for humerez.dev
+      - "traefik.http.routers.receipts-http.rule=Host(`humerez.dev`) || Host(`www.humerez.dev`)"
+      - "traefik.http.routers.receipts-http.entrypoints=web"
+      - "traefik.http.routers.receipts-http.middlewares=receipts-https-redirect"
+      - "traefik.http.middlewares.receipts-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.receipts-https-redirect.redirectscheme.permanent=true"
     depends_on:
       - receipts-api
     networks:
