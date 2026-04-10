@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from 'react-router';
-import { AuthPage } from '@shared/ui-auth';
+import { AuthPage } from '../components/auth/AuthPage';
 import { useAuth } from '../contexts/AuthContext.tsx';
 
 const DEMO_CREDENTIALS = [

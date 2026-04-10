@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@source "../../shared-ui-auth/src";
 
 @media print {
   /* Hide navigation and controls */
