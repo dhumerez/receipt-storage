@@ -18,7 +18,7 @@ vi.mock('../services/auth.service.js', () => ({
   hashToken: vi.fn((t: string) => `hash_${t}`),
   hashPassword: vi.fn(async (p: string) => `hashed_${p}`),
   revokeAllUserRefreshTokens: vi.fn(async () => undefined),
-  issueAccessToken: vi.fn(() => 'mock.access.token'),
+  issueToken: vi.fn(() => 'mock.access.token'),
   createRefreshToken: vi.fn(async () => 'mock_refresh_raw'),
   verifyPassword: vi.fn(async () => true),
   rotateRefreshToken: vi.fn(async () => 'mock_refresh_raw'),
@@ -38,10 +38,10 @@ vi.mock('../services/email.service.js', () => ({
 }));
 
 import { db } from '../db/client.js';
-import { issueAccessToken, createRefreshToken } from '../services/auth.service.js';
+import { issueToken, createRefreshToken } from '../services/auth.service.js';
 
 const mockDb = db as any;
-const mockIssueAccessToken = issueAccessToken as ReturnType<typeof vi.fn>;
+const mockIssueAccessToken = issueToken as ReturnType<typeof vi.fn>;
 const mockCreateRefreshToken = createRefreshToken as ReturnType<typeof vi.fn>;
 
 function makeSelectChain(result: any[]) {

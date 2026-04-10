@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import { hashPassword as bcryptHash, verifyPassword as bcryptVerify } from '@shared/auth-utils';
 
 // Set test env before importing modules
 process.env.JWT_SECRET = 'test-secret-for-unit-tests-minimum-length-requirement-here';
@@ -72,7 +72,7 @@ import request from 'supertest';
 import {
   generateRawToken,
   hashToken,
-  issueAccessToken,
+  issueToken,
   createRefreshToken,
   rotateRefreshToken,
   revokeAllUserRefreshTokens,
@@ -125,9 +125,9 @@ describe('hashToken', () => {
 
 // ─── issueAccessToken ─────────────────────────────────────────────────────────
 
-describe('issueAccessToken', () => {
+describe('issueToken', () => {
   it('returns a string (JWT)', () => {
-    const token = issueAccessToken({
+    const token = issueToken({
       sub: 'uid-1',
       companyId: 'cid-1',
       role: 'owner',
@@ -138,7 +138,7 @@ describe('issueAccessToken', () => {
   });
 
   it('decoded JWT contains expected payload fields', () => {
-    const token = issueAccessToken({
+    const token = issueToken({
       sub: 'uid-1',
       companyId: 'cid-1',
       role: 'owner',
@@ -152,7 +152,7 @@ describe('issueAccessToken', () => {
   });
 
   it('uses HS256 algorithm', () => {
-    const token = issueAccessToken({
+    const token = issueToken({
       sub: 'uid-1',
       companyId: 'cid-1',
       role: 'owner',
@@ -165,7 +165,7 @@ describe('issueAccessToken', () => {
   });
 
   it('embeds clientId when provided', () => {
-    const token = issueAccessToken({
+    const token = issueToken({
       sub: 'uid-1',
       companyId: 'cid-1',
       role: 'client',
@@ -178,7 +178,7 @@ describe('issueAccessToken', () => {
 
   it('expires in approximately 15 minutes', () => {
     const before = Math.floor(Date.now() / 1000);
-    const token = issueAccessToken({
+    const token = issueToken({
       sub: 'uid-1',
       companyId: 'cid-1',
       role: 'owner',
@@ -208,15 +208,15 @@ describe('hashPassword', () => {
   });
 });
 
-describe('verifyPassword (via bcrypt directly)', () => {
+describe('verifyPassword', () => {
   it('returns true for matching password', async () => {
-    const hash = await bcrypt.hash('hunter2', 4); // low rounds for test speed
-    expect(await bcrypt.compare('hunter2', hash)).toBe(true);
+    const hash = await bcryptHash('hunter2');
+    expect(await bcryptVerify('hunter2', hash)).toBe(true);
   });
 
   it('returns false for non-matching password', async () => {
-    const hash = await bcrypt.hash('hunter2', 4);
-    expect(await bcrypt.compare('wrong', hash)).toBe(false);
+    const hash = await bcryptHash('hunter2');
+    expect(await bcryptVerify('wrong', hash)).toBe(false);
   });
 });
 

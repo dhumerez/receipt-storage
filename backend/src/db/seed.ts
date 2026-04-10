@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '@shared/auth-utils';
 import { companies, users } from './schema.js';
 
 const DEMO_USERS = [
@@ -43,7 +43,7 @@ async function seed() {
     .limit(1);
 
   if (!existingAdmin) {
-    const passwordHash = await bcrypt.hash(DEMO_USERS[0].password, 12);
+    const passwordHash = await hashPassword(DEMO_USERS[0].password);
     await db.insert(users).values({
       email: DEMO_USERS[0].email,
       passwordHash,
@@ -84,7 +84,7 @@ async function seed() {
     .limit(1);
 
   if (!existingOwner) {
-    const passwordHash = await bcrypt.hash(DEMO_OWNER.password, 12);
+    const passwordHash = await hashPassword(DEMO_OWNER.password);
     await db.insert(users).values({
       companyId,
       email: DEMO_OWNER.email,

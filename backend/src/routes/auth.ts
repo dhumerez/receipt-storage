@@ -2,10 +2,11 @@ import { Router } from 'express';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import cookieParser from 'cookie-parser';
+import { loginSchema, DUMMY_HASH } from '@shared/auth-utils';
 import { db } from '../db/client.js';
 import { users, clients, refreshTokens, tokens } from '../db/schema.js';
 import {
-  issueAccessToken,
+  issueToken,
   createRefreshToken,
   rotateRefreshToken,
   revokeAllUserRefreshTokens,
@@ -25,17 +26,12 @@ export const authRouter = Router();
 // Apply cookie-parser only on auth routes (refresh needs it)
 authRouter.use(cookieParser());
 
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
 // ── POST /api/auth/login ───────────────────────────────────────────────────────
 // FR-02.1: Login with email + password, returns JWT + refresh cookie
 // Security: constant-time path to avoid timing oracle on user existence
 
 authRouter.post('/login', async (req, res) => {
-  const parsed = LoginSchema.safeParse(req.body);
+  const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: AUTH.validationError, details: parsed.error.flatten() });
     return;
@@ -50,9 +46,6 @@ authRouter.post('/login', async (req, res) => {
     .limit(1);
 
   // Always run bcrypt compare (even on dummy hash) to avoid timing oracle
-  // Dummy hash: a valid bcrypt hash that will never match any real password
-  const DUMMY_HASH =
-    '$2b$12$invalidhashpadding0000000000000000000000000000000000000000000';
   const passwordHash = user?.passwordHash ?? DUMMY_HASH;
   const passwordValid = await verifyPassword(password, passwordHash);
 
@@ -72,7 +65,7 @@ authRouter.post('/login', async (req, res) => {
     clientId = clientRecord?.id;
   }
 
-  const accessToken = issueAccessToken({
+  const accessToken = issueToken({
     sub: user.id,
     companyId: user.companyId ?? null, // null for super admin
     role: user.role,
@@ -147,7 +140,7 @@ authRouter.post('/refresh', async (req, res) => {
     clientId = clientRecord?.id;
   }
 
-  const accessToken = issueAccessToken({
+  const accessToken = issueToken({
     sub: user.id,
     companyId: user.companyId ?? null,
     role: user.role,
@@ -361,7 +354,7 @@ authRouter.post('/accept-invite', async (req, res) => {
     clientIdForJwt = tokenRow.clientId;
   }
 
-  const accessToken = issueAccessToken({
+  const accessToken = issueToken({
     sub: newUser.id,
     companyId: newUser.companyId,
     role: newUser.role as JWTPayload['role'],
