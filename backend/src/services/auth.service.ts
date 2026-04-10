@@ -1,5 +1,5 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { hashPassword, verifyPassword, generateRawToken, hashToken, issueAccessToken } from '@shared/auth-utils';
+import { hashPassword, verifyPassword, generateRawToken, hashToken, issueAccessToken } from '../shared/auth-utils.js';
 import { db } from '../db/client.js';
 import { refreshTokens } from '../db/schema.js';
 import type { JWTPayload } from '../middleware/auth.js';

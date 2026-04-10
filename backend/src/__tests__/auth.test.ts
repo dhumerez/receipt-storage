@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import jwt from 'jsonwebtoken';
-import { hashPassword as bcryptHash, verifyPassword as bcryptVerify } from '@shared/auth-utils';
+import { hashPassword as bcryptHash, verifyPassword as bcryptVerify } from '../shared/auth-utils.js';
 
 // Set test env before importing modules
 process.env.JWT_SECRET = 'test-secret-for-unit-tests-minimum-length-requirement-here';

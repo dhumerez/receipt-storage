@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import cookieParser from 'cookie-parser';
-import { loginSchema, DUMMY_HASH } from '@shared/auth-utils';
+import { loginSchema, DUMMY_HASH } from '../shared/auth-utils.js';
 import { db } from '../db/client.js';
 import { users, clients, refreshTokens, tokens } from '../db/schema.js';
 import {

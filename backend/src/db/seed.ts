@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { eq } from 'drizzle-orm';
-import { hashPassword } from '@shared/auth-utils';
+import { hashPassword } from '../shared/auth-utils.js';
 import { companies, users } from './schema.js';
 
 const DEMO_USERS = [
