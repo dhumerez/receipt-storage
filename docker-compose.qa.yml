@@ -1,0 +1,67 @@
+services:
+  receipts-api:
+    build: ./backend
+    restart: always
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://receipts_user:${DB_PASSWORD}@receipts-db:5432/receipts_qa
+      JWT_SECRET: ${JWT_SECRET}
+      UPLOAD_DIR: /var/receipts-qa/uploads
+      PORT: "4000"
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://humerez.dev}
+    volumes:
+      - /var/receipts-qa/uploads:/var/receipts-qa/uploads
+    depends_on:
+      receipts-db:
+        condition: service_healthy
+    networks:
+      - receipts_qa_internal
+
+  receipts-frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /receipts-qa
+        VITE_BASE_PATH: /receipts-qa/
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.receipts-qa.rule=Host(`humerez.dev`) && PathPrefix(`/receipts-qa`)"
+      - "traefik.http.routers.receipts-qa.entrypoints=websecure"
+      - "traefik.http.routers.receipts-qa.tls=true"
+      - "traefik.http.routers.receipts-qa.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.receipts-qa-strip.stripprefix.prefixes=/receipts-qa"
+      - "traefik.http.routers.receipts-qa.middlewares=receipts-qa-strip"
+      - "traefik.http.services.receipts-qa.loadbalancer.server.port=4001"
+    depends_on:
+      - receipts-api
+    networks:
+      - receipts_qa_internal
+      - web
+
+  receipts-db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: receipts_qa
+      POSTGRES_USER: receipts_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - receipts_qa_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U receipts_user -d receipts_qa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - receipts_qa_internal
+
+volumes:
+  receipts_qa_db_data:
+
+networks:
+  receipts_qa_internal:
+    driver: bridge
+  web:
+    external: true
