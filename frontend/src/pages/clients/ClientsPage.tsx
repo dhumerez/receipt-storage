@@ -28,11 +28,14 @@ export default function ClientsPage() {
     return () => { if (debounceRef.current !== undefined) clearTimeout(debounceRef.current); };
   }, [searchInput]);
 
-  const { data: clients = [], isLoading, error } = useQuery({
+  const { data: clients = [], isLoading, isFetching, error } = useQuery({
     queryKey: ['clients', { search, status }],
     queryFn: () => getClients({ search, status }),
     staleTime: 0,
   });
+
+  // Only show the error if we're not actively re-fetching (stale error from cache)
+  const showError = !!error && !isFetching;
 
   if (isLoading) {
     return (
@@ -57,7 +60,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Error banner */}
-      {error && (
+      {showError && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
           {CLIENTS.errorLoadingClients}
         </div>
