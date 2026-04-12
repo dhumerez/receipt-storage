@@ -1,0 +1,109 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-04-12T21:47:57.658Z",
+  "phase": null,
+  "phase_name": "ad-hoc bug fixes and feature requests",
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "Fix image storage 403 — missing requireTenant on files route",
+      "status": "done",
+      "commit": "4b95570"
+    },
+    {
+      "id": 2,
+      "name": "Fix nginx static asset rule intercepting /api/*.jpg URLs (404)",
+      "status": "done",
+      "commit": "a8f4797"
+    },
+    {
+      "id": 3,
+      "name": "Fix img src / a href not sending Authorization header (401)",
+      "status": "done",
+      "commit": "da3e29c"
+    },
+    {
+      "id": 4,
+      "name": "Fix DebtDetailPage transaction doc thumbnails (missing AuthenticatedImage)",
+      "status": "done",
+      "commit": "a2ce6f2"
+    },
+    {
+      "id": 5,
+      "name": "Add lightbox modal for image thumbnails (open in modal instead of new tab)",
+      "status": "done",
+      "commit": "e0818ee"
+    },
+    {
+      "id": 6,
+      "name": "Fix clients cache not updating after debt payment mutations",
+      "status": "done",
+      "commit": "e91d1bb"
+    },
+    {
+      "id": 7,
+      "name": "Fix staleTime caching initial error for status=active on clients page",
+      "status": "done",
+      "commit": "a634b5e"
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": 8,
+      "name": "Add debt payment registration UI — user cannot find where to submit partial/full payment",
+      "status": "not_started",
+      "notes": "Feature EXISTS at /debts/:id via client detail page — user may just need UX guidance. Check if navigation path is discoverable enough."
+    },
+    {
+      "id": 9,
+      "name": "Explain / clarify transaction states (pending_approval vs active) in UI",
+      "status": "not_started",
+      "notes": "pending_approval = collaborator submitted, awaiting owner. active = owner-approved confirmed transaction."
+    },
+    {
+      "id": 10,
+      "name": "Global debts list page — no /debts route exists, only per-client view",
+      "status": "not_started",
+      "notes": "User wants a register of completed payments (fully_paid debts) across all clients."
+    },
+    {
+      "id": 11,
+      "name": "written_off debts hidden from client detail page DebtGroupList",
+      "status": "not_started",
+      "notes": "DebtGroupList only shows open/partially_paid/fully_paid — written_off group is missing."
+    }
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Verify clients page 'Activos' filter now works after staleTime fix",
+      "context": "Hard refresh (Ctrl+Shift+R) may be needed to clear old React Query cache",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "AuthenticatedImage component with blob URL fetch instead of query params token",
+      "rationale": "More secure — token never in URL. Reusable across all file types.",
+      "phase": "adhoc"
+    },
+    {
+      "decision": "Lightbox built into AuthenticatedImage via lightbox prop + createPortal",
+      "rationale": "Self-contained — no state prop-drilling to 4 separate pages.",
+      "phase": "adhoc"
+    },
+    {
+      "decision": "openAuthenticatedFile() kept for PDFs — opens in new tab via blob URL",
+      "rationale": "PDF inline preview in modal is complex; new tab is standard behavior.",
+      "phase": "adhoc"
+    }
+  ],
+  "uncommitted_files": [],
+  "next_action": "Verify clients Activos filter works. Then decide: (a) add /debts global list page as new phase, or (b) improve discoverability of existing debt payment flow.",
+  "context_notes": "All image-related bugs fixed across 3 layers: backend auth, nginx routing, frontend auth headers. Remaining work is feature gaps in debt management UX."
+}
