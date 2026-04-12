@@ -10,6 +10,7 @@ import {
   reopenDebt,
 } from '../../api/debts.ts';
 import { getFileUrl } from '../../api/transactions.ts';
+import AuthenticatedImage, { openAuthenticatedFile } from '../../components/common/AuthenticatedImage.tsx';
 import { downloadPdf } from '../../api/reports.ts';
 import type { DocumentInfo } from '../../api/debts.ts';
 import PaymentForm from '../../components/debts/PaymentForm.tsx';
@@ -36,22 +37,21 @@ function TransactionDocThumbnail({ doc }: { doc: DocumentInfo }) {
 
   if (doc.mimeType.startsWith('image/')) {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        <img
+      <button type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
+        <AuthenticatedImage
           src={url}
           alt={doc.originalName}
           className="w-16 h-16 rounded-md object-cover border border-gray-200"
         />
-      </a>
+      </button>
     );
   }
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-16 h-16 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1"
+    <button
+      type="button"
+      onClick={() => openAuthenticatedFile(url)}
+      className="w-16 h-16 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1 cursor-pointer hover:bg-gray-100"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ function TransactionDocThumbnail({ doc }: { doc: DocumentInfo }) {
       <span className="text-[10px] text-gray-500 truncate w-full text-center mt-0.5">
         {doc.originalName}
       </span>
-    </a>
+    </button>
   );
 }
 
