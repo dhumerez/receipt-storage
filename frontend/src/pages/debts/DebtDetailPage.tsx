@@ -91,6 +91,7 @@ export default function DebtDetailPage() {
 
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ['debt', id] });
+    queryClient.invalidateQueries({ queryKey: ['clients'] });
     queryClient.invalidateQueries({ queryKey: ['clientDebts'] });
     queryClient.invalidateQueries({ queryKey: ['portalDebts'] });
     queryClient.invalidateQueries({ queryKey: ['portalSummary'] });
