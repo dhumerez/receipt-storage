@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getPortalDebt } from '../../api/portal.ts';
 import type { PortalPaymentItem } from '../../api/portal.ts';
 import { getFileUrl } from '../../api/transactions.ts';
+import AuthenticatedImage, { openAuthenticatedFile } from '../../components/common/AuthenticatedImage.tsx';
 import { PORTAL } from '../../constants/strings/portal.ts';
 
 // Status badge labels and classes — same as DebtCard pattern
@@ -25,22 +26,21 @@ function PaymentDocThumbnail({ doc }: { doc: PortalPaymentItem['documents'][numb
 
   if (doc.mimeType.startsWith('image/')) {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        <img
+      <button type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
+        <AuthenticatedImage
           src={url}
           alt={doc.originalName}
           className="w-20 h-20 rounded-md object-cover border border-gray-200"
         />
-      </a>
+      </button>
     );
   }
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-20 h-20 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1"
+    <button
+      type="button"
+      onClick={() => openAuthenticatedFile(url)}
+      className="w-20 h-20 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1 cursor-pointer hover:bg-gray-100"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@ function PaymentDocThumbnail({ doc }: { doc: PortalPaymentItem['documents'][numb
       <span className="text-xs text-gray-500 truncate w-full text-center mt-1">
         {doc.originalName}
       </span>
-    </a>
+    </button>
   );
 }
 

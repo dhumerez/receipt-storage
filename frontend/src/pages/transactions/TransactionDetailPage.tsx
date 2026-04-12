@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getTransaction, getFileUrl } from '../../api/transactions.ts';
 import type { DocumentInfo } from '../../api/transactions.ts';
+import AuthenticatedImage, { openAuthenticatedFile } from '../../components/common/AuthenticatedImage.tsx';
 import { downloadPdf } from '../../api/reports.ts';
 import TransactionStatusBadge from '../../components/transactions/TransactionStatusBadge.tsx';
 import { useAuth } from '../../contexts/AuthContext.tsx';
@@ -14,23 +15,22 @@ function AttachmentThumbnail({ doc }: { doc: DocumentInfo }) {
 
   if (doc.mimeType.startsWith('image/')) {
     return (
-      <a href={url} target="_blank" rel="noopener noreferrer">
-        <img
+      <button type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
+        <AuthenticatedImage
           src={url}
           alt={doc.originalName}
           className="w-20 h-20 rounded-md object-cover border border-gray-200"
         />
-      </a>
+      </button>
     );
   }
 
   // PDF or other file type
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-20 h-20 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1"
+    <button
+      type="button"
+      onClick={() => openAuthenticatedFile(url)}
+      className="w-20 h-20 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1 cursor-pointer hover:bg-gray-100"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@ function AttachmentThumbnail({ doc }: { doc: DocumentInfo }) {
       <span className="text-xs text-gray-500 truncate w-full text-center mt-1">
         {doc.originalName}
       </span>
-    </a>
+    </button>
   );
 }
 

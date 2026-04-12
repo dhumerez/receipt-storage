@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { PaymentItem } from '../../api/debts.ts';
 import { getPaymentFileUrl } from '../../api/debts.ts';
+import AuthenticatedImage, { openAuthenticatedFile } from '../common/AuthenticatedImage.tsx';
 import PaymentStatusBadge from './PaymentStatusBadge.tsx';
 import { DEBTS, COMMON } from '../../constants/strings/index.ts';
 
@@ -108,22 +109,21 @@ export default function PaymentHistoryList({
                   const url = getPaymentFileUrl(doc.filePath);
                   if (doc.mimeType.startsWith('image/')) {
                     return (
-                      <a key={doc.id} href={url} target="_blank" rel="noopener noreferrer">
-                        <img
+                      <button key={doc.id} type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
+                        <AuthenticatedImage
                           src={url}
                           alt={doc.originalName}
                           className="w-16 h-16 rounded-md object-cover border border-gray-200"
                         />
-                      </a>
+                      </button>
                     );
                   }
                   return (
-                    <a
+                    <button
                       key={doc.id}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-16 h-16 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1"
+                      type="button"
+                      onClick={() => openAuthenticatedFile(url)}
+                      className="w-16 h-16 rounded-md border border-gray-200 bg-gray-50 flex flex-col items-center justify-center p-1 cursor-pointer hover:bg-gray-100"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +142,7 @@ export default function PaymentHistoryList({
                       <span className="text-[10px] text-gray-500 truncate w-full text-center mt-0.5">
                         {doc.originalName}
                       </span>
-                    </a>
+                    </button>
                   );
                 })}
               </div>
