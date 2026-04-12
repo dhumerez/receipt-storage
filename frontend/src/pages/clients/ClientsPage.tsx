@@ -31,6 +31,7 @@ export default function ClientsPage() {
   const { data: clients = [], isLoading, error } = useQuery({
     queryKey: ['clients', { search, status }],
     queryFn: () => getClients({ search, status }),
+    staleTime: 0,
   });
 
   if (isLoading) {
