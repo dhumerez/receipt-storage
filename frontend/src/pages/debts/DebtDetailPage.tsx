@@ -37,13 +37,12 @@ function TransactionDocThumbnail({ doc }: { doc: DocumentInfo }) {
 
   if (doc.mimeType.startsWith('image/')) {
     return (
-      <button type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
-        <AuthenticatedImage
-          src={url}
-          alt={doc.originalName}
-          className="w-16 h-16 rounded-md object-cover border border-gray-200"
-        />
-      </button>
+      <AuthenticatedImage
+        src={url}
+        alt={doc.originalName}
+        className="w-16 h-16 rounded-md object-cover border border-gray-200"
+        lightbox
+      />
     );
   }
 

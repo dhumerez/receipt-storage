@@ -109,13 +109,13 @@ export default function PaymentHistoryList({
                   const url = getPaymentFileUrl(doc.filePath);
                   if (doc.mimeType.startsWith('image/')) {
                     return (
-                      <button key={doc.id} type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
-                        <AuthenticatedImage
-                          src={url}
-                          alt={doc.originalName}
-                          className="w-16 h-16 rounded-md object-cover border border-gray-200"
-                        />
-                      </button>
+                      <AuthenticatedImage
+                        key={doc.id}
+                        src={url}
+                        alt={doc.originalName}
+                        className="w-16 h-16 rounded-md object-cover border border-gray-200"
+                        lightbox
+                      />
                     );
                   }
                   return (

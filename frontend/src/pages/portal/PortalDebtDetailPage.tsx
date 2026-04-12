@@ -26,13 +26,12 @@ function PaymentDocThumbnail({ doc }: { doc: PortalPaymentItem['documents'][numb
 
   if (doc.mimeType.startsWith('image/')) {
     return (
-      <button type="button" onClick={() => openAuthenticatedFile(url)} className="cursor-pointer">
-        <AuthenticatedImage
-          src={url}
-          alt={doc.originalName}
-          className="w-20 h-20 rounded-md object-cover border border-gray-200"
-        />
-      </button>
+      <AuthenticatedImage
+        src={url}
+        alt={doc.originalName}
+        className="w-20 h-20 rounded-md object-cover border border-gray-200"
+        lightbox
+      />
     );
   }
 
