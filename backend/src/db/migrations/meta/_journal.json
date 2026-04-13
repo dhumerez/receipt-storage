@@ -6,6 +6,7 @@
     { "idx": 1, "version": "7", "when": 1743299400000, "tag": "0001_audit_log_immutability", "breakpoints": true },
     { "idx": 2, "version": "7", "when": 1743360420000, "tag": "0002_tokens_refresh_tokens", "breakpoints": true },
     { "idx": 3, "version": "7", "when": 1743400000000, "tag": "0003_client_invite_token", "breakpoints": true },
-    { "idx": 4, "version": "7", "when": 1743500000000, "tag": "0004_add_logo_path", "breakpoints": true }
+    { "idx": 4, "version": "7", "when": 1743500000000, "tag": "0004_add_logo_path", "breakpoints": true },
+    { "idx": 5, "version": "7", "when": 1744592280000, "tag": "0005_add_client_store_fields", "breakpoints": true }
   ]
 }
