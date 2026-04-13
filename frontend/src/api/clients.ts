@@ -18,6 +18,8 @@ export interface Client {
   email: string | null;
   phone: string | null;
   address: string | null;
+  storeName: string | null;
+  googleLocation: string | null;
   referencesText: string | null;
   isActive: boolean;
   createdAt: string;
@@ -29,6 +31,8 @@ export interface CreateClientInput {
   email?: string;
   phone?: string;
   address?: string;
+  storeName?: string;
+  googleLocation?: string;
   referencesText?: string;
 }
 

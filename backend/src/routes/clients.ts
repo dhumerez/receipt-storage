@@ -86,6 +86,8 @@ const CreateClientSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   phone: z.string().max(50).optional(),
   address: z.string().optional(),
+  storeName: z.string().max(255).optional(),
+  googleLocation: z.string().max(500).optional(),
   referencesText: z.string().optional(),
 });
 
@@ -96,7 +98,7 @@ clientsRouter.post('/', async (req, res) => {
     return;
   }
   const companyId = req.companyId!;
-  const { fullName, email, phone, address, referencesText } = parsed.data;
+  const { fullName, email, phone, address, storeName, googleLocation, referencesText } = parsed.data;
 
   const [created] = await db
     .insert(clients)
@@ -106,6 +108,8 @@ clientsRouter.post('/', async (req, res) => {
       email: email || null,
       phone: phone || null,
       address: address || null,
+      storeName: storeName || null,
+      googleLocation: googleLocation || null,
       referencesText: referencesText || null,
     })
     .returning();
@@ -121,6 +125,8 @@ const UpdateClientSchema = z.object({
   email: z.string().email().optional().or(z.literal('')).nullable(),
   phone: z.string().max(50).optional().nullable(),
   address: z.string().optional().nullable(),
+  storeName: z.string().max(255).optional().nullable(),
+  googleLocation: z.string().max(500).optional().nullable(),
   referencesText: z.string().optional().nullable(),
 });
 

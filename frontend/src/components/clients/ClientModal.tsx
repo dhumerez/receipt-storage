@@ -20,6 +20,8 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
     email: '',
     phone: '',
     address: '',
+    storeName: '',
+    googleLocation: '',
     referencesText: '',
   });
   const [error, setError] = useState('');
@@ -32,10 +34,12 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
         email: editData.email ?? '',
         phone: editData.phone ?? '',
         address: editData.address ?? '',
+        storeName: editData.storeName ?? '',
+        googleLocation: editData.googleLocation ?? '',
         referencesText: editData.referencesText ?? '',
       });
     } else {
-      setForm({ fullName: '', email: '', phone: '', address: '', referencesText: '' });
+      setForm({ fullName: '', email: '', phone: '', address: '', storeName: '', googleLocation: '', referencesText: '' });
     }
     setError('');
   }, [editData, isOpen]);
@@ -71,6 +75,8 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
       email: form.email?.trim() || undefined,
       phone: form.phone?.trim() || undefined,
       address: form.address?.trim() || undefined,
+      storeName: form.storeName?.trim() || undefined,
+      googleLocation: form.googleLocation?.trim() || undefined,
       referencesText: form.referencesText?.trim() || undefined,
     };
     mutation.mutate(clean);
@@ -113,6 +119,18 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
             <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.addressLabel}</label>
             <input type="text" value={form.address ?? ''} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.storeNameLabel}</label>
+            <input type="text" value={form.storeName ?? ''} onChange={(e) => setForm((f) => ({ ...f, storeName: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ej: Tienda El Buen Precio" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.googleLocationLabel}</label>
+            <input type="url" value={form.googleLocation ?? ''} onChange={(e) => setForm((f) => ({ ...f, googleLocation: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder={CLIENTS.googleLocationPlaceholder} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.referencesLabel}</label>

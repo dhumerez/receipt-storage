@@ -120,6 +120,8 @@ export const clients = pgTable(
     email: varchar('email', { length: 255 }),
     phone: varchar('phone', { length: 50 }),
     address: text('address'),
+    storeName: varchar('store_name', { length: 255 }),
+    googleLocation: varchar('google_location', { length: 500 }),
     referencesText: text('references_text'),
     isActive: boolean('is_active').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
