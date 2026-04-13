@@ -2,31 +2,29 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover enables safe-area-inset-* CSS env() variables for iPhone notch/home indicator -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Rastreador de Recibos</title>
     <meta name="description" content="Gestiona y rastrea tus recibos y deudas" />
     <meta name="theme-color" content="#2563eb" />
+
+    <!-- iOS PWA: enable standalone mode when launched from home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- iOS PWA: status bar appearance in standalone mode (default = matches theme) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!-- iOS PWA: title shown below app icon on home screen -->
+    <meta name="apple-mobile-web-app-title" content="Recibos" />
+
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <!-- iOS home screen icon — 180x180 is used for all iOS device sizes as fallback -->
     <link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" />
     <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
     <div id="root"><p data-placeholder style="padding:2rem;font-family:sans-serif;color:#333">Cargando aplicaci&oacute;n&hellip;</p></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Register service worker for PWA installability (requires HTTPS)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          // Derive SW path from the module script's base (works with Vite base path)
-          var mod = document.querySelector('script[type="module"][src]');
-          var base = '/';
-          if (mod && mod.src) {
-            var idx = new URL(mod.src).pathname.indexOf('/assets/');
-            if (idx > 0) base = new URL(mod.src).pathname.substring(0, idx + 1);
-          }
-          navigator.serviceWorker.register(base + 'sw.js').catch(function() {});
-        });
-      }
-    </script>
+    <!-- SW registration removed: vite-plugin-pwa with injectRegister:'auto' injects its own
+         registration script at build time. Keeping both causes a race condition between the
+         stub sw.js and the Workbox-generated one (RESEARCH.md Pitfall 1). -->
   </body>
 </html>

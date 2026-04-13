@@ -3,11 +3,12 @@
   "short_name": "Recibos",
   "description": "Gestiona y rastrea tus recibos y deudas",
   "lang": "es",
-  "start_url": ".",
-  "scope": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#2563eb",
   "background_color": "#ffffff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "pwa-192x192.png",

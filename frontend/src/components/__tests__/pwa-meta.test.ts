@@ -3,7 +3,7 @@ import { resolve } from 'path'
 
 // Read the actual index.html from the project root (relative to this test file)
 const indexHtml = readFileSync(
-  resolve(__dirname, '../../../../index.html'),
+  resolve(__dirname, '../../../index.html'),
   'utf-8'
 )
 
