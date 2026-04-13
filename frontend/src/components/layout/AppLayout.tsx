@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from 'react-router';
 import Sidebar from './Sidebar.tsx';
 import BottomTabBar from './BottomTabBar.tsx';
 import NotificationBell from './NotificationBell.tsx';
+import { PwaInstallBanner } from '../PwaInstallBanner.tsx';
 import { useAuth } from '../../contexts/AuthContext.tsx';
 import { COMMON } from '../../constants/strings/common.ts';
 
@@ -33,6 +34,8 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+      {/* PWA install guidance — Android shows native prompt; iOS shows manual instruction */}
+      <PwaInstallBanner />
       <BottomTabBar />
     </div>
   );

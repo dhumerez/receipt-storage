@@ -51,7 +51,7 @@ export default function BottomTabBar() {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-200 flex z-40"
+      className="pwa-safe-bottom md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-200 flex z-40"
     >
       {TABS.map(({ to, label, icon }) => (
         <NavLink

@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* PWA: Safe area padding for iPhone notch/home indicator in standalone mode.
+   Without this, the BottomTabBar content is partially obscured by the home
+   indicator bar when the PWA runs in standalone mode on iPhone 12+. */
+.pwa-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 @media print {
   /* Hide navigation and controls */
   nav[aria-label="Main navigation"],
