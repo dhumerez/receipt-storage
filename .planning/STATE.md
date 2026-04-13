@@ -2,24 +2,24 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 07
+current_phase: 08
 current_plan: Not started
-status: Milestone complete
-last_updated: "2026-04-01T07:20:21.022Z"
+status: Phase complete
+last_updated: "2026-04-13T01:29:30.000Z"
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 32
-  completed_plans: 32
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 36
+  completed_plans: 36
 ---
 
 # Project State
 
-**Last updated:** 2026-04-01
+**Last updated:** 2026-04-13
 **Current milestone:** 1.0 — Core SaaS MVP
-**Current phase:** 07
+**Current phase:** 08
 **Current plan:** Not started
-**Last session stopped at:** Completed 07-04-PLAN.md
+**Last session stopped at:** Completed 08-04-PLAN.md
 
 ## Status
 
@@ -31,7 +31,8 @@ progress:
 | Phase 4: Product Catalog | In progress | Plans 01-02 complete |
 | Phase 5: Transactions & Files | Not started | |
 | Phase 6: Debt & Payments | Not started | |
-| Phase 7: Reports & PDF | In progress | Plans 01, 03, 04 complete |
+| Phase 7: Reports & PDF | Complete | Plans 01-04 complete |
+| Phase 8: PWA Mobile iOS | Complete | Plans 01-04 complete — verified 2026-04-13 |
 
 ## Active Decisions
 
@@ -120,6 +121,16 @@ progress:
 - **07-04 (PDF Buttons):** Download Statement on DebtDetailPage uses receipt PDF endpoint with transactionId (not client report) since receipt includes debt status and payment history per D-13
 - **07-04 (FR-10.4):** Total Paid added to portal PortalBalanceSummary by summing amountPaid from debts list — no new backend endpoint needed
 
+- **08-01 (PWA SW):** vite-plugin-pwa installed with --legacy-peer-deps (Vite 8 not in peer dep range ^7.0.0; plugin works correctly)
+- **08-01 (PWA SW):** devOptions.enabled:false — SW never runs in development mode to prevent API interception
+- **08-01 (PWA SW):** NetworkOnly for /api/* — financial data must never be served from cache
+- **08-02 (iOS Tags):** apple-mobile-web-app-status-bar-style set to "default" (not "black-translucent") — matches theme-color without overlapping content
+- **08-02 (iOS Tags):** Manual navigator.serviceWorker.register() removed from index.html — vite-plugin-pwa injectRegister:'auto' handles registration
+- **08-03 (Nginx):** always flag on add_header ensures Cache-Control is set on all responses including 502/304
+- **08-03 (Nginx):** proxy-revalidate on sw.js but not manifest — sw.js has strictest no-cache requirement
+- **08-04 (PWA Banner):** .pwa-safe-bottom CSS class (not data attribute) — integrates cleanly with Tailwind className pattern
+- **08-04 (PWA Banner):** Dismissed state is session-only via useState (no localStorage) — acceptable per plan
+
 ## Blockers
 
 None.
@@ -129,3 +140,4 @@ None.
 - Hetzner VPS already running Restaurant app; new Docker stack must use ports 4000/4001
 - Resend requires domain verification (SPF/DKIM) before email invitations work — do this in Phase 2
 - libvips with HEIC support must be installed in Docker image (Phase 5) — `apt-get install libvips-dev libheif-dev`
+- Phase 8 PWA: 4 human verification items require real iOS/Android devices — install prompt, iOS guidance, SW update cycle, notch safe-area
