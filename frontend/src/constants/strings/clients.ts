@@ -27,6 +27,7 @@ export const CLIENTS = {
   emailOptionalHint: '(opcional)',
   phoneLabel: 'Teléfono',
   addressLabel: 'Dirección',
+  addressPlaceholder: 'Buscar dirección en Google Maps…',
   storeNameLabel: 'Nombre del negocio',
   googleLocationLabel: 'Google Maps (enlace)',
   googleLocationPlaceholder: 'https://maps.google.com/...',

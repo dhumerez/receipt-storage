@@ -4,6 +4,7 @@ import { createClient, updateClient } from '../../api/clients.ts';
 import type { Client, CreateClientInput } from '../../api/clients.ts';
 import { CLIENTS } from '../../constants/strings/clients.ts';
 import { COMMON } from '../../constants/strings/common.ts';
+import { GooglePlacesInput } from './GooglePlacesInput.tsx';
 
 interface ClientModalProps {
   isOpen: boolean;
@@ -116,15 +117,22 @@ export default function ClientModal({ isOpen, onClose, editData }: ClientModalPr
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.addressLabel}</label>
-            <input type="text" value={form.address ?? ''} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.storeNameLabel}</label>
             <input type="text" value={form.storeName ?? ''} onChange={(e) => setForm((f) => ({ ...f, storeName: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ej: Tienda El Buen Precio" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.addressLabel}</label>
+            <GooglePlacesInput
+              value={form.address ?? ''}
+              onChange={(val) => setForm((f) => ({ ...f, address: val }))}
+              onPlaceSelect={({ address, mapsUrl }) =>
+                setForm((f) => ({ ...f, address, googleLocation: mapsUrl || f.googleLocation }))
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder={CLIENTS.addressPlaceholder}
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{CLIENTS.googleLocationLabel}</label>

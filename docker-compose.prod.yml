@@ -23,6 +23,7 @@ services:
       args:
         VITE_API_URL: /receipts
         VITE_BASE_PATH: ${VITE_BASE_PATH:-/receipts/}
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY:-}
     restart: always
     labels:
       - "traefik.enable=true"
