@@ -8,7 +8,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       UPLOAD_DIR: /var/receipts/uploads
       PORT: "4000"
-      CORS_ORIGIN: ${CORS_ORIGIN:-https://humerez.dev}
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://pagos.humerez.dev}
     volumes:
       - /var/receipts/uploads:/var/receipts/uploads
     depends_on:
@@ -21,20 +21,26 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: /receipts
-        VITE_BASE_PATH: ${VITE_BASE_PATH:-/receipts/}
+        # Served at the root of its own subdomain (pagos.humerez.dev): the SPA
+        # calls /api/* same-origin and assets resolve from /.
+        VITE_API_URL: ""
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/}
         VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY:-}
     restart: always
     labels:
       - "traefik.enable=true"
-      # Main router — /receipts path with HTTPS
-      - "traefik.http.routers.receipts.rule=Host(`humerez.dev`) && PathPrefix(`/receipts`)"
+      # Dedicated subdomain — own cookie scope + TLS, no path stripping.
+      - "traefik.http.routers.receipts.rule=Host(`pagos.humerez.dev`)"
       - "traefik.http.routers.receipts.entrypoints=websecure"
       - "traefik.http.routers.receipts.tls=true"
       - "traefik.http.routers.receipts.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.receipts-strip.stripprefix.prefixes=/receipts"
-      - "traefik.http.routers.receipts.middlewares=receipts-strip"
       - "traefik.http.services.receipts.loadbalancer.server.port=4001"
+      # http -> https redirect for the host.
+      - "traefik.http.routers.receipts-http.rule=Host(`pagos.humerez.dev`)"
+      - "traefik.http.routers.receipts-http.entrypoints=web"
+      - "traefik.http.routers.receipts-http.middlewares=receipts-redirect"
+      - "traefik.http.middlewares.receipts-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.receipts-redirect.redirectscheme.permanent=true"
     depends_on:
       - receipts-api
     networks:
